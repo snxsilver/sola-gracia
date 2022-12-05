@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bukukas;
 use App\Models\Kategori;
 use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -13,20 +15,24 @@ use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
-    public function dashboard(){
+    public function dashboard()
+    {
         return view('dashboard.dashboard');
     }
 
-    public function user(){
+    public function user()
+    {
         $data['user'] = User::get();
-        return view('dashboard.user',$data);
+        return view('dashboard.user', $data);
     }
 
-    public function user_tambah(){
+    public function user_tambah()
+    {
         return view('dashboard.user_tambah');
     }
 
-    public function user_aksi(Request $request){
+    public function user_aksi(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'same' => ':attribute harus sama dengan password.',
@@ -42,9 +48,9 @@ class DashboardController extends Controller
             'password' => 'required',
             'confirm_password' => 'required|same:password',
             'role' => 'required',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
@@ -61,12 +67,14 @@ class DashboardController extends Controller
         return redirect('/dashboard/user');
     }
 
-    public function user_edit($id){
+    public function user_edit($id)
+    {
         $data['user'] = User::where('id', $id)->first();
-        return view('dashboard.user_edit',$data);
+        return view('dashboard.user_edit', $data);
     }
 
-    public function user_update(Request $request){
+    public function user_update(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'same' => ':attribute harus sama dengan password.',
@@ -82,9 +90,9 @@ class DashboardController extends Controller
             'password' => 'required',
             'confirm_password' => 'required|same:password',
             'role' => 'required',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
@@ -93,7 +101,7 @@ class DashboardController extends Controller
         $password = $request->input('password');
         $role = $request->input('role');
 
-        User::where('id',$id)->update([
+        User::where('id', $id)->update([
             'username' => $username,
             'password' => Hash::make($password),
             'role' => $role,
@@ -102,22 +110,26 @@ class DashboardController extends Controller
         return redirect('/dashboard/user');
     }
 
-    public function user_hapus($id){
-        User::where('id',$id)->delete();
+    public function user_hapus($id)
+    {
+        User::where('id', $id)->delete();
 
         return redirect('/dashboard/user');
     }
 
-    public function kategori(){
+    public function kategori()
+    {
         $data['kategori'] = Kategori::get();
-        return view('dashboard.kategori',$data);
+        return view('dashboard.kategori', $data);
     }
 
-    public function kategori_tambah(){
+    public function kategori_tambah()
+    {
         return view('dashboard.kategori_tambah');
     }
 
-    public function kategori_aksi(Request $request){
+    public function kategori_aksi(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'unique' => ':attribute telah dipakai.'
@@ -127,9 +139,9 @@ class DashboardController extends Controller
         ];
         $validator = Validator::make($request->all(), [
             'kategori' => 'required|unique:kategori,nama',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
@@ -143,12 +155,14 @@ class DashboardController extends Controller
         return redirect('/dashboard/kategori');
     }
 
-    public function kategori_edit($id){
+    public function kategori_edit($id)
+    {
         $data['kategori'] = Kategori::where('id', $id)->first();
-        return view('dashboard.kategori_edit',$data);
+        return view('dashboard.kategori_edit', $data);
     }
 
-    public function kategori_update(Request $request){
+    public function kategori_update(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'unique' => ':attribute telah dipakai.'
@@ -158,16 +172,16 @@ class DashboardController extends Controller
         ];
         $validator = Validator::make($request->all(), [
             'kategori' => 'required|unique:kategori,nama',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
         $id = $request->input('id');
         $kategori = $request->input('kategori');
 
-        Kategori::where('id',$id)->update([
+        Kategori::where('id', $id)->update([
             'nama' => $kategori,
             'kreator' => Session::get('id')
         ]);
@@ -175,22 +189,26 @@ class DashboardController extends Controller
         return redirect('/dashboard/kategori');
     }
 
-    public function kategori_hapus($id){
-        Kategori::where('id',$id)->delete();
+    public function kategori_hapus($id)
+    {
+        Kategori::where('id', $id)->delete();
 
         return redirect('/dashboard/kategori');
     }
 
-    public function proyek(){
+    public function proyek()
+    {
         $data['proyek'] = Proyek::get();
-        return view('dashboard.proyek',$data);
+        return view('dashboard.proyek', $data);
     }
 
-    public function proyek_tambah(){
+    public function proyek_tambah()
+    {
         return view('dashboard.proyek_tambah');
     }
 
-    public function proyek_aksi(Request $request){
+    public function proyek_aksi(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -203,9 +221,9 @@ class DashboardController extends Controller
             'kode' => 'required',
             'nama' => 'required',
             'nilai' => 'required',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
@@ -223,12 +241,14 @@ class DashboardController extends Controller
         return redirect('/dashboard/proyek');
     }
 
-    public function proyek_edit($id){
+    public function proyek_edit($id)
+    {
         $data['proyek'] = Proyek::where('id', $id)->first();
-        return view('dashboard.proyek_edit',$data);
+        return view('dashboard.proyek_edit', $data);
     }
 
-    public function proyek_update(Request $request){
+    public function proyek_update(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -241,9 +261,9 @@ class DashboardController extends Controller
             'kode' => 'required',
             'nama' => 'required',
             'nilai' => 'required',
-        ],$message, $attribute);
+        ], $message, $attribute);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return Redirect::back()->withErrors($validator);
         }
 
@@ -252,7 +272,7 @@ class DashboardController extends Controller
         $kode = $request->input('kode');
         $nilai = $request->input('nilai');
 
-        Proyek::where('id',$id)->update([
+        Proyek::where('id', $id)->update([
             'nama' => $nama,
             'kode' => $kode,
             'nilai' => $nilai,
@@ -262,9 +282,143 @@ class DashboardController extends Controller
         return redirect('/dashboard/proyek');
     }
 
-    public function proyek_hapus($id){
-        Proyek::where('id',$id)->delete();
+    public function proyek_hapus($id)
+    {
+        Proyek::where('id', $id)->delete();
 
         return redirect('/dashboard/proyek');
+    }
+
+    public function bukukas()
+    {
+        $data['bukukas'] = Bukukas::
+            join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+            ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->select('bukukas.*','proyek.nama as namaproyek','kategori.nama as namakategori')
+            ->get();
+        return view('dashboard.bukukas', $data);
+    }
+
+    public function bukukas_tambah()
+    {
+        $data['proyek'] = Proyek::get();
+        $data['kategori'] = Kategori::get();
+        return view('dashboard.bukukas_tambah',$data);
+    }
+
+    public function bukukas_aksi(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'proyek' => 'Proyek',
+            'tanggal' => 'Tanggal',
+            'keterangan' => 'Keterangan',
+            'kategori' => 'Kategori',
+            'bukti' => 'No Bukti',
+            'masuk' => 'Uang Masuk',
+            'keluar' => 'Uang Keluar',
+        ];
+        $validator = Validator::make($request->all(), [
+            'proyek' => 'required',
+            'tanggal' => 'required',
+            'keterangan' => 'required',
+            'kategori' => 'required',
+            // 'bukti' => 'required',
+            // 'masuk' => 'required',
+            // 'keluar' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $proyek = $request->input('proyek');
+        $tanggal = $request->input('tanggal');
+        $keterangan = $request->input('keterangan');
+        $kategori = $request->input('kategori');
+        $bukti = $request->input('bukti');
+        $masuk = $request->input('masuk');
+        $keluar = $request->input('keluar');
+
+        Bukukas::create([
+            'proyek' => $proyek,
+            'tanggal' => $tanggal,
+            'keterangan' => $keterangan,
+            'kategori' => $kategori,
+            'no_bukti' => $bukti,
+            'masuk' => $masuk,
+            'keluar' => $keluar,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/bukukas');
+    }
+
+    public function bukukas_edit($id)
+    {
+        $data['proyek'] = Proyek::get();
+        $data['kategori'] = Kategori::get();
+        $data['bukukas'] = bukukas::where('id', $id)->first();
+        return view('dashboard.bukukas_edit', $data);
+    }
+
+    public function bukukas_update(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'proyek' => 'Proyek',
+            'tanggal' => 'Tanggal',
+            'keterangan' => 'Keterangan',
+            'kategori' => 'Kategori',
+            'bukti' => 'No Bukti',
+            'masuk' => 'Uang Masuk',
+            'keluar' => 'Uang Keluar',
+        ];
+        $validator = Validator::make($request->all(), [
+            'proyek' => 'required',
+            'tanggal' => 'required',
+            'keterangan' => 'required',
+            'kategori' => 'required',
+            // 'bukti' => 'required',
+            // 'masuk' => 'required',
+            // 'keluar' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $id = $request->input('id');
+        $proyek = $request->input('proyek');
+        $tanggal = $request->input('tanggal');
+        $keterangan = $request->input('keterangan');
+        $kategori = $request->input('kategori');
+        $bukti = $request->input('bukti');
+        $masuk = $request->input('masuk');
+        $keluar = $request->input('keluar');
+
+        Bukukas::where('id',$id)->update([
+            'proyek' => $proyek,
+            'tanggal' => $tanggal,
+            'keterangan' => $keterangan,
+            'kategori' => $kategori,
+            'no_bukti' => $bukti,
+            'masuk' => $masuk,
+            'keluar' => $keluar,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/bukukas');
+    }
+
+    public function bukukas_hapus($id)
+    {
+        bukukas::where('id', $id)->delete();
+
+        return redirect('/dashboard/bukukas');
     }
 }
