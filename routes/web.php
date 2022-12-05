@@ -48,3 +48,17 @@ Route::post('/dashboard/bukukas_aksi', [DashboardController::class,'bukukas_aksi
 Route::get('/dashboard/bukukas_edit/{id}', [DashboardController::class,'bukukas_edit']);
 Route::post('/dashboard/bukukas_update', [DashboardController::class,'bukukas_update']);
 Route::get('/dashboard/bukukas_hapus/{id}', [DashboardController::class,'bukukas_hapus']);
+
+Route::get('/dashboard/invoice', [DashboardController::class,'invoice']);
+Route::get('/dashboard/invoice_tambah', [DashboardController::class,'invoice_tambah']);
+Route::post('/dashboard/invoice_aksi', [DashboardController::class,'invoice_aksi']);
+Route::get('/dashboard/invoice_edit/{id}', [DashboardController::class,'invoice_edit']);
+Route::post('/dashboard/invoice_update', [DashboardController::class,'invoice_update']);
+Route::get('/dashboard/invoice_hapus/{id}', [DashboardController::class,'invoice_hapus']);
+
+Route::get('/dashboard/stok', [DashboardController::class,'stok']);
+Route::get('/dashboard/stok_tambah', [DashboardController::class,'stok_tambah']);
+Route::post('/dashboard/stok_aksi', [DashboardController::class,'stok_aksi']);
+Route::get('/dashboard/stok_edit/{id}', [DashboardController::class,'stok_edit']);
+Route::post('/dashboard/stok_update', [DashboardController::class,'stok_update']);
+Route::get('/dashboard/stok_hapus/{id}', [DashboardController::class,'stok_hapus']);

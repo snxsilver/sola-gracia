@@ -13,18 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('bukukas', function (Blueprint $table) {
+        Schema::create('stok', function (Blueprint $table) {
             $table->id();
             $table->date('tanggal');
-            $table->text('keterangan');
-            $table->double('keluar')->nullable();
-            $table->double('masuk')->nullable();
+            $table->string('barang');
+            $table->double('kuantitas');
+            $table->string('satuan');
+            $table->double('harga');
             $table->string('no_bukti')->nullable();
             $table->string('nota')->nullable();
-            $table->integer('kategori');
-            $table->integer('proyek');
             $table->integer('kreator');
-            $table->integer('ambil_stok')->nullable();
             $table->timestamps();
         });
     }
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bukukas');
+        Schema::dropIfExists('stok');
     }
 };

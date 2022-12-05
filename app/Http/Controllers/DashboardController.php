@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bukukas;
+use App\Models\Invoice;
 use App\Models\Kategori;
 use App\Models\Proyek;
+use App\Models\Stok;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -420,5 +422,217 @@ class DashboardController extends Controller
         bukukas::where('id', $id)->delete();
 
         return redirect('/dashboard/bukukas');
+    }
+
+    public function invoice()
+    {
+        $data['invoice'] = Invoice::get();
+        return view('dashboard.invoice', $data);
+    }
+
+    public function invoice_tambah()
+    {
+        return view('dashboard.invoice_tambah');
+    }
+
+    public function invoice_aksi(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'tanggal' => 'Tanggal Invoice',
+            'total' => 'Total Invoice',
+        ];
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'total' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $tanggal = $request->input('tanggal');
+        $total = $request->input('total');
+        $keterangan = $request->input('keterangan');
+        $perusahaan = $request->input('perusahaan');
+
+        $no = 123;
+
+        Invoice::create([
+            'tanggal' => $tanggal,
+            'no_invoice' => $no,
+            'total' => $total,
+            'keterangan' => $keterangan,
+            'perusahaan' => $perusahaan,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/invoice');
+    }
+
+    public function invoice_edit($id)
+    {
+        $data['invoice'] = Invoice::where('id', $id)->first();
+        return view('dashboard.invoice_edit', $data);
+    }
+
+    public function invoice_update(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'tanggal' => 'Tanggal Invoice',
+            'total' => 'Total Invoice',
+        ];
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'total' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $id = $request->input('id');
+        $tanggal = $request->input('tanggal');
+        $total = $request->input('total');
+        $keterangan = $request->input('keterangan');
+        $perusahaan = $request->input('perusahaan');
+
+        $no = 123;
+
+        Invoice::where('id',$id)->update([
+            'tanggal' => $tanggal,
+            'no_invoice' => $no,
+            'total' => $total,
+            'keterangan' => $keterangan,
+            'perusahaan' => $perusahaan,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/invoice');
+    }
+
+    public function invoice_hapus($id)
+    {
+        invoice::where('id', $id)->delete();
+
+        return redirect('/dashboard/invoice');
+    }
+
+    public function stok()
+    {
+        $data['stok'] = Stok::get();
+        return view('dashboard.stok', $data);
+    }
+
+    public function stok_tambah()
+    {
+        return view('dashboard.stok_tambah');
+    }
+
+    public function stok_aksi(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'tanggal' => 'Tanggal pembelian barang',
+            'barang' => 'Nama barang',
+            'kuantitas' => 'Jumlah barang',
+            'satuan' => 'Satuan jumlah barang',
+            'harga' => 'Harga barang',
+        ];
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'barang' => 'required',
+            'kuantitas' => 'required',
+            'satuan' => 'required',
+            'harga' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $tanggal = $request->input('tanggal');
+        $barang = $request->input('barang');
+        $kuantitas = $request->input('kuantitas');
+        $satuan = $request->input('satuan');
+        $harga = $request->input('harga');
+        $bukti = $request->input('bukti');
+
+        Stok::create([
+            'tanggal' => $tanggal,
+            'barang' => $barang,
+            'kuantitas' => $kuantitas,
+            'satuan' => $satuan,
+            'harga' => $harga,
+            'no_bukti' => $bukti,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/stok');
+    }
+
+    public function stok_edit($id)
+    {
+        $data['stok'] = stok::where('id', $id)->first();
+        return view('dashboard.stok_edit', $data);
+    }
+
+    public function stok_update(Request $request)
+    {
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'tanggal' => 'Tanggal pembelian barang',
+            'barang' => 'Nama barang',
+            'kuantitas' => 'Jumlah barang',
+            'satuan' => 'Satuan jumlah barang',
+            'harga' => 'Harga barang',
+        ];
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'barang' => 'required',
+            'kuantitas' => 'required',
+            'satuan' => 'required',
+            'harga' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $id = $request->input('id');
+        $tanggal = $request->input('tanggal');
+        $barang = $request->input('barang');
+        $kuantitas = $request->input('kuantitas');
+        $satuan = $request->input('satuan');
+        $harga = $request->input('harga');
+        $bukti = $request->input('bukti');
+
+        Stok::where('id',$id)->update([
+            'tanggal' => $tanggal,
+            'barang' => $barang,
+            'kuantitas' => $kuantitas,
+            'satuan' => $satuan,
+            'harga' => $harga,
+            'no_bukti' => $bukti,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/stok');
+    }
+
+    public function stok_hapus($id)
+    {
+        stok::where('id', $id)->delete();
+
+        return redirect('/dashboard/stok');
     }
 }

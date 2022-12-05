@@ -57,6 +57,8 @@
                 <li><a href="{{('/dashboard/kategori')}}"><i class="fa fa-tag"></i> Kategori <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{('/dashboard/proyek')}}"><i class="fa fa-institution"></i> Proyek <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{('/dashboard/bukukas')}}"><i class="fa fa-book"></i> Buku Kas <span class="fa fa-chevron-right"></span></a></li>
+                <li><a href="{{('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
+                <li><a href="{{('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/user')}}"><i class="fa fa-user"></i> User <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/logout')}}"><i class="fa fa-sign-out"></i> Logout <span class="fa fa-chevron-right"></span></a></li>
                 {{-- <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
