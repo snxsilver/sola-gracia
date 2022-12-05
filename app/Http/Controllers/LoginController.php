@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -45,13 +46,23 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            $data = User::where('username',$request->username)->firstOrFail();
+            $data_session = [
+                'id' => $data->id,
+                'username' => $data->username,
+                'role' => $data->role
+            ];
+            $request->session()->put($data_session);
 
-            return redirect()->route('dashboard');
+            return redirect()->intended('dashboard');
         }
 
         return Redirect::back()->withErrors([
             'message' => 'Username atau password salah.'
         ]);
+    }
+    public function logout(){
+        Auth::logout();
+        return redirect('/');
     }
 }
