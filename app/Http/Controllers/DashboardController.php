@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ambil;
 use App\Models\Bukukas;
 use App\Models\Invoice;
 use App\Models\Kategori;
@@ -420,6 +421,98 @@ class DashboardController extends Controller
     public function bukukas_hapus($id)
     {
         bukukas::where('id', $id)->delete();
+
+        return redirect('/dashboard/bukukas');
+    }
+
+    public function ambil_stok(){
+        $data['proyek'] = Proyek::get();
+        $data['kategori'] = Kategori::get();
+        $data['stok'] = Stok::get();
+        return view('dashboard.ambil_stok',$data);
+    }
+
+    public function ambil_stok_aksi(Request $request){
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'proyek' => 'Proyek',
+            'tanggal' => 'Tanggal',
+            'kategori' => 'Kategori',
+            'stok' => 'Stok',
+            'kuantitas' => 'Jumlah',
+        ];
+        $validator = Validator::make($request->all(), [
+            'proyek' => 'required',
+            'tanggal' => 'required',
+            'kategori' => 'required',
+            'stok' => 'required',
+            'kuantitas' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        $proyek = $request->input('proyek');
+        $tanggal = $request->input('tanggal');
+        $kategori = $request->input('kategori');
+        $idstok = $request->input('stok');
+        $kuantitas = $request->input('kuantitas');
+
+        $stok = Stok::where('id',$idstok)->first();
+
+        if ($kuantitas > $stok->kuantitas){
+            return Redirect::back()->withErrors([
+                'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
+            ]);
+        }
+
+        $keterangan = $stok->barang.' '.$kuantitas.' '.$stok->satuan;
+        $keluar = $kuantitas / $stok->kuantitas * $stok->harga;
+
+        $bukukas = Bukukas::create([
+            'proyek' => $proyek,
+            'tanggal' => $tanggal,
+            'keterangan' => $keterangan,
+            'kategori' => $kategori,
+            'keluar' => $keluar,
+            'kreator' => Session::get('id'),
+            'ambil_stok' => 1,
+        ]);
+
+        $idbukukas = $bukukas->id;
+
+        Stok::where('id',$idstok)->update([
+            'kuantitas' => $stok->kuantitas - $kuantitas,
+            'harga' => $stok->harga - $keluar,
+        ]);
+
+        Ambil::create([
+            'tanggal' => $tanggal,
+            'stok' => $idstok,
+            'kuantitas' => $kuantitas,
+            'harga' => $keluar,
+            'bukukas' => $idbukukas,
+            'kreator' => Session::get('id'),
+        ]);
+
+        return redirect('/dashboard/bukukas');
+    }
+
+    public function ambil_stok_hapus($id){
+        $ambil = Ambil::where('bukukas',$id)->first();
+        $stok = Stok::where('id',$ambil->stok)->first();
+
+        Stok::where('id',$ambil->stok)->update([
+            'kuantitas' => $stok->kuantitas + $ambil->kuantitas,
+            'harga' => $stok->harga + $ambil->harga,
+        ]);
+
+        Ambil::where('bukukas',$id)->delete();
+
+        Bukukas::where('id',$id)->delete();
 
         return redirect('/dashboard/bukukas');
     }

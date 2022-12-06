@@ -15,6 +15,7 @@ class Ambil extends Model
         'tanggal',
         'stok',
         'kuantitas',
+        'harga',
         'bukukas',
         'kreator',
     ];

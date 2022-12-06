@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->integer('stok');
             $table->double('kuantitas');
+            $table->double('harga');
             $table->integer('bukukas');
             $table->integer('kreator');
             $table->timestamps();

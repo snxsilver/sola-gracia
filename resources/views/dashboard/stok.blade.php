@@ -9,7 +9,7 @@
           <div class="x_title">
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center">
-                <h3>Daftar Invoice</h3>
+                <h3>Daftar Stok</h3>
                 <a class="btn btn-primary" href="{{ url('/dashboard/stok_tambah') }}"><i class="fa fa-plus"></i></a>
               </div>
             </div>

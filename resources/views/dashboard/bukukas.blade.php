@@ -10,7 +10,10 @@
                         <div class="col-12">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h3>Buku Kas</h3>
-                                <a class="btn btn-primary" href="{{url('/dashboard/bukukas_tambah')}}"><i class="fa fa-plus"></i></a>
+                                <div class="align-items-center">
+                                    <a class="btn btn-success text-sm btn-sm fw-semibold" href="{{url('/dashboard/ambil_stok')}}"><span class="text-white mr-1"><i class="fa fa-plus"></i></span>Ambil Stok</a>
+                                    <a class="btn btn-primary" href="{{url('/dashboard/bukukas_tambah')}}"><i class="fa fa-plus"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>

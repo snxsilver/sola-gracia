@@ -49,6 +49,9 @@ Route::get('/dashboard/bukukas_edit/{id}', [DashboardController::class,'bukukas_
 Route::post('/dashboard/bukukas_update', [DashboardController::class,'bukukas_update']);
 Route::get('/dashboard/bukukas_hapus/{id}', [DashboardController::class,'bukukas_hapus']);
 
+Route::get('/dashboard/ambil_stok', [DashboardController::class,'ambil_stok']);
+Route::post('/dashboard/ambil_stok_aksi', [DashboardController::class,'ambil_stok_aksi']);
+
 Route::get('/dashboard/invoice', [DashboardController::class,'invoice']);
 Route::get('/dashboard/invoice_tambah', [DashboardController::class,'invoice_tambah']);
 Route::post('/dashboard/invoice_aksi', [DashboardController::class,'invoice_aksi']);
