@@ -18,14 +18,15 @@
           </div>
           <div class="x_content">
             <div class="col-12">
-              <form class="form-label-left input_mask" action="{{ url('/dashboard/ambil_stok_aksi') }}" method="post">
+              <form class="form-label-left input_mask" action="{{ url('/dashboard/ambil_stok_update') }}" method="post">
                 @csrf
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
                   <div class="col-md-9 col-sm-9 ">
+                    <input type="hidden" name="id" value={{$ambil->id}}>
                     <select id="role" class="form-control" name="proyek">
                       @foreach ($proyek as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        <option value="{{ $p->id }}" @if($ambil->proyek == $p->id) selected @endif>{{ $p->nama }}</option>
                       @endforeach
                     </select>
                     @error('proyek')
@@ -37,7 +38,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="date" class="form-control" placeholder="Masukkan Kode Proyek" name="tanggal"
-                      value={{ now() }}>
+                      value={{ $ambil->tanggal }}>
                     @error('tanggal')
                       <small>*{{ $message }}</small>
                     @enderror
@@ -48,7 +49,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" name="kategori">
                       @foreach ($kategori as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                        <option value="{{ $k->id }}" @if($ambil->kategori == $k->id) selected @endif>{{ $k->nama }}</option>
                       @endforeach
                     </select>
                     @error('kategori')
@@ -59,10 +60,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Stok</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <select id="role" class="form-control" name="stok">
-                      @foreach ($stok as $s)
-                        <option value="{{ $s->id }}">{{ $s->barang . ' - ' . $s->kuantitas . ' ' . $s->satuan }}</option>
-                      @endforeach
+                    <select id="role" class="form-control" name="stok" readonly>
+                        <option value="{{ $stok->id }}">{{ $stok->barang . ' - ' . $stok->kuantitas + $ambil->kuantitas . ' ' . $stok->satuan }}</option>
                     </select>
                     @error('stok')
                       <small>*{{ $message }}</small>
@@ -72,7 +71,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Jumlah</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Ambil Stok" name="kuantitas">
+                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Ambil Stok" name="kuantitas" value={{$ambil->kuantitas}}>
                     <small>*Jumlah tidak boleh melebihi stok</small>
                     @error('kuantitas')
                       <small>*{{ $message }}</small>

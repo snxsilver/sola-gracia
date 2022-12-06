@@ -46,8 +46,13 @@
                                         <td>{{$b->masuk ?? '-'}}</td>
                                         <td>{{$b->keluar ?? '-'}}</td>
                                         <td>
+                                            @if($b->ambil_stok == 0)
                                             <a class="btn btn-secondary" href="{{url('/dashboard/bukukas_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
                                             <a class="btn btn-danger" href="{{url('/dashboard/bukukas_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
+                                            @else
+                                            <a class="btn btn-secondary" href="{{url('/dashboard/ambil_stok_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-danger" href="{{url('/dashboard/ambil_stok_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
