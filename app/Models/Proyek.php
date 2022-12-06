@@ -15,6 +15,7 @@ class Proyek extends Model
         'kode',
         'nama',
         'nilai',
+        'pajak',
         'kreator',
     ];
 }

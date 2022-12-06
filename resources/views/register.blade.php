@@ -27,9 +27,9 @@
     <div class="login_wrapper pt-12">
       <div class="animate form login_form">
         <section class="login_content">
-          <form method="post" action="{{ url('/login_aksi') }}">
+          <form method="post" action="{{ url('/register_aksi') }}">
             @csrf
-            <h1>Login Form</h1>
+            <h1>Register Form</h1>
             @if (!Session::get('errors'))
               @if (isset($alert))
                 {!! "<small class='error'>" . $alert . '</small>' !!}
@@ -42,10 +42,16 @@
               <input type="text" class="form-control" placeholder="Username" name="username" />
             </div>
             <div class="form-group">
+              <input type="text" class="form-control" placeholder="Role" name="role" />
+            </div>
+            <div class="form-group">
               <input type="password" class="form-control" placeholder="Password" name="password" />
             </div>
+            <div class="form-group">
+              <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password" />
+            </div>
             <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-success">Login</button>
+              <button type="submit" class="btn btn-success">Register</button>
             </div>
 
             <div class="clearfix"></div>

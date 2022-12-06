@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('kode')->nullable();
             $table->string('nama')->nullable();
-            $table->string('nilai')->nullable();
+            $table->string('nilai');
+            $table->integer('pajak')->nullable();
             $table->integer('kreator');
             $table->timestamps();
         });

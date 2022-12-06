@@ -37,21 +37,21 @@
                                     @php ($no = 1)
                                     @foreach ($bukukas as $b)
                                     <tr>
-                                        <td>{{$no++}}</td>
+                                        <td width="5%">{{$no++}}</td>
                                         <td>{{$b->namaproyek}}</td>
                                         <td>{{$b->tanggal}}</td>
-                                        <td>{{$b->keterangan}}</td>
+                                        <td style="white-space: pre-line" width="25%">{{$b->keterangan}}</td>
                                         <td>{{$b->namakategori}}</td>
                                         <td>{{$b->no_bukti ?? '-'}}</td>
                                         <td>{{$b->masuk ?? '-'}}</td>
                                         <td>{{$b->keluar ?? '-'}}</td>
                                         <td>
                                             @if($b->ambil_stok == 0)
-                                            <a class="btn btn-secondary" href="{{url('/dashboard/bukukas_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
-                                            <a class="btn btn-danger" href="{{url('/dashboard/bukukas_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
+                                            <a class="btn btn-sm btn-secondary" href="{{url('/dashboard/bukukas_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-danger" href="{{url('/dashboard/bukukas_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
                                             @else
-                                            <a class="btn btn-secondary" href="{{url('/dashboard/ambil_stok_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
-                                            <a class="btn btn-danger" href="{{url('/dashboard/ambil_stok_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
+                                            <a class="btn btn-sm btn-secondary" href="{{url('/dashboard/ambil_stok_edit/'.$b->id)}}"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-danger" href="{{url('/dashboard/ambil_stok_hapus/'.$b->id)}}"><i class="fa fa-trash"></i></a>
                                             @endif
                                         </td>
                                     </tr>

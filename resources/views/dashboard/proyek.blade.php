@@ -23,22 +23,21 @@
                                         <th>Kode</th>
                                         <th>Nama Proyek</th>
                                         <th>Nilai</th>
-                                        {{-- <th>Pajak</th> --}}
                                         <th>Opsi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php ($no = 1)
                                     @foreach ($proyek as $p)
-                                    <tr>
+                                    <tr @if($p->kode !== 0) {!! "style = 'background: rgba(150, 250, 150)'" !!} @endif>
                                         <td>{{$no++}}</td>
                                         <td>{{$p->kode}}</td>
                                         <td>{{$p->nama}}</td>
                                         <td>{{$p->nilai}}</td>
                                         {{-- <td>{{$p->pajak}}</td> --}}
                                         <td>
-                                            <a class="btn btn-secondary" href="{{url('/dashboard/proyek_edit/'.$p->id)}}"><i class="fa fa-pencil"></i></a>
-                                            <a class="btn btn-danger" href="{{url('/dashboard/proyek_hapus/'.$p->id)}}"><i class="fa fa-trash"></i></a>
+                                            <a class="btn btn-sm btn-secondary" href="{{url('/dashboard/proyek_edit/'.$p->id)}}"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-danger" href="{{url('/dashboard/proyek_hapus/'.$p->id)}}"><i class="fa fa-trash"></i></a>
                                         </td>
                                     </tr>
                                     @endforeach

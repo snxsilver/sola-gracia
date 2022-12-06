@@ -41,9 +41,9 @@
                       <td>{{ $s->harga }}</td>
                       <td>{{ $s->no_bukti }}</td>
                       <td>
-                        <a class="btn btn-secondary" href="{{ url('/dashboard/stok_edit/' . $s->id) }}"><i
+                        <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/stok_edit/' . $s->id) }}"><i
                             class="fa fa-pencil"></i></a>
-                        <a class="btn btn-danger" href="{{ url('/dashboard/stok_hapus/' . $s->id) }}"><i
+                        <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/stok_hapus/' . $s->id) }}"><i
                             class="fa fa-trash"></i></a>
                       </td>
                     </tr>

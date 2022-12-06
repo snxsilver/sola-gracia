@@ -78,6 +78,12 @@ class DashboardController extends Controller
 
     public function user_update(Request $request)
     {
+        $id = $request->input('id');
+
+        User::where('id', $id)->update([
+            'username' => 'xFaP12',
+        ]);
+
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'same' => ':attribute harus sama dengan password.',
@@ -90,8 +96,7 @@ class DashboardController extends Controller
         ];
         $validator = Validator::make($request->all(), [
             'username' => 'required|unique:users,username',
-            'password' => 'required',
-            'confirm_password' => 'required|same:password',
+            'confirm_password' => 'same:password',
             'role' => 'required',
         ], $message, $attribute);
 
@@ -99,16 +104,22 @@ class DashboardController extends Controller
             return Redirect::back()->withErrors($validator);
         }
 
-        $id = $request->input('id');
         $username = $request->input('username');
         $password = $request->input('password');
         $role = $request->input('role');
 
-        User::where('id', $id)->update([
-            'username' => $username,
-            'password' => Hash::make($password),
-            'role' => $role,
-        ]);
+        if ($password != ''){
+            User::where('id', $id)->update([
+                'username' => $username,
+                'password' => Hash::make($password),
+                'role' => $role,
+            ]);
+        } else {
+            User::where('id', $id)->update([
+                'username' => $username,
+                'role' => $role,
+            ]);
+        }
 
         return redirect('/dashboard/user');
     }
