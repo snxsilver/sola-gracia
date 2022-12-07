@@ -244,11 +244,13 @@ class DashboardController extends Controller
         $nama = $request->input('nama');
         $kode = $request->input('kode');
         $nilai = $request->input('nilai');
+        $pajak = $request->input('pajak');
 
         Proyek::create([
             'nama' => $nama,
             'kode' => $kode,
             'nilai' => $nilai,
+            'pajak' => $pajak,
             'kreator' => Session::get('id'),
         ]);
 
@@ -285,11 +287,13 @@ class DashboardController extends Controller
         $nama = $request->input('nama');
         $kode = $request->input('kode');
         $nilai = $request->input('nilai');
+        $pajak = $request->input('pajak');
 
         Proyek::where('id', $id)->update([
             'nama' => $nama,
             'kode' => $kode,
             'nilai' => $nilai,
+            'pajak' => $pajak,
             'kreator' => Session::get('id'),
         ]);
 
@@ -303,10 +307,34 @@ class DashboardController extends Controller
         return redirect('/dashboard/proyek');
     }
 
+    public function filter(Request $request){
+        $kategori = $request->input('kategori');
+        $proyek = $request->input('proyek');
+        
+        $request->session()->put([
+            'kategori' => $kategori,
+            'proyek' => $proyek
+        ]);
+
+        return redirect('/dashboard/bukukas');
+    }
+
     public function bukukas()
     {
+        $data['proyek'] = Proyek::get();
+        $data['kategori'] = Kategori::get();
         $data['bukukas'] = Bukukas::
-            join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+        where(function($query){
+            if(Session::get('kategori')):
+                $query->where('kategori',Session::get('kategori'));
+            endif;
+        })
+        ->where(function($query){
+            if(Session::get('proyek')):
+                $query->where('proyek',Session::get('proyek'));
+            endif;
+        })
+            ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
             ->select('bukukas.*','proyek.nama as namaproyek','kategori.nama as namakategori')
             ->get();

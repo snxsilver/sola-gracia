@@ -42,17 +42,18 @@
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                {{-- <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Role</label>
+                @if(Session::get('role') == "owner")
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Pajak</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <select id="role" class="form-control" required name="role">
-                      <option value="operator">Operator</option>
-                      <option value="admin">Admin</option>
-                      <option value="owner">Owner</option>
+                    <select id="role" class="form-control" name="pajak">
+                      <option value=1 @if($proyek->pajak === 1) selected @endif>Ya</option>
+                      <option value="" @if($proyek->pajak !== 1) selected @endif>Tidak</option>
                     </select>
                     @error('role')<small>*{{$message}}</small>@enderror
                   </div>
-                </div> --}}
+                </div>
+                @endif
                 <div class="ln_solid"></div>
                 <div class="form-group row">
                   <div class="col-md-9 col-sm-9  offset-md-3">
