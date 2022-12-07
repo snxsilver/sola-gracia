@@ -1,4 +1,5 @@
 @extends('dashboard.header');
+@inject('carbon', 'Carbon\Carbon')
 
 @section('halaman_admin')
   <!-- page content -->
@@ -24,7 +25,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="hidden" name="id" value={{$stok->id}}>
-                    <input type="date" class="form-control" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{$stok->tanggal}}>
+                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{$carbon::parse($stok->tanggal)->format('d-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 @extends('dashboard.header');
+@inject('carbon', 'Carbon\Carbon')
 
 @section('halaman_admin')
   <!-- page content -->
@@ -130,7 +131,7 @@
                     <tr>
                       <td width="5%">{{ $no++ }}</td>
                       <td>{{ $b->namaproyek }}</td>
-                      <td>{{ $b->tanggal }}</td>
+                      <td>{{ $carbon::parse($b->tanggal)->format('d M Y') }}</td>
                       <td style="white-space: pre-line" width="20%">{{ $b->keterangan }}</td>
                       <td>{{ $b->namakategori }}</td>
                       <td>{{ $b->no_bukti ?? '-' }}</td>

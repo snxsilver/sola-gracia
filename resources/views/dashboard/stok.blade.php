@@ -1,4 +1,5 @@
 @extends('dashboard.header');
+@inject('carbon', 'Carbon\Carbon')
 
 @section('halaman_admin')
   <!-- page content -->
@@ -34,7 +35,7 @@
                   @foreach ($stok as $s)
                     <tr>
                       <td>{{ $no++ }}</td>
-                      <td>{{ $s->tanggal }}</td>
+                      <td>{{ $carbon::parse($s->tanggal)->format('d M Y') }}</td>
                       <td>{{ $s->barang }}</td>
                       <td>{{ $s->kuantitas }}</td>
                       <td>{{ $s->satuan }}</td>

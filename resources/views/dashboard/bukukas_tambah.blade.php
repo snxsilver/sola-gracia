@@ -34,7 +34,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="date" class="form-control" placeholder="Masukkan Kode Proyek" name="tanggal" value={{now()}}>
+                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Kode Proyek" name="tanggal" value={{date_format(now(), 'd-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -67,28 +67,27 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Masuk</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                      </div>
+                      <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk">
+                    </div>
                     @error('masuk')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Keluar</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                      </div>
+                      <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar">
+                    </div>
                     @error('keluar')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                {{-- <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Role</label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <select id="role" class="form-control" required name="role">
-                      <option value="operator">Operator</option>
-                      <option value="admin">Admin</option>
-                      <option value="owner">Owner</option>
-                    </select>
-                    @error('role')<small>*{{$message}}</small>@enderror
-                  </div>
-                </div> --}}
                 <div class="ln_solid"></div>
                 <div class="form-group row">
                   <div class="col-md-9 col-sm-9  offset-md-3">

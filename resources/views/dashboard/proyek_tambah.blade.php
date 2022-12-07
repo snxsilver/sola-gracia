@@ -37,7 +37,12 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nilai</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                      </div>
+                      <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai">
+                    </div>
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

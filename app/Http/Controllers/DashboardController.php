@@ -374,7 +374,8 @@ class DashboardController extends Controller
             })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
-            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori')
+            ->orderBy('bukukas.tanggal','asc');
 
         $data['bukukas'] = $data_query->get();
         $data['keluar'] = $data_query->sum('bukukas.keluar');

@@ -23,7 +23,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="date" class="form-control" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{now()}}>
+                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{date_format(now(), 'd-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -51,7 +51,12 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Harga</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Rp</span>
+                      </div>
+                      <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga">
+                    </div>
                     @error('harga')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
