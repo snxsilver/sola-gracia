@@ -21,7 +21,7 @@
                       <select name="kategori" class="form-control" id="">
                         <option value="" @if(!Session::get('kategori')) selected @endif>Semua Kategori</option>
                         @foreach ($kategori as $k)
-                          <option value={{ $k->id }} @if(Session::get('kategori')) selected @endif>{{ $k->nama }}</option>
+                          <option value={{ $k->id }} @if(Session::get('kategori') == $k->id) selected @endif>{{ $k->nama }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -32,21 +32,27 @@
                     <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
                     <div class="col-md-9 col-sm-9 ">
                       <select name="proyek" class="form-control" id="">
-                        <option value="" @if(!Session::get('kategori')) selected @endif>Semua Proyek</option>
+                        <option value="" @if(!Session::get('proyek')) selected @endif>Semua Proyek</option>
                         @foreach ($proyek as $p)
-                          <option value={{ $p->id }} @if(Session::get('proyek')) selected @endif>{{ $p->nama }}</option>
+                          <option value={{ $p->id }} @if(Session::get('proyek') == $p->id) selected @endif>{{ $p->nama }}</option>
                         @endforeach
                       </select>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row mt-1">
+              <div class="row mb-2">
+                <div class="ml-2" style="background: #c0c0c0; border-radius: 50px">
+                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 bg-primary trigger_date" style="border-radius: 50px">Tanggal</button>
+                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_month" style="border-radius: 50px">Bulan</button>
+                </div>
+              </div>
+              <div class="row mt-1 target_date">
                 <div class="col-md-6">
                   <div class="form-group row">
-                    <label class="col-form-label col-md-3 col-sm-3 ">Start</label>
+                    <label class="col-form-label col-md-3 col-sm-3 ">Mulai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="date" class="form-control" name="start" value={{ now() }}>
+                      <input type="text" readonly class="form-control b-datepicker" name="mulai" value={{ Session::get('mulai') ?? '-' }}>
                     </div>
                   </div>
                 </div>
@@ -54,14 +60,35 @@
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="date" class="form-control" name="selesai" value={{ now() }}>
+                      <input type="text" readonly class="form-control b-datepicker" name="selesai" value={{ Session::get('selesai') ?? '-' }}>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="row mt-1 target_month d-none">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-form-label col-md-3 col-sm-3 ">Bulan</label>
+                    <div class="col-md-9 col-sm-9 ">
+                      <input type="text" readonly class="form-control b-monthpicker" name="bulan" disabled value={{ Session::get('bulan') ?? '-' }}>
+                    </div>
+                  </div>
+                </div>
+                {{-- <div class="col-md-6 mt-md-0 mt-1">
+                  <div class="form-group row">
+                    <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
+                    <div class="col-md-9 col-sm-9 ">
+                      <input type="date" class="form-control" name="selesai" value={{ now() }}>
+                    </div>
+                  </div>
+                </div> --}}
+              </div>
               <div class="d-flex mt-1 justify-content-between">
                 <div class=""></div>
-                <button type="submit" class="btn btn-success btn-sm text-sm">Filter</button>
+                <div class="">
+                  <input type="submit" name="submit" value="Clear Filter" class="btn btn-secondary btn-sm text-sm">
+                  <input type="submit" name="submit" value="Filter" class="btn btn-success btn-sm text-sm">
+                </div>
               </div>
             </form>
           </div>
@@ -107,8 +134,8 @@
                       <td style="white-space: pre-line" width="20%">{{ $b->keterangan }}</td>
                       <td>{{ $b->namakategori }}</td>
                       <td>{{ $b->no_bukti ?? '-' }}</td>
-                      <td>{{ $b->masuk ?? '-' }}</td>
-                      <td>{{ $b->keluar ?? '-' }}</td>
+                      <td>{{ $b->masuk ? 'Rp '.number_format($b->masuk) : '-' }}</td>
+                      <td>{{ $b->keluar ? 'Rp '.number_format($b->keluar) : '-' }}</td>
                       <td width="10%">
                         @if ($b->ambil_stok == 0)
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/bukukas_edit/' . $b->id) }}"><i
@@ -126,8 +153,8 @@
                   @endforeach
                   <tr style='background: #c0c0c0'>
                     <td colspan="6" class="sum text-center">JUMLAH</td>
-                    <td class="sum">MASUK</td>
-                    <td class="sum">KELUAR</td>
+                    <td class="sum">{{'Rp '.number_format($masuk)}}</td>
+                    <td class="sum">{{'Rp '.number_format($keluar)}}</td>
                     <td></td>
                   </tr>
                 </tbody>

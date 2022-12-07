@@ -19,6 +19,7 @@
   <link href="{{ asset('/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css') }}" rel="stylesheet">
   <!-- bootstrap-daterangepicker -->
   <link href="{{ asset('/vendors/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
+  <link href="{{ asset('/vendors/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" rel="stylesheet">
   <!-- Custom Theme Style -->
   <link href="{{ asset('/build/css/custom.css') }}" rel="stylesheet">
 </head>
@@ -222,6 +223,7 @@
   <!-- bootstrap-daterangepicker -->
   <script src="{{ asset('/vendors/moment/min/moment.min.js') }}"></script>
   <script src="{{ asset('/vendors/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+  <script src="{{ asset('/vendors/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
 
   <!-- Custom Theme Scripts -->
   <script src="{{ asset('/build/js/custom.js') }}"></script>

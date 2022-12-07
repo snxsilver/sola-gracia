@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use App\Models\Proyek;
 use App\Models\Stok;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -108,7 +109,7 @@ class DashboardController extends Controller
         $password = $request->input('password');
         $role = $request->input('role');
 
-        if ($password != ''){
+        if ($password != '') {
             User::where('id', $id)->update([
                 'username' => $username,
                 'password' => Hash::make($password),
@@ -307,37 +308,77 @@ class DashboardController extends Controller
         return redirect('/dashboard/proyek');
     }
 
-    public function filter(Request $request){
-        $kategori = $request->input('kategori');
-        $proyek = $request->input('proyek');
-        
-        $request->session()->put([
-            'kategori' => $kategori,
-            'proyek' => $proyek
-        ]);
+    public function filter(Request $request)
+    {
+        $submit = $request->input('submit');
+        if ($submit == "Filter") {
+            $kategori = $request->input('kategori');
+            $proyek = $request->input('proyek');
+            $mulai = $request->input('mulai') != '-' ? $request->input('mulai') : '';
+            $selesai = $request->input('selesai') != '-' ? $request->input('selesai') : '';
+            $bulan = $request->input('bulan');
 
-        return redirect('/dashboard/bukukas');
+            $request->session()->put([
+                'kategori' => $kategori,
+                'proyek' => $proyek,
+                'mulai' => $mulai,
+                'selesai' => $selesai,
+                'bulan' => $bulan,
+            ]);
+
+            return redirect('/dashboard/bukukas');
+        } else {
+            $request->session()->forget(['proyek', 'kategori', 'bulan', 'mulai', 'selesai']);
+
+            return redirect('/dashboard/bukukas');
+        }
     }
 
     public function bukukas()
     {
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
-        $data['bukukas'] = Bukukas::
-        where(function($query){
-            if(Session::get('kategori')):
-                $query->where('kategori',Session::get('kategori'));
+        $data_query = Bukukas::where(function ($query) {
+            if (Session::get('kategori')) :
+                $query->where('kategori', Session::get('kategori'));
             endif;
         })
-        ->where(function($query){
-            if(Session::get('proyek')):
-                $query->where('proyek',Session::get('proyek'));
-            endif;
-        })
+            ->where(function ($query) {
+                if (Session::get('proyek')) :
+                    $query->where('proyek', Session::get('proyek'));
+                endif;
+            })
+            ->where(function ($query) {
+                if (Session::get('bulan')) :
+                    $sesi = Session::get('bulan');
+                    $start = Carbon::parse($sesi)->startOfMonth();
+                    $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('mulai') || Session::get('selesai')) :
+                    $mulai = Session::get('mulai');
+                    $selesai = Session::get('selesai');
+                    if ($mulai && $selesai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '>=', $start)
+                            ->where('tanggal', '<=', $end);
+                    elseif ($mulai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $query->where('tanggal', '>=', $start);
+                    elseif ($selesai) :
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '<=', $end);
+                    endif;
+                endif;
+            })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
-            ->select('bukukas.*','proyek.nama as namaproyek','kategori.nama as namakategori')
-            ->get();
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+
+        $data['bukukas'] = $data_query->get();
+        $data['keluar'] = $data_query->sum('bukukas.keluar');
+        $data['masuk'] = $data_query->sum('bukukas.masuk');
         return view('dashboard.bukukas', $data);
     }
 
@@ -345,7 +386,7 @@ class DashboardController extends Controller
     {
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
-        return view('dashboard.bukukas_tambah',$data);
+        return view('dashboard.bukukas_tambah', $data);
     }
 
     public function bukukas_aksi(Request $request)
@@ -443,7 +484,7 @@ class DashboardController extends Controller
         $masuk = $request->input('masuk');
         $keluar = $request->input('keluar');
 
-        Bukukas::where('id',$id)->update([
+        Bukukas::where('id', $id)->update([
             'proyek' => $proyek,
             'tanggal' => $tanggal,
             'keterangan' => $keterangan,
@@ -464,14 +505,16 @@ class DashboardController extends Controller
         return redirect('/dashboard/bukukas');
     }
 
-    public function ambil_stok(){
+    public function ambil_stok()
+    {
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
         $data['stok'] = Stok::get();
-        return view('dashboard.ambil_stok',$data);
+        return view('dashboard.ambil_stok', $data);
     }
 
-    public function ambil_stok_aksi(Request $request){
+    public function ambil_stok_aksi(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -500,15 +543,15 @@ class DashboardController extends Controller
         $idstok = $request->input('stok');
         $kuantitas = $request->input('kuantitas');
 
-        $stok = Stok::where('id',$idstok)->first();
+        $stok = Stok::where('id', $idstok)->first();
 
-        if ($kuantitas > $stok->kuantitas){
+        if ($kuantitas > $stok->kuantitas) {
             return Redirect::back()->withErrors([
                 'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
             ]);
         }
 
-        $keterangan = $stok->barang.' '.$kuantitas.' '.$stok->satuan;
+        $keterangan = $stok->barang . ' ' . $kuantitas . ' ' . $stok->satuan;
         $keluar = $kuantitas / $stok->kuantitas * $stok->harga;
 
         $bukukas = Bukukas::create([
@@ -523,7 +566,7 @@ class DashboardController extends Controller
 
         $idbukukas = $bukukas->id;
 
-        Stok::where('id',$idstok)->update([
+        Stok::where('id', $idstok)->update([
             'kuantitas' => $stok->kuantitas - $kuantitas,
             'harga' => $stok->harga - $keluar,
         ]);
@@ -540,7 +583,8 @@ class DashboardController extends Controller
         return redirect('/dashboard/bukukas');
     }
 
-    public function ambil_stok_update(Request $request){
+    public function ambil_stok_update(Request $request)
+    {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -570,19 +614,19 @@ class DashboardController extends Controller
         $idstok = $request->input('stok');
         $kuantitas = $request->input('kuantitas');
 
-        $stok = Stok::where('id',$idstok)->first();
-        $ambil = Ambil::where('id',$id)->first();
+        $stok = Stok::where('id', $idstok)->first();
+        $ambil = Ambil::where('id', $id)->first();
 
-        if ($kuantitas > $stok->kuantitas + $ambil->kuantitas){
+        if ($kuantitas > $stok->kuantitas + $ambil->kuantitas) {
             return Redirect::back()->withErrors([
                 'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
             ]);
         }
 
-        $keterangan = $stok->barang.' '.$kuantitas.' '.$stok->satuan;
+        $keterangan = $stok->barang . ' ' . $kuantitas . ' ' . $stok->satuan;
         $keluar = $kuantitas / $ambil->kuantitas * $ambil->harga;
 
-        Bukukas::where('id',$ambil->bukukas)->update([
+        Bukukas::where('id', $ambil->bukukas)->update([
             'proyek' => $proyek,
             'tanggal' => $tanggal,
             'keterangan' => $keterangan,
@@ -592,12 +636,12 @@ class DashboardController extends Controller
             'ambil_stok' => 1,
         ]);
 
-        Stok::where('id',$idstok)->update([
+        Stok::where('id', $idstok)->update([
             'kuantitas' => $stok->kuantitas + $ambil->kuantitas - $kuantitas,
             'harga' => $stok->harga + $ambil->harga - $keluar,
         ]);
 
-        Ambil::where('id',$id)->update([
+        Ambil::where('id', $id)->update([
             'tanggal' => $tanggal,
             'stok' => $idstok,
             'kuantitas' => $kuantitas,
@@ -609,26 +653,28 @@ class DashboardController extends Controller
         return redirect('/dashboard/bukukas');
     }
 
-    public function ambil_stok_edit($id){
-        $data['ambil'] = Ambil::where('bukukas',$id)->first();
+    public function ambil_stok_edit($id)
+    {
+        $data['ambil'] = Ambil::where('bukukas', $id)->first();
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
-        $data['stok'] = Stok::where('id',$data['ambil']->stok)->first();
-        return view('dashboard.ambil_stok_edit',$data);
+        $data['stok'] = Stok::where('id', $data['ambil']->stok)->first();
+        return view('dashboard.ambil_stok_edit', $data);
     }
 
-    public function ambil_stok_hapus($id){
-        $ambil = Ambil::where('bukukas',$id)->first();
-        $stok = Stok::where('id',$ambil->stok)->first();
+    public function ambil_stok_hapus($id)
+    {
+        $ambil = Ambil::where('bukukas', $id)->first();
+        $stok = Stok::where('id', $ambil->stok)->first();
 
-        Stok::where('id',$ambil->stok)->update([
+        Stok::where('id', $ambil->stok)->update([
             'kuantitas' => $stok->kuantitas + $ambil->kuantitas,
             'harga' => $stok->harga + $ambil->harga,
         ]);
 
-        Ambil::where('bukukas',$id)->delete();
+        Ambil::where('bukukas', $id)->delete();
 
-        Bukukas::where('id',$id)->delete();
+        Bukukas::where('id', $id)->delete();
 
         return redirect('/dashboard/bukukas');
     }
@@ -713,7 +759,7 @@ class DashboardController extends Controller
 
         $no = 123;
 
-        Invoice::where('id',$id)->update([
+        Invoice::where('id', $id)->update([
             'tanggal' => $tanggal,
             'no_invoice' => $no,
             'total' => $total,
@@ -825,7 +871,7 @@ class DashboardController extends Controller
         $harga = $request->input('harga');
         $bukti = $request->input('bukti');
 
-        Stok::where('id',$id)->update([
+        Stok::where('id', $id)->update([
             'tanggal' => $tanggal,
             'barang' => $barang,
             'kuantitas' => $kuantitas,

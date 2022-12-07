@@ -38,7 +38,7 @@
                       <td>{{ $s->barang }}</td>
                       <td>{{ $s->kuantitas }}</td>
                       <td>{{ $s->satuan }}</td>
-                      <td>{{ $s->harga }}</td>
+                      <td>{{ 'Rp '.number_format($s->harga) }}</td>
                       <td>{{ $s->no_bukti }}</td>
                       <td>
                         <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/stok_edit/' . $s->id) }}"><i
