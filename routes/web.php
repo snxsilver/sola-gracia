@@ -74,4 +74,6 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard/stok_edit/{id}', [DashboardController::class, 'stok_edit']);
   Route::post('/dashboard/stok_update', [DashboardController::class, 'stok_update']);
   Route::get('/dashboard/stok_hapus/{id}', [DashboardController::class, 'stok_hapus']);
+
+  Route::get('/dashboard/export', [DashboardController::class, 'export']);
 });

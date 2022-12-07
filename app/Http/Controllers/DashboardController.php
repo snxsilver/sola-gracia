@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class DashboardController extends Controller
 {
     public function dashboard()
@@ -334,6 +339,153 @@ class DashboardController extends Controller
         }
     }
 
+    public function export()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $data_query = Bukukas::where(function ($query) {
+            if (Session::get('kategori')) :
+                $query->where('kategori', Session::get('kategori'));
+            endif;
+        })
+            ->where(function ($query) {
+                if (Session::get('proyek')) :
+                    $query->where('proyek', Session::get('proyek'));
+                endif;
+            })
+            ->where(function ($query) {
+                if (Session::get('bulan')) :
+                    $sesi = Session::get('bulan');
+                    $start = Carbon::parse($sesi)->startOfMonth();
+                    $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('mulai') || Session::get('selesai')) :
+                    $mulai = Session::get('mulai');
+                    $selesai = Session::get('selesai');
+                    if ($mulai && $selesai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '>=', $start)
+                            ->where('tanggal', '<=', $end);
+                    elseif ($mulai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $query->where('tanggal', '>=', $start);
+                    elseif ($selesai) :
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '<=', $end);
+                    endif;
+                endif;
+            })
+            ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+            ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori')
+            ->orderBy('bukukas.tanggal', 'asc');
+
+        $bukukas = $data_query->get();
+        $keluar = $data_query->sum('bukukas.keluar');
+        $masuk = $data_query->sum('bukukas.masuk');
+
+        // return Excel::download(new UsersExport, 'users.xlsx');
+        $sheet->setCellValue('A1', 'Laporan Keuangan Buku Kas CV. Sola Gracia');
+        $sheet->setCellValue('A3', 'No');
+        $sheet->setCellValue('B3', 'Proyek');
+        $sheet->setCellValue('C3', 'Tanggal');
+        $sheet->setCellValue('D3', 'Keterangan');
+        $sheet->setCellValue('E3', 'Kategori');
+        $sheet->setCellValue('F3', 'No Bukti');
+        $sheet->setCellValue('G3', 'Masuk');
+        $sheet->setCellValue('H3', 'Keluar');
+
+        $no = 4;
+        foreach ($bukukas as $b) {
+            $sheet->setCellValue('A' . $no, $no - 3);
+            $sheet->setCellValue('B' . $no, $b->namaproyek);
+            $sheet->setCellValue('C' . $no, $b->tanggal);
+            $sheet->setCellValue('D' . $no, $b->keterangan);
+            $sheet->setCellValue('E' . $no, $b->namakategori);
+            $sheet->setCellValue('F' . $no, $b->no_bukti ?? '-');
+            $sheet->setCellValue('G' . $no, $b->masuk ?? '-');
+            $sheet->setCellValue('H' . $no, $b->keluar ?? '-');
+            $no++;
+        }
+
+        $sheet->setCellValue('A' . $no, 'Jumlah');
+        $sheet->setCellValue('G' . $no, $masuk);
+        $sheet->setCellValue('H' . $no, $keluar);
+
+        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A' . $no . ':F' . $no);
+
+        $sheet->getStyle('G4:H' . $no)->getNumberFormat()->setFormatCode('"Rp "#,##0');
+
+        $sheet->getColumnDimension('A')->setWidth(25, 'px');
+        $sheet->getColumnDimension('B')->setWidth(100, 'px');
+        $sheet->getColumnDimension('C')->setWidth(100, 'px');
+        $sheet->getColumnDimension('D')->setWidth(180, 'px');
+        $sheet->getColumnDimension('E')->setWidth(90, 'px');
+        $sheet->getColumnDimension('F')->setWidth(80, 'px');
+        $sheet->getColumnDimension('G')->setWidth(120, 'px');
+        $sheet->getColumnDimension('H')->setWidth(120, 'px');
+
+        $centerBold = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => 'center',
+            ]
+        ];
+
+        $rightBold = [
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => 'right',
+            ]
+        ];
+
+        $right = [
+            'alignment' => [
+                'horizontal' => 'right',
+            ]
+        ];
+
+        $left = [
+            'alignment' => [
+                'horizontal' => 'left',
+            ]
+        ];
+
+        $bold = [
+            'font' => [
+                'bold' => true,
+            ],
+        ];
+
+        $sheet->getStyle('A1')->applyFromArray($centerBold);
+        $sheet->getStyle('A3:F3')->applyFromArray($bold);
+        $sheet->getStyle('G3:H3')->applyFromArray($rightBold);
+        $sheet->getStyle('F4:F'.$no-1)->applyFromArray($left);
+        $sheet->getStyle('G4:H'.$no-1)->applyFromArray($right);
+        // $sheet->getStyle('A4:B'.($no-1))->applyFromArray($center);
+        // $sheet->getStyle('D4:E'.($no-1))->applyFromArray($center);
+        $sheet->getStyle('A' . $no . ':F' . $no)->applyFromArray($rightBold);
+        $sheet->getStyle('G' . $no . ':H' . $no)->applyFromArray($rightBold);
+
+        $sheet->getStyle('A3:H3')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $sheet->getStyle('A' . $no . ':H' . $no)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+
+        ob_end_clean();
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Laporan Keuangan.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
     public function bukukas()
     {
         $data['proyek'] = Proyek::get();
@@ -375,7 +527,7 @@ class DashboardController extends Controller
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori')
-            ->orderBy('bukukas.tanggal','asc');
+            ->orderBy('bukukas.tanggal', 'asc');
 
         $data['bukukas'] = $data_query->get();
         $data['keluar'] = $data_query->sum('bukukas.keluar');
