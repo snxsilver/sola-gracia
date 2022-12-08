@@ -36,7 +36,7 @@
                       <p>Tgl Jatuh Tempo : 11-01-2019</p>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row mt-2">
                     <div class="col-12">
                       <table class="table table-sm">
                         <thead>
@@ -135,11 +135,11 @@
                 <div class="d-flex justify-content-center">
                   <h3>KWITANSI</h3>
                 </div>
-                <div class="px-5">
+                <div class="px-5 mb-1">
                   <div class="d-flex justify-content-left">
                     <p>No: 02/I/SG/2019</p>
                   </div>
-                  <div class="row">
+                  <div class="row my-1">
                     <div class="col-3">
                       <p>Telah Terima dari</p>
                     </div>
@@ -147,7 +147,7 @@
                       <p>PT Waskita Karya (Persero), Tbk.</p>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row my-1">
                     <div class="col-3">
                       <p>Uang Sejumlah</p>
                     </div>
@@ -157,7 +157,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row my-1">
                     <div class="col-3">
                       <p>Untuk Pembayaran</p>
                     </div>
