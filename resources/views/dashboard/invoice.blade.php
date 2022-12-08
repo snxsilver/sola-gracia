@@ -40,6 +40,8 @@
                       <td style="white-space: pre-line" width="20%">{{ $i->keterangan }}</td>
                       <td>{{ $i->nama_perusahaan }}</td>
                       <td>
+                        <a class="btn btn-sm btn-success" href="{{ url('/dashboard/invoice_cetak/' . $i->id) }}"><i
+                            class="fa fa-eye"></i></a>
                         <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/invoice_edit/' . $i->id) }}"><i
                             class="fa fa-pencil"></i></a>
                         <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/invoice_hapus/' . $i->id) }}"><i

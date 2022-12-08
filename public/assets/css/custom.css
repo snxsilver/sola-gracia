@@ -4990,3 +4990,45 @@ form .error {
   color: rgb(231, 76, 60);
   font-style: italic;
 }
+
+.invoice-cetak {
+  color: black;
+}
+.invoice-cetak h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+.invoice-cetak h4 {
+  margin: 0;
+  font-size: 20px;
+}
+.invoice-cetak p {
+  margin: 0;
+  font-size: 16px;
+}
+.invoice-cetak .row {
+  margin: 0 -15px;
+}
+.invoice-cetak .kotak-terbilang{
+  border: 2px solid black;
+  background: gray;
+  padding: 1px 5px;
+  font-style: italic;
+}
+.invoice-cetak .signature-box {
+  margin-top: 72px;
+}
+.invoice-cetak .signature {
+  margin-bottom: 72px;
+}
+
+@media print{
+  @page {
+    size: A4; /* DIN A4 standard, Europe */
+    margin:0;
+  }
+  .no-print {
+    display: none;
+  }
+}

@@ -967,6 +967,10 @@ class DashboardController extends Controller
         return redirect('/dashboard/invoice');
     }
 
+    public function invoice_cetak($id){
+        return view('/dashboard/invoice_cetak');
+    }
+
     public function stok()
     {
         $data['stok'] = Stok::orderBy('tanggal', 'asc')->get();

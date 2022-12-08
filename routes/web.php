@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth'], function () {
   Route::post('/dashboard/invoice_update', [DashboardController::class, 'invoice_update']);
   Route::get('/dashboard/invoice_hapus/{id}', [DashboardController::class, 'invoice_hapus']);
 
+  Route::get('/dashboard/invoice_cetak/{id}', [DashboardController::class, 'invoice_cetak']);
+
   Route::get('/dashboard/stok', [DashboardController::class, 'stok']);
   Route::get('/dashboard/stok_tambah', [DashboardController::class, 'stok_tambah']);
   Route::post('/dashboard/stok_aksi', [DashboardController::class, 'stok_aksi']);

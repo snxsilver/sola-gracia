@@ -97,8 +97,8 @@
       </div>
 
       <!-- top navigation -->
-      <div class="top_nav">
-        <div class="nav_menu">
+      <div class="top_nav no-print">
+        <div class="nav_menu no-print">
           <div class="nav toggle py-3">
             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
           </div>
@@ -198,7 +198,7 @@
       @yield('halaman_admin')
 
       <!-- footer content -->
-      <footer>
+      <footer class="no-print">
         <div class="pull-right">
           Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
         </div>
