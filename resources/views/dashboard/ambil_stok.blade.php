@@ -36,8 +36,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="date" class="form-control" placeholder="Masukkan Kode Proyek" name="tanggal"
-                      value={{ now() }}>
+                    <input type="text" readonly class="form-control" placeholder="Masukkan Kode Proyek" name="tanggal"
+                      value={{date_format(now(), 'd-M-Y')}}>
                     @error('tanggal')
                       <small>*{{ $message }}</small>
                     @enderror

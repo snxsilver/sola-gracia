@@ -4982,3 +4982,11 @@ table .sum {
     height: 220px;
     font-size: x-small; 
 }
+.form-group small {
+  color: rgb(231, 76, 60);
+  font-style: italic;
+}
+form .error {
+  color: rgb(231, 76, 60);
+  font-style: italic;
+}

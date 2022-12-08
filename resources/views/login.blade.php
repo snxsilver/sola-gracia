@@ -39,7 +39,7 @@
               <small class="error">*{{ $message }}</small>
             @enderror
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Username" name="username" />
+              <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="off" />
             </div>
             <div class="form-group">
               <input type="password" class="form-control" placeholder="Password" name="password" />

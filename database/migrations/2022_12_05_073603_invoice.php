@@ -15,11 +15,19 @@ return new class extends Migration
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal');
             $table->string('no_invoice');
+            $table->string('faktur_pajak')->nullable();
+            $table->date('tanggal');
+            $table->date('tanggal_jatuh_tempo')->nullable();
+            $table->string('nama_perusahaan');
+            $table->text('alamat')->nullable();
+            $table->string('telp')->nullable();
+            $table->string('npwp')->nullable();
+            $table->double('dp')->nullable();
+            $table->double('subtotal')->nullable();
             $table->double('total');
-            $table->text('keterangan')->nullable();
-            $table->string('perusahaan')->nullable();
+            $table->date('tanggal_posted')->nullable();
+            $table->text('keterangan');
             $table->integer('kreator');
             $table->timestamps();
         });

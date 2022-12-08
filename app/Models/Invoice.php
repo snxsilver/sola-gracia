@@ -12,11 +12,19 @@ class Invoice extends Model
     protected $table = "invoice";
 
     protected $fillable = [
-        'tanggal',
         'no_invoice',
+        'faktur_pajak',
+        'tanggal',
+        'tanggal_jatuh_tempo',
+        'nama_perusahaan',
+        'alamat',
+        'telp',
+        'npwp',
+        'dp',
+        'subtotal',
         'total',
+        'tanggal_posted',
         'keterangan',
-        'perusahaan',
         'kreator',
     ];
 }

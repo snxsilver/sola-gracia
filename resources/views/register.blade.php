@@ -19,7 +19,7 @@
   <!-- bootstrap-daterangepicker -->
   <link href="{{ asset('/vendors/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
   <!-- Custom Theme Style -->
-  <link href="{{ asset('/build/css/custom.css') }}" rel="stylesheet">
+  <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet">
 </head>
 
 <body class="login">
@@ -39,10 +39,10 @@
               <small class="error">*{{ $message }}</small>
             @enderror
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Username" name="username" />
+              <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="off" />
             </div>
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Role" name="role" />
+              <input type="text" class="form-control" placeholder="Role" name="role" autocomplete="off" />
             </div>
             <div class="form-group">
               <input type="password" class="form-control" placeholder="Password" name="password" />

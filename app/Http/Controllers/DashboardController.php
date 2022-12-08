@@ -571,7 +571,7 @@ class DashboardController extends Controller
         }
 
         $proyek = $request->input('proyek');
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $keterangan = $request->input('keterangan');
         $kategori = $request->input('kategori');
         $bukti = $request->input('bukti');
@@ -630,7 +630,7 @@ class DashboardController extends Controller
 
         $id = $request->input('id');
         $proyek = $request->input('proyek');
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $keterangan = $request->input('keterangan');
         $kategori = $request->input('kategori');
         $bukti = $request->input('bukti');
@@ -691,7 +691,7 @@ class DashboardController extends Controller
         }
 
         $proyek = $request->input('proyek');
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $kategori = $request->input('kategori');
         $idstok = $request->input('stok');
         $kuantitas = $request->input('kuantitas');
@@ -762,7 +762,7 @@ class DashboardController extends Controller
 
         $id = $request->input('id');
         $proyek = $request->input('proyek');
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $kategori = $request->input('kategori');
         $idstok = $request->input('stok');
         $kuantitas = $request->input('kuantitas');
@@ -850,10 +850,14 @@ class DashboardController extends Controller
         ];
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
+            'nama_perusahaan' => 'Nama Perusahaan',
+            'keterangan' => 'Keterangan',
             'total' => 'Total Invoice',
         ];
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
+            'nama_perusahaan' => 'required',
+            'keterangan' => 'required',
             'total' => 'required',
         ], $message, $attribute);
 
@@ -861,19 +865,33 @@ class DashboardController extends Controller
             return Redirect::back()->withErrors($validator);
         }
 
-        $tanggal = $request->input('tanggal');
+        $faktur_pajak = $request->input('faktur_pajak');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
+        $tanggal_jatuh_tempo = date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo')));
+        $nama_perusahaan = $request->input('nama_perusahaan');
+        $alamat = $request->input('alamat');
+        $telp = $request->input('telp');
+        $npwp = $request->input('npwp');
+        $dp = $request->input('dp');
+        $subtotal = $request->input('subtotal');
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
-        $perusahaan = $request->input('perusahaan');
 
         $no = 123;
 
         Invoice::create([
-            'tanggal' => $tanggal,
             'no_invoice' => $no,
+            'faktur_pajak' => $faktur_pajak,
+            'tanggal' => $tanggal,
+            'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+            'nama_perusahaan' => $nama_perusahaan,
+            'alamat' => $alamat,
+            'telp' => $telp,
+            'npwp' => $npwp,
+            'dp' => $dp,
+            'subtotal' => $subtotal,
             'total' => $total,
             'keterangan' => $keterangan,
-            'perusahaan' => $perusahaan,
             'kreator' => Session::get('id'),
         ]);
 
@@ -893,10 +911,14 @@ class DashboardController extends Controller
         ];
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
+            'nama_perusahaan' => 'Nama Perusahaan',
+            'keterangan' => 'Keterangan',
             'total' => 'Total Invoice',
         ];
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
+            'nama_perusahaan' => 'required',
+            'keterangan' => 'required',
             'total' => 'required',
         ], $message, $attribute);
 
@@ -905,19 +927,33 @@ class DashboardController extends Controller
         }
 
         $id = $request->input('id');
-        $tanggal = $request->input('tanggal');
+        $faktur_pajak = $request->input('faktur_pajak');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
+        $tanggal_jatuh_tempo = date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo')));
+        $nama_perusahaan = $request->input('nama_perusahaan');
+        $alamat = $request->input('alamat');
+        $telp = $request->input('telp');
+        $npwp = $request->input('npwp');
+        $dp = $request->input('dp');
+        $subtotal = $request->input('subtotal');
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
-        $perusahaan = $request->input('perusahaan');
 
         $no = 123;
 
         Invoice::where('id', $id)->update([
-            'tanggal' => $tanggal,
             'no_invoice' => $no,
+            'faktur_pajak' => $faktur_pajak,
+            'tanggal' => $tanggal,
+            'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+            'nama_perusahaan' => $nama_perusahaan,
+            'alamat' => $alamat,
+            'telp' => $telp,
+            'npwp' => $npwp,
+            'dp' => $dp,
+            'subtotal' => $subtotal,
             'total' => $total,
             'keterangan' => $keterangan,
-            'perusahaan' => $perusahaan,
             'kreator' => Session::get('id'),
         ]);
 
@@ -933,7 +969,7 @@ class DashboardController extends Controller
 
     public function stok()
     {
-        $data['stok'] = Stok::get();
+        $data['stok'] = Stok::orderBy('tanggal', 'asc')->get();
         return view('dashboard.stok', $data);
     }
 
@@ -966,7 +1002,7 @@ class DashboardController extends Controller
             return Redirect::back()->withErrors($validator);
         }
 
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $barang = $request->input('barang');
         $kuantitas = $request->input('kuantitas');
         $satuan = $request->input('satuan');
@@ -1017,7 +1053,7 @@ class DashboardController extends Controller
         }
 
         $id = $request->input('id');
-        $tanggal = $request->input('tanggal');
+        $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $barang = $request->input('barang');
         $kuantitas = $request->input('kuantitas');
         $satuan = $request->input('satuan');

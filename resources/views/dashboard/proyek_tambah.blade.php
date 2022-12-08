@@ -52,7 +52,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" name="pajak">
                       <option value=1>Ya</option>
-                      <option value=null>Tidak</option>
+                      <option value=''>Tidak</option>
                     </select>
                     @error('role')<small>*{{$message}}</small>@enderror
                   </div>

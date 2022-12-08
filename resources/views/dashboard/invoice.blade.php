@@ -1,4 +1,5 @@
 @extends('dashboard.header');
+@inject('carbon', 'Carbon\Carbon')
 
 @section('halaman_admin')
   <!-- page content -->
@@ -33,11 +34,11 @@
                   @foreach ($invoice as $i)
                     <tr>
                       <td>{{ $no++ }}</td>
-                      <td>{{ $i->tanggal }}</td>
+                      <td>{{ $carbon::parse($i->tanggal)->format('d M Y') }}</td>
                       <td>{{ $i->no_invoice }}</td>
-                      <td>{{ $i->total }}</td>
-                      <td>{{ $i->keterangan }}</td>
-                      <td>{{ $i->perusahaan }}</td>
+                      <td>{{ 'Rp '.number_format($i->total) }}</td>
+                      <td style="white-space: pre-line" width="20%">{{ $i->keterangan }}</td>
+                      <td>{{ $i->nama_perusahaan }}</td>
                       <td>
                         <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/invoice_edit/' . $i->id) }}"><i
                             class="fa fa-pencil"></i></a>
