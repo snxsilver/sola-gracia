@@ -21,7 +21,7 @@
   <link href="{{ asset('/vendors/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
   <link href="{{ asset('/vendors/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" rel="stylesheet">
   <!-- Custom Theme Style -->
-  <link href="{{ asset('/build/css/custom.css') }}" rel="stylesheet">
+  <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet">
 </head>
 
 <body class="nav-md">
@@ -30,7 +30,7 @@
       <div class="col-md-3 left_col">
         <div class="left_col scroll-view">
           <div class="navbar nav_title mb-3" style="border: 0;">
-            <a href="index.html" class="site_title"><i class="fa fa-wrench"></i><span>CV Sola Gracia</span></a>
+            <a href="index.html" class="site_title"><i class="fa fa-wrench"></i><span class="ml-2">CV Sola Gracia</span></a>
           </div>
 
           <div class="clearfix"></div>
@@ -226,7 +226,7 @@
   <script src="{{ asset('/vendors/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
 
   <!-- Custom Theme Scripts -->
-  <script src="{{ asset('/build/js/custom.js') }}"></script>
+  <script src="{{ asset('/assets/js/custom.js') }}"></script>
 
 </body>
 
