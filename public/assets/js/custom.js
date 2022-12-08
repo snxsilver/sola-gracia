@@ -176,6 +176,8 @@ $(document).ready(function () {
     })
 })
 // /Date and Month Filter
+
+// Datepicker
 $(document).ready(function () {
     $('.b-datepicker').datepicker({
         autoclose: true,
@@ -194,9 +196,21 @@ $(document).ready(function () {
         minViewMode: "months"
     })
 })
-// Datepicker
-
 // /Datepicker
+
+$(document).ready(function(){
+    $('.print-invoice').bind('click', function(){
+        $('.target-invoice').removeClass('no-print')
+        $('.target-kwitansi').addClass('no-print')
+        window.print()
+    })
+
+    $('.print-kwitansi').bind('click', function(){
+        $('.target-kwitansi').removeClass('no-print')
+        $('.target-invoice').addClass('no-print')
+        window.print()
+    })
+})
 
 // /User Added
 
