@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 use App\Exports\UsersExport;
+use App\Helpers\Helper;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -662,7 +663,7 @@ class DashboardController extends Controller
     {
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
-        $data['stok'] = Stok::get();
+        $data['stok'] = Stok::where('kuantitas','>',0)->get();
         return view('dashboard.ambil_stok', $data);
     }
 
@@ -867,7 +868,7 @@ class DashboardController extends Controller
 
         $faktur_pajak = $request->input('faktur_pajak');
         $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
-        $tanggal_jatuh_tempo = date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo')));
+        $tanggal_jatuh_tempo = $request->input('tanggal_jatuh_tempo') ? date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo'))) : null;
         $nama_perusahaan = $request->input('nama_perusahaan');
         $alamat = $request->input('alamat');
         $telp = $request->input('telp');
@@ -877,10 +878,20 @@ class DashboardController extends Controller
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
 
-        $no = 123;
+        $start = Carbon::parse($tanggal)->startOfMonth();
+        $end = Carbon::parse($tanggal)->endOfMonth();
+
+        $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count();
+        if (strlen($no) == 1){
+            $no = "0".$no;
+        }
+        $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
+        $year = Carbon::parse($tanggal)->year;
+
+        $no_invoice = $no."/".$month."/SG/".$year;
 
         Invoice::create([
-            'no_invoice' => $no,
+            'no_invoice' => $no_invoice,
             'faktur_pajak' => $faktur_pajak,
             'tanggal' => $tanggal,
             'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
@@ -929,7 +940,7 @@ class DashboardController extends Controller
         $id = $request->input('id');
         $faktur_pajak = $request->input('faktur_pajak');
         $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
-        $tanggal_jatuh_tempo = date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo')));
+        $tanggal_jatuh_tempo = $request->input('tanggal_jatuh_tempo') ? date('Y-m-d', strtotime($request->input('tanggal_jatuh_tempo'))) : null;
         $nama_perusahaan = $request->input('nama_perusahaan');
         $alamat = $request->input('alamat');
         $telp = $request->input('telp');
@@ -939,10 +950,7 @@ class DashboardController extends Controller
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
 
-        $no = 123;
-
         Invoice::where('id', $id)->update([
-            'no_invoice' => $no,
             'faktur_pajak' => $faktur_pajak,
             'tanggal' => $tanggal,
             'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
@@ -968,12 +976,13 @@ class DashboardController extends Controller
     }
 
     public function invoice_cetak($id){
-        return view('/dashboard/invoice_cetak');
+        $data['invoice'] = Invoice::where('id', $id)->first();
+        return view('/dashboard/invoice_cetak',$data);
     }
 
     public function stok()
     {
-        $data['stok'] = Stok::orderBy('tanggal', 'asc')->get();
+        $data['stok'] = Stok::where('kuantitas','>',0)->orderBy('tanggal', 'asc')->get();
         return view('dashboard.stok', $data);
     }
 

@@ -1,5 +1,6 @@
 @extends('dashboard.header');
-@inject('carbon', 'Carbon\Carbon')
+@inject('carbon', 'Carbon\Carbon');
+@inject('terbilang', 'App\Helpers\Helper');
 
 @section('halaman_admin')
   <!-- page content -->
@@ -24,16 +25,22 @@
                 <div class="px-5">
                   <div class="row">
                     <div class="col-8">
+                      @if(!$invoice->alamat)
+                      <p>Kepada : {{$invoice->nama_perusahaan}}</p>
+                      @else
                       <p>Kepada</p>
-                      <p>PT Waskita Karya (Persero), Tbk.</p>
-                      <p>Jl. MT. Haryono kav. no. 10, RT 011 RW 011, Cipinang Cempedak, Jatinegara, Jakarta Timur - DKI Jakarta 13340</p>
-                      <p>NPWP : 01.001.614.5-093.000</p>
-                      <p>NPWP : 01.001.614.5-093.000</p>
+                      <p>{{$invoice->nama_perusahaan}}</p>
+                      <p>{{$invoice->alamat}}</p>
+                      @endif
+                      <p>{{$invoice->telp ? "Telp : ".$invoice->telp : ''}}</p>
+                      <p>{{$invoice->npwp ? "NPWP : ".$invoice->npwp : ''}}</p>
                     </div>
                     <div class="col-4">
-                      <p>No Invoice : 02/I/SG/2019</p>
-                      <p>No Faktur Pajak : 030.***-19.********</p>
-                      <p>Tgl Jatuh Tempo : 11-01-2019</p>
+                      <p>No Invoice : {{$invoice->no_invoice}}</p>
+                      <p>{{$invoice->faktur_pajak ? "No Faktur Pajak : ".$invoice->faktur_pajak : ''}}</p>
+                      @php($tanggal = $carbon->parse($invoice->tanggal_jatuh_tempo)->locale('id'))
+                      @php($tanggal->settings(['formatFunction' => 'translatedFormat']))
+                      <p>{{$invoice->tanggal_jatuh_tempo ? "Tgl Jatuh Tempo : ".$tanggal->format('j F Y') : ''}}</p>
                     </div>
                   </div>
                   <div class="row mt-2">
@@ -49,8 +56,8 @@
                         <tbody>
                           <tr>
                             <td>1</td>
-                            <td>Retensi 5% Pek. Acrylic Penutup FCU Sesuai Surat Perjanjian No. 136/SPPP/WK/D.I/AY/2018 Tgl</td>
-                            <td style="text-align: right">16,239,988</td>
+                            <td style="white-space: pre-line">{{$invoice->keterangan}}</td>
+                            <td style="text-align: right">{{$invoice->subtotal}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -61,32 +68,37 @@
                     <div class="col-4">
                       <div class="d-flex justify-content-between align-items-center">
                         <p>DP :</p>
-                        <p>0</p>
+                        <p>{{$invoice->dp ?? 0}}</p>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p>Dasar Pengenaan Pajak :</p>
-                        <p>16,239,988</p>
+                        <p>{{$invoice->subtotal}}</p>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p>PPN :</p>
-                        <p>1,623,999</p>
+                        <p>{{'Rp '.number_format($invoice->total - $invoice->subtotal)}}</p>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p>Total :</p>
-                        <p>17,863,987</p>
+                        <p>{{'Rp '.number_format($invoice->total)}}</p>
                       </div>
                     </div>
                   </div>
                   <div class="row signature-box-2">
                     <div class="col-8 d-flex align-items-center">
-                      <p>#Tujuhbelas Juta Delapan Ratus Enam Puluh Tiga Ribu Sembilan Ratus Delapan Puluh Tujuh</p>
+                      <div class="d-flex">
+                        <p class="mr-2">Terbilang</p>
+                        <p>#{{ucwords($terbilang->terbilang($invoice->total))}} Rupiah.#</p>
+                      </div>
                     </div>
                     <div class="col-4">
                       <div class="d-flex justify-content-between align-items-center">
                         <div class=""></div>
                         <div class="align-items-center">
                           <div class="align-items-center signature">
-                            <p>Semarang, 04 January 2019</p>
+                            @php($tanggal = $carbon->parse($invoice->tanggal)->locale('id'))
+                            @php($tanggal->settings(['formatFunction' => 'translatedFormat']))
+                            <p>Semarang, {{$tanggal->format('j F Y')}}</p>
                             <p>CV. Sola Gracia</p>
                           </div>
                           <p>Roriyanto</p>
@@ -137,14 +149,14 @@
                 </div>
                 <div class="px-5 mb-1">
                   <div class="d-flex justify-content-left">
-                    <p>No: 02/I/SG/2019</p>
+                    <p>No: {{$invoice->no_invoice}}</p>
                   </div>
                   <div class="row my-1">
                     <div class="col-3">
                       <p>Telah Terima dari</p>
                     </div>
                     <div class="col-9">
-                      <p>PT Waskita Karya (Persero), Tbk.</p>
+                      <p>{{$invoice->nama_perusahaan}}</p>
                     </div>
                   </div>
                   <div class="row my-1">
@@ -153,7 +165,7 @@
                     </div>
                     <div class="col-9">
                       <div class="kotak-terbilang">
-                        <p>#Tujuhbelas Juta Delapan Ratus Enam Puluh Tiga Ribu Sembilan Ratus Delapan Puluh TujuhRupiah#</p>
+                        <p>#{{ucwords($terbilang->terbilang($invoice->total))}} Rupiah.#</p>
                       </div>
                     </div>
                   </div>
@@ -162,16 +174,21 @@
                       <p>Untuk Pembayaran</p>
                     </div>
                     <div class="col-9">
-                      <p>Retensi 5% Pek. Acrylic Penutup FCU Sesuai Surat Perjanjian No. 136/SPPP/WK/D.I/AY/2018 Tgl
-                        14/09/2018 & Add. II No. 136/ADD.II/SPPP/WK/D.I/AY/2018 Tgl 13/12/2018. Proyek Bangunan
-                        Terminal & Sarana Penunjang (Paket3) Bandara Ahmad Yani SMG</p>
+                      <p style="white-space: pre-line">{{$invoice->keterangan}}</p>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-end mt-8 signature-box">
-                    <p>Rp #17,863,987#</p>
+                    <div class="d-flex align-items-center">
+                      <p class="mr-2">Rp</p>
+                      <div class="py-1 px-2" style="background: #d6d6d6 !important">
+                        <p class="font-weight-bold">{{'#'.number_format($invoice->total)}}#</p>
+                      </div>
+                    </div>
                     <div class="align-items-center">
                       <div class="align-items-center signature">
-                        <p>Semarang, 04 January 2019</p>
+                        @php($tanggal = $carbon->parse($invoice->tanggal)->locale('id'))
+                        @php($tanggal->settings(['formatFunction' => 'translatedFormat']))
+                        <p>Semarang, {{$tanggal->format('j F Y')}}</p>
                         <p>CV. Sola Gracia</p>
                       </div>
                       <p>Roriyanto</p>

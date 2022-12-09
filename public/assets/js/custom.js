@@ -198,19 +198,24 @@ $(document).ready(function () {
 })
 // /Datepicker
 
+// Print Invoice and Kwitansi
 $(document).ready(function(){
     $('.print-invoice').bind('click', function(){
         $('.target-invoice').removeClass('no-print')
         $('.target-kwitansi').addClass('no-print')
         window.print()
     })
-
+    
     $('.print-kwitansi').bind('click', function(){
         $('.target-kwitansi').removeClass('no-print')
         $('.target-invoice').addClass('no-print')
         window.print()
     })
 })
+// /Print Invoice and Kwitansi
+
+// Upload Image
+// /Upload Image
 
 // /User Added
 
