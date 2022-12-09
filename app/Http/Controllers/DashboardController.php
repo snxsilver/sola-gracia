@@ -16,12 +16,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Str;
+use Image;
 
 use App\Exports\UsersExport;
 use App\Helpers\Helper;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class DashboardController extends Controller
 {
@@ -469,8 +472,8 @@ class DashboardController extends Controller
         $sheet->getStyle('A1')->applyFromArray($centerBold);
         $sheet->getStyle('A3:F3')->applyFromArray($bold);
         $sheet->getStyle('G3:H3')->applyFromArray($rightBold);
-        $sheet->getStyle('F4:F'.$no-1)->applyFromArray($left);
-        $sheet->getStyle('G4:H'.$no-1)->applyFromArray($right);
+        $sheet->getStyle('F4:F' . $no - 1)->applyFromArray($left);
+        $sheet->getStyle('G4:H' . $no - 1)->applyFromArray($right);
         // $sheet->getStyle('A4:B'.($no-1))->applyFromArray($center);
         // $sheet->getStyle('D4:E'.($no-1))->applyFromArray($center);
         $sheet->getStyle('A' . $no . ':F' . $no)->applyFromArray($rightBold);
@@ -562,9 +565,6 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
-            // 'bukti' => 'required',
-            // 'masuk' => 'required',
-            // 'keluar' => 'required',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -579,7 +579,7 @@ class DashboardController extends Controller
         $masuk = $request->input('masuk');
         $keluar = $request->input('keluar');
 
-        Bukukas::create([
+        $bukukas = Bukukas::create([
             'proyek' => $proyek,
             'tanggal' => $tanggal,
             'keterangan' => $keterangan,
@@ -589,6 +589,34 @@ class DashboardController extends Controller
             'keluar' => $keluar,
             'kreator' => Session::get('id'),
         ]);
+
+        $idbukukas = $bukukas->id;
+
+        if ($request->hasFile('nota')) {
+            $gbr = $request->file('nota');
+            $ext = $request->nota->extension();
+            $slug = Str::slug($bukti, '-');
+            $gbrnama = $slug . '-' . rand(99, 999) . '.' . $ext;
+            $path = public_path('/images/nota/' . $gbrnama);
+            $gbresize = Image::make($gbr->path());
+            $width = $gbresize->width();
+            $height = $gbresize->height();
+            if ($width > $height){
+                $gbresize->resize(600, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            } else {
+                $gbresize->resize(null, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            }
+
+            Bukukas::where('id', $idbukukas)->update([
+                'nota' => $gbrnama
+            ]);
+        }
 
         return redirect('/dashboard/bukukas');
     }
@@ -649,11 +677,47 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        if ($request->hasFile('nota')) {
+            $nota = Bukukas::where('id', $id)->first();
+            if ($nota->nota){
+                unlink(public_path('/images/nota/'.$nota->nota));
+            }
+
+            $gbr = $request->file('nota');
+            $ext = $request->nota->extension();
+            $slug = Str::slug($bukti, '-');
+            $gbrnama = $slug . '-' . rand(99, 999) . '.' . $ext;
+            $path = public_path('/images/nota/' . $gbrnama);
+            $gbresize = Image::make($gbr->path());
+            $width = $gbresize->width();
+            $height = $gbresize->height();
+            if ($width > $height){
+                $gbresize->resize(600, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            } else {
+                $gbresize->resize(null, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            }
+
+            Bukukas::where('id', $id)->update([
+                'nota' => $gbrnama
+            ]);
+        }
+
         return redirect('/dashboard/bukukas');
     }
 
     public function bukukas_hapus($id)
     {
+        $nota = Bukukas::where('id', $id)->first();
+        if($nota->nota){
+            unlink(public_path('/images/nota/'.$nota->nota));
+        }
+        
         bukukas::where('id', $id)->delete();
 
         return redirect('/dashboard/bukukas');
@@ -663,7 +727,7 @@ class DashboardController extends Controller
     {
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
-        $data['stok'] = Stok::where('kuantitas','>',0)->get();
+        $data['stok'] = Stok::where('kuantitas', '>', 0)->get();
         return view('dashboard.ambil_stok', $data);
     }
 
@@ -882,13 +946,13 @@ class DashboardController extends Controller
         $end = Carbon::parse($tanggal)->endOfMonth();
 
         $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count();
-        if (strlen($no) == 1){
-            $no = "0".$no;
+        if (strlen($no) == 1) {
+            $no = "0" . $no;
         }
         $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
         $year = Carbon::parse($tanggal)->year;
 
-        $no_invoice = $no."/".$month."/SG/".$year;
+        $no_invoice = $no . "/" . $month . "/SG/" . $year;
 
         Invoice::create([
             'no_invoice' => $no_invoice,
@@ -975,14 +1039,15 @@ class DashboardController extends Controller
         return redirect('/dashboard/invoice');
     }
 
-    public function invoice_cetak($id){
+    public function invoice_cetak($id)
+    {
         $data['invoice'] = Invoice::where('id', $id)->first();
-        return view('/dashboard/invoice_cetak',$data);
+        return view('/dashboard/invoice_cetak', $data);
     }
 
     public function stok()
     {
-        $data['stok'] = Stok::where('kuantitas','>',0)->orderBy('tanggal', 'asc')->get();
+        $data['stok'] = Stok::where('kuantitas', '>', 0)->orderBy('tanggal', 'asc')->get();
         return view('dashboard.stok', $data);
     }
 
@@ -1022,7 +1087,7 @@ class DashboardController extends Controller
         $harga = $request->input('harga');
         $bukti = $request->input('bukti');
 
-        Stok::create([
+        $stok = Stok::create([
             'tanggal' => $tanggal,
             'barang' => $barang,
             'kuantitas' => $kuantitas,
@@ -1031,6 +1096,34 @@ class DashboardController extends Controller
             'no_bukti' => $bukti,
             'kreator' => Session::get('id'),
         ]);
+
+        $idstok = $stok->id;
+
+        if ($request->hasFile('nota')) {
+            $gbr = $request->file('nota');
+            $ext = $request->nota->extension();
+            $slug = Str::slug($bukti, '-');
+            $gbrnama = $slug . '-' . rand(99, 999) . '.' . $ext;
+            $path = public_path('/images/nota/' . $gbrnama);
+            $gbresize = Image::make($gbr->path());
+            $width = $gbresize->width();
+            $height = $gbresize->height();
+            if ($width > $height){
+                $gbresize->resize(600, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            } else {
+                $gbresize->resize(null, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            }
+
+            Stok::where('id', $idstok)->update([
+                'nota' => $gbrnama
+            ]);
+        }
 
         return redirect('/dashboard/stok');
     }
@@ -1083,11 +1176,47 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        if ($request->hasFile('nota')) {
+            $nota = Stok::where('id', $id)->first();
+            if ($nota->nota){
+                unlink(public_path('/images/nota/'.$nota->nota));
+            }
+
+            $gbr = $request->file('nota');
+            $ext = $request->nota->extension();
+            $slug = Str::slug($bukti, '-');
+            $gbrnama = $slug . '-' . rand(99, 999) . '.' . $ext;
+            $path = public_path('/images/nota/' . $gbrnama);
+            $gbresize = Image::make($gbr->path());
+            $width = $gbresize->width();
+            $height = $gbresize->height();
+            if ($width > $height){
+                $gbresize->resize(600, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            } else {
+                $gbresize->resize(null, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($path);
+            }
+
+            Stok::where('id', $id)->update([
+                'nota' => $gbrnama
+            ]);
+        }
+
         return redirect('/dashboard/stok');
     }
 
     public function stok_hapus($id)
     {
+        $nota = Stok::where('id', $id)->first();
+        if ($nota->nota){
+            unlink(public_path('/images/nota/'.$nota->nota));
+        }
+        
         stok::where('id', $id)->delete();
 
         return redirect('/dashboard/stok');

@@ -19,7 +19,7 @@
           </div>
           <div class="x_content">
             <div class="col-12">
-              <form class="form-label-left input_mask" action="{{ url('/dashboard/bukukas_update') }}" method="post">
+              <form class="form-label-left input_mask" action="{{ url('/dashboard/bukukas_update') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
@@ -72,16 +72,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"
-                      value="{{ $bukukas->no_bukti ?? '' }}">
-                    @error('bukti')
-                      <small>*{{ $message }}</small>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Masuk</label>
                   <div class="col-md-9 col-sm-9 ">
                     <div class="input-group">
@@ -109,6 +99,23 @@
                     @error('keluar')
                       <small>*{{ $message }}</small>
                     @enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"
+                      value="{{ $bukukas->no_bukti ?? '' }}">
+                    @error('bukti')
+                      <small>*{{ $message }}</small>
+                    @enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
+                  <div class="col-md-9">
+                    <input type="file" class="form-control-file" name="nota" id="imgload">
+                    <img src="{{$bukukas->nota ? asset('/images/nota/'.$bukukas->nota) : ''}}" alt="" id="imgshowa">
                   </div>
                 </div>
                 <div class="ln_solid"></div>

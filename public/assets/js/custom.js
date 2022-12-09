@@ -215,6 +215,16 @@ $(document).ready(function(){
 // /Print Invoice and Kwitansi
 
 // Upload Image
+$("#imgload").change(function () {
+    $("#imgshowa").addClass("img-thumbnail mt-2 imgshow");
+    if (this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function () {
+            $(".imgshow").attr("src", reader.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
 // /Upload Image
 
 // /User Added

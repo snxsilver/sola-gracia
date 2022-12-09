@@ -6392,3 +6392,34 @@ form .error {
     -webkit-print-color-adjust: exact;
   }
 }
+.dropzone-wrapper{
+	position: relative;
+	border: 2px solid rgba(80, 80, 255, 0.3);
+	background-color: rgb(246, 246, 255);
+	/* height: 80px;
+	width:60px; */
+	overflow: hidden;
+	color:blue;
+	text-align: center;
+	/* background-color: red; */
+}
+.dropzone-desk{
+	position:absolute;
+	z-index: 12;
+	margin: 0 auto;
+	/* width: 60px; */
+}
+input[type="file"]{
+	cursor:pointer;
+}
+.form-control-file {
+  border-radius: 0;
+  border: 1px solid #ced4da;
+  padding: 5px;
+  width: 100%;
+}
+.form-control-file:focus {
+  border-color: #CCD0D7;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
