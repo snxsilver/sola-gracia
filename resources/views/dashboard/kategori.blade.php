@@ -31,6 +31,8 @@
                       <td>{{ $no++ }}</td>
                       <td>{{ $k->nama }}</td>
                       <td>
+                        <a class="btn btn-sm btn-success" href="{{ url('/dashboard/kategori_view/' . $k->id) }}"><i
+                            class="fa fa-eye"></i></a>
                         <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/kategori_edit/' . $k->id) }}"><i
                             class="fa fa-pencil"></i></a>
                         <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/kategori_hapus/' . $k->id) }}"><i

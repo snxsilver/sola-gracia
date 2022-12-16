@@ -134,18 +134,6 @@
           </div>
           <div class="x_content">
             <div class="col-12">
-              <div class="row">
-                <div class="col-6">
-                  <div class="d-flex justify-content-between">
-                    <p style="color: black; font-weight:bold">Jumlah Uang Masuk :</p>
-                    <p class="sum" style="color: black; font-weight:bold">{{ 'Rp ' . number_format($masuk) }}</p>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <p style="color: black; font-weight:bold">Jumlah Uang Keluar :</p>
-                    <p class="sum" style="color: black; font-weight:bold">{{ 'Rp ' . number_format($keluar) }}</p>
-                  </div>
-                </div>
-              </div>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -190,12 +178,6 @@
                       </td>
                     </tr>
                   @endforeach
-                  {{-- <tr style='background: #c0c0c0'>
-                    <td colspan="6" class="sum text-center">JUMLAH</td>
-                    <td class="sum">{{'Rp '.number_format($masuk)}}</td>
-                    <td class="sum">{{'Rp '.number_format($keluar)}}</td>
-                    <td></td>
-                  </tr> --}}
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">

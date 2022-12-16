@@ -147,6 +147,14 @@ class DashboardController extends Controller
         return view('dashboard.kategori', $data);
     }
 
+    public function kategori_view(Request $request, $id){
+        $request->session()->put([
+            'kategori' => $id,
+        ]);
+
+        return redirect('/dashboard/bukukas');
+    }
+
     public function kategori_tambah()
     {
         return view('dashboard.kategori_tambah');
@@ -490,14 +498,81 @@ class DashboardController extends Controller
         $writer->save('php://output');
     }
 
-    public function bukukas_sort(Request $request){
-        if (Session::get('sort')){
-            $request->session()->forget(['sort']);
-        } else {
-            $request->session()->put([
-                'sort' => 'sort'
-            ]);
-        }
+    public function bukukas_sort(Request $request, $sort)
+    {
+        switch ($sort):
+            case "tanggal":
+                if (Session::get('sort_tanggal') === "asc") {
+                    $request->session()->put([
+                        'sort_tanggal' => 'desc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_tanggal' => 'asc'
+                    ]);
+                }
+                break;
+            case "proyek":
+                if (Session::get('sort_proyek') === "asc") {
+                    $request->session()->put([
+                        'sort_proyek' => 'desc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_proyek' => 'asc'
+                    ]);
+                }
+                break;
+            case "kategori":
+                if (Session::get('sort_kategori') === "asc") {
+                    $request->session()->put([
+                        'sort_kategori' => 'desc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_kategori' => 'asc'
+                    ]);
+                }
+                break;
+            case "bukti":
+                if (Session::get('sort_bukti') === "desc") {
+                    $request->session()->put([
+                        'sort_bukti' => 'asc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_bukti' => 'desc'
+                    ]);
+                }
+                break;
+            case "masuk":
+                $request->session()->forget(['sort_keluar']);
+                if (Session::get('sort_masuk') === "asc") {
+                    $request->session()->put([
+                        'sort_masuk' => 'desc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_masuk' => 'asc'
+                    ]);
+                }
+                break;
+            case "keluar":
+                $request->session()->forget(['sort_masuk']);
+                if (Session::get('sort_keluar') === "asc") {
+                    $request->session()->put([
+                        'sort_keluar' => 'desc'
+                    ]);
+                } else {
+                    $request->session()->put([
+                        'sort_keluar' => 'asc'
+                    ]);
+                }
+                break;
+            case "clear":
+                $request->session()->forget(['sort_tanggal', 'sort_proyek', 'sort_kategori', 'sort_bukti', 'sort_masuk', 'sort_keluar']);
+                break;
+        endswitch;
 
         return redirect('/dashboard/bukukas');
     }
@@ -544,8 +619,52 @@ class DashboardController extends Controller
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
 
-        if (Session::get('sort')){
-            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
+        if (Session::get('sort_bukti')){
+            if (Session::get('sort_bukti') === 'asc'){
+                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'desc');
+            }
+        }
+
+        if (Session::get('sort_kategori')){
+            if (Session::get('sort_kategori') === 'asc'){
+                $data_query2 = $data_query->orderBy('kategori.nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('kategori.nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_masuk')){
+            if (Session::get('sort_masuk') === 'asc'){
+                $data_query2 = $data_query->orderBy('bukukas.masuk', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.masuk', 'desc');
+            }
+        }
+
+        if (Session::get('sort_keluar')){
+            if (Session::get('sort_keluar') === 'asc'){
+                $data_query2 = $data_query->orderBy('bukukas.keluar', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.keluar', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')){
+            if (Session::get('sort_proyek') === 'asc'){
+                $data_query2 = $data_query->orderBy('proyek.nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('proyek.nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')){
+            if (Session::get('sort_tanggal') === 'asc'){
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
+            }
         } else {
             $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
         }
@@ -587,7 +706,7 @@ class DashboardController extends Controller
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
-        
+
         $data['bukukas'] = $data_query2->paginate(100);
         $data['keluar'] = $data_query3->sum('bukukas.keluar');
         $data['masuk'] = $data_query3->sum('bukukas.masuk');
@@ -605,6 +724,7 @@ class DashboardController extends Controller
     {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'mimes' => ':attribute harus jpg, jpeg atau png.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -614,12 +734,14 @@ class DashboardController extends Controller
             'bukti' => 'No Bukti',
             'masuk' => 'Uang Masuk',
             'keluar' => 'Uang Keluar',
+            'nota' => 'Nota',
         ];
         $validator = Validator::make($request->all(), [
             'proyek' => 'required',
             'tanggal' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
+            'nota' => 'mimes:jpg,jpeg,png',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -656,7 +778,7 @@ class DashboardController extends Controller
             $gbresize = Image::make($gbr->path());
             $width = $gbresize->width();
             $height = $gbresize->height();
-            if ($width > $height){
+            if ($width > $height) {
                 $gbresize->resize(600, null, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -688,6 +810,7 @@ class DashboardController extends Controller
     {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'mimes' => ':attribute harus jpg, jpeg atau png.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -696,6 +819,7 @@ class DashboardController extends Controller
             'kategori' => 'Kategori',
             'bukti' => 'No Bukti',
             'masuk' => 'Uang Masuk',
+            'nota' => 'Nota',
             'keluar' => 'Uang Keluar',
         ];
         $validator = Validator::make($request->all(), [
@@ -703,6 +827,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
+            'nota' => 'mimes:jpg,jpeg,png',
             // 'bukti' => 'required',
             // 'masuk' => 'required',
             // 'keluar' => 'required',
@@ -734,8 +859,8 @@ class DashboardController extends Controller
 
         if ($request->hasFile('nota')) {
             $nota = Bukukas::where('id', $id)->first();
-            if ($nota->nota){
-                unlink(public_path('/images/nota/'.$nota->nota));
+            if ($nota->nota) {
+                unlink(public_path('/images/nota/' . $nota->nota));
             }
 
             $gbr = $request->file('nota');
@@ -746,7 +871,7 @@ class DashboardController extends Controller
             $gbresize = Image::make($gbr->path());
             $width = $gbresize->width();
             $height = $gbresize->height();
-            if ($width > $height){
+            if ($width > $height) {
                 $gbresize->resize(600, null, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -769,10 +894,10 @@ class DashboardController extends Controller
     public function bukukas_hapus($id)
     {
         $nota = Bukukas::where('id', $id)->first();
-        if($nota->nota){
-            unlink(public_path('/images/nota/'.$nota->nota));
+        if ($nota->nota) {
+            unlink(public_path('/images/nota/' . $nota->nota));
         }
-        
+
         bukukas::where('id', $id)->delete();
 
         return redirect('/dashboard/bukukas');
@@ -1115,10 +1240,12 @@ class DashboardController extends Controller
     {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'mimes' => ':attribute harus jpg, jpeg atau png.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
             'barang' => 'Nama barang',
+            'nota' => 'Nota',
             'kuantitas' => 'Jumlah barang',
             'satuan' => 'Satuan jumlah barang',
             'harga' => 'Harga barang',
@@ -1127,6 +1254,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'barang' => 'required',
             'kuantitas' => 'required',
+            'nota' => 'mimes:jpg,jpeg,png',
             'satuan' => 'required',
             'harga' => 'required',
         ], $message, $attribute);
@@ -1163,7 +1291,7 @@ class DashboardController extends Controller
             $gbresize = Image::make($gbr->path());
             $width = $gbresize->width();
             $height = $gbresize->height();
-            if ($width > $height){
+            if ($width > $height) {
                 $gbresize->resize(600, null, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -1193,6 +1321,7 @@ class DashboardController extends Controller
     {
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'mimes' => ':attribute harus jpg, jpeg atau png.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
@@ -1200,11 +1329,13 @@ class DashboardController extends Controller
             'kuantitas' => 'Jumlah barang',
             'satuan' => 'Satuan jumlah barang',
             'harga' => 'Harga barang',
+            'nota' => 'Nota',
         ];
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'barang' => 'required',
             'kuantitas' => 'required',
+            'nota' => 'mimes:jpg,jpeg,png',
             'satuan' => 'required',
             'harga' => 'required',
         ], $message, $attribute);
@@ -1233,8 +1364,8 @@ class DashboardController extends Controller
 
         if ($request->hasFile('nota')) {
             $nota = Stok::where('id', $id)->first();
-            if ($nota->nota){
-                unlink(public_path('/images/nota/'.$nota->nota));
+            if ($nota->nota) {
+                unlink(public_path('/images/nota/' . $nota->nota));
             }
 
             $gbr = $request->file('nota');
@@ -1245,7 +1376,7 @@ class DashboardController extends Controller
             $gbresize = Image::make($gbr->path());
             $width = $gbresize->width();
             $height = $gbresize->height();
-            if ($width > $height){
+            if ($width > $height) {
                 $gbresize->resize(600, null, function ($constraint) {
                     $constraint->aspectRatio();
                     $constraint->upsize();
@@ -1268,12 +1399,30 @@ class DashboardController extends Controller
     public function stok_hapus($id)
     {
         $nota = Stok::where('id', $id)->first();
-        if ($nota->nota){
-            unlink(public_path('/images/nota/'.$nota->nota));
+        if ($nota->nota) {
+            unlink(public_path('/images/nota/' . $nota->nota));
         }
-        
+
         stok::where('id', $id)->delete();
 
         return redirect('/dashboard/stok');
+    }
+
+    public function search(Request $request){
+        $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
+
+        $data['proyek'] = Proyek::get();
+        $data['kategori'] = Kategori::get();
+
+        $data_query = Bukukas::where('keterangan','like','%'.$search.'%')
+        ->orWhere('no_bukti','like','%'.$search.'%')
+        ->orWhere('masuk','like','%'.$search.'%')
+        ->orWhere('keluar','like','%'.$search.'%')
+        ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+        ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+        ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+
+        $data['bukukas'] = $data_query->paginate(100);
+        return view('dashboard.search', $data);
     }
 }

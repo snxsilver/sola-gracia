@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard/user_hapus/{id}', [DashboardController::class, 'user_hapus']);
 
   Route::get('/dashboard/kategori', [DashboardController::class, 'kategori']);
+  Route::get('/dashboard/kategori_view/{id}', [DashboardController::class, 'kategori_view']);
   Route::get('/dashboard/kategori_tambah', [DashboardController::class, 'kategori_tambah']);
   Route::post('/dashboard/kategori_aksi', [DashboardController::class, 'kategori_aksi']);
   Route::get('/dashboard/kategori_edit/{id}', [DashboardController::class, 'kategori_edit']);
@@ -46,8 +47,9 @@ Route::group(['middleware' => 'auth'], function () {
   Route::post('/dashboard/proyek_update', [DashboardController::class, 'proyek_update']);
   Route::get('/dashboard/proyek_hapus/{id}', [DashboardController::class, 'proyek_hapus']);
 
+  Route::get('/dashboard/search', [DashboardController::class, 'search']);
   Route::post('/dashboard/filter', [DashboardController::class, 'filter']);
-  Route::get('/dashboard/bukukas_sort', [DashboardController::class, 'bukukas_sort']);
+  Route::get('/dashboard/bukukas_sort/{sort}', [DashboardController::class, 'bukukas_sort']);
 
   Route::get('/dashboard/bukukas', [DashboardController::class, 'bukukas']);
   Route::get('/dashboard/bukukas_tambah', [DashboardController::class, 'bukukas_tambah']);
