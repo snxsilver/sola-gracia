@@ -55,9 +55,14 @@
               <h3>General</h3>
               <ul class="nav side-menu">
                 <li><a href="{{url('/dashboard')}}"><i class="fa fa-home"></i> Dashboard <span class="fa fa-chevron-right"></span></a></li>
-                <li><a href="{{url('/dashboard/kategori')}}"><i class="fa fa-tag"></i> Kategori <span class="fa fa-chevron-right"></span></a></li>
+                {{-- <li><a href="{{url('/dashboard/kategori')}}"><i class="fa fa-tag"></i> Kategori <span class="fa fa-chevron-right"></span></a></li> --}}
                 <li><a href="{{url('/dashboard/proyek')}}"><i class="fa fa-institution"></i> Proyek <span class="fa fa-chevron-right"></span></a></li>
-                <li><a href="{{url('/dashboard/bukukas')}}"><i class="fa fa-book"></i> Buku Kas <span class="fa fa-chevron-right"></span></a></li>
+                <li><a href="{{url('/dashboard/bukukas')}}"><i class="fa fa-book"></i> Buku Kas <span class="fa fa-chevron-right"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="{{url('/dashboard/bukukas')}}">Buku Kas</a></li>
+                  <li><a href="{{url('/dashboard/kategori')}}">Kategori</a></li>
+                </ul>
+                </li>
                 <li><a href="{{url('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/user')}}"><i class="fa fa-user"></i> User <span class="fa fa-chevron-right"></span></a></li>

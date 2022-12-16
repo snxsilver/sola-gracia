@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard/proyek_hapus/{id}', [DashboardController::class, 'proyek_hapus']);
 
   Route::post('/dashboard/filter', [DashboardController::class, 'filter']);
+  Route::get('/dashboard/bukukas_sort', [DashboardController::class, 'bukukas_sort']);
 
   Route::get('/dashboard/bukukas', [DashboardController::class, 'bukukas']);
   Route::get('/dashboard/bukukas_tambah', [DashboardController::class, 'bukukas_tambah']);

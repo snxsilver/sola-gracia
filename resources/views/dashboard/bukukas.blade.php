@@ -112,12 +112,24 @@
           </div>
           <div class="x_content">
             <div class="col-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="d-flex justify-content-between">
+                    <p style="color: black; font-weight:bold">Jumlah Uang Masuk :</p>
+                    <p class="sum" style="color: black; font-weight:bold">{{'Rp '.number_format($masuk)}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p style="color: black; font-weight:bold">Jumlah Uang Keluar :</p>
+                    <p class="sum" style="color: black; font-weight:bold">{{'Rp '.number_format($keluar)}}</p>
+                  </div>
+                </div>
+              </div>
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th width="5%">No</th>
                     <th>Proyek</th>
-                    <th>Tanggal</th>
+                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort') }}"><i class="fa fa-sort"></i></a></th>
                     <th>Keterangan</th>
                     <th>Kategori</th>
                     <th>No Bukti</th>
@@ -153,14 +165,17 @@
                       </td>
                     </tr>
                   @endforeach
-                  <tr style='background: #c0c0c0'>
+                  {{-- <tr style='background: #c0c0c0'>
                     <td colspan="6" class="sum text-center">JUMLAH</td>
                     <td class="sum">{{'Rp '.number_format($masuk)}}</td>
                     <td class="sum">{{'Rp '.number_format($keluar)}}</td>
                     <td></td>
-                  </tr>
+                  </tr> --}}
                 </tbody>
               </table>
+              <div class="d-flex justify-content-center">
+                {{ $bukukas->links() }}
+              </div>
             </div>
           </div>
         </div>

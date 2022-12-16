@@ -490,6 +490,18 @@ class DashboardController extends Controller
         $writer->save('php://output');
     }
 
+    public function bukukas_sort(Request $request){
+        if (Session::get('sort')){
+            $request->session()->forget(['sort']);
+        } else {
+            $request->session()->put([
+                'sort' => 'sort'
+            ]);
+        }
+
+        return redirect('/dashboard/bukukas');
+    }
+
     public function bukukas()
     {
         $data['proyek'] = Proyek::get();
@@ -530,12 +542,55 @@ class DashboardController extends Controller
             })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
-            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori')
-            ->orderBy('bukukas.tanggal', 'asc');
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
 
-        $data['bukukas'] = $data_query->get();
-        $data['keluar'] = $data_query->sum('bukukas.keluar');
-        $data['masuk'] = $data_query->sum('bukukas.masuk');
+        if (Session::get('sort')){
+            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
+        } else {
+            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+        }
+
+        $data_query3 = Bukukas::where(function ($query) {
+            if (Session::get('kategori')) :
+                $query->where('kategori', Session::get('kategori'));
+            endif;
+        })
+            ->where(function ($query) {
+                if (Session::get('proyek')) :
+                    $query->where('proyek', Session::get('proyek'));
+                endif;
+            })
+            ->where(function ($query) {
+                if (Session::get('bulan')) :
+                    $sesi = Session::get('bulan');
+                    $start = Carbon::parse($sesi)->startOfMonth();
+                    $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('mulai') || Session::get('selesai')) :
+                    $mulai = Session::get('mulai');
+                    $selesai = Session::get('selesai');
+                    if ($mulai && $selesai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '>=', $start)
+                            ->where('tanggal', '<=', $end);
+                    elseif ($mulai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $query->where('tanggal', '>=', $start);
+                    elseif ($selesai) :
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '<=', $end);
+                    endif;
+                endif;
+            })
+            ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+            ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+        
+        $data['bukukas'] = $data_query2->paginate(100);
+        $data['keluar'] = $data_query3->sum('bukukas.keluar');
+        $data['masuk'] = $data_query3->sum('bukukas.masuk');
         return view('dashboard.bukukas', $data);
     }
 
