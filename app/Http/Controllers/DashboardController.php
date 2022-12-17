@@ -21,6 +21,7 @@ use Image;
 
 use App\Exports\UsersExport;
 use App\Helpers\Helper;
+use App\Models\Pajak;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -35,17 +36,26 @@ class DashboardController extends Controller
 
     public function user()
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['user'] = User::get();
         return view('dashboard.user', $data);
     }
 
     public function user_tambah()
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         return view('dashboard.user_tambah');
     }
 
     public function user_aksi(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'same' => ':attribute harus sama dengan password.',
@@ -82,12 +92,18 @@ class DashboardController extends Controller
 
     public function user_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['user'] = User::where('id', $id)->first();
         return view('dashboard.user_edit', $data);
     }
 
     public function user_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $id = $request->input('id');
 
         User::where('id', $id)->update([
@@ -136,6 +152,9 @@ class DashboardController extends Controller
 
     public function user_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         User::where('id', $id)->delete();
 
         return redirect('/dashboard/user');
@@ -147,7 +166,8 @@ class DashboardController extends Controller
         return view('dashboard.kategori', $data);
     }
 
-    public function kategori_view(Request $request, $id){
+    public function kategori_view(Request $request, $id)
+    {
         $request->session()->put([
             'kategori' => $id,
         ]);
@@ -157,11 +177,17 @@ class DashboardController extends Controller
 
     public function kategori_tambah()
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         return view('dashboard.kategori_tambah');
     }
 
     public function kategori_aksi(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'unique' => ':attribute telah dipakai.'
@@ -189,12 +215,18 @@ class DashboardController extends Controller
 
     public function kategori_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['kategori'] = Kategori::where('id', $id)->first();
         return view('dashboard.kategori_edit', $data);
     }
 
     public function kategori_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'unique' => ':attribute telah dipakai.'
@@ -223,6 +255,9 @@ class DashboardController extends Controller
 
     public function kategori_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         Kategori::where('id', $id)->delete();
 
         return redirect('/dashboard/kategori');
@@ -230,17 +265,27 @@ class DashboardController extends Controller
 
     public function proyek()
     {
-        $data['proyek'] = Proyek::get();
+        if (Session::get('role') === 'operator') {
+            $data['proyek'] = Proyek::where('pajak', 1)->get();
+        } else {
+            $data['proyek'] = Proyek::get();
+        }
         return view('dashboard.proyek', $data);
     }
 
     public function proyek_tambah()
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         return view('dashboard.proyek_tambah');
     }
 
     public function proyek_aksi(Request $request)
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -277,12 +322,18 @@ class DashboardController extends Controller
 
     public function proyek_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['proyek'] = Proyek::where('id', $id)->first();
         return view('dashboard.proyek_edit', $data);
     }
 
     public function proyek_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -320,6 +371,9 @@ class DashboardController extends Controller
 
     public function proyek_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         Proyek::where('id', $id)->delete();
 
         return redirect('/dashboard/proyek');
@@ -334,6 +388,7 @@ class DashboardController extends Controller
             $mulai = $request->input('mulai') != '-' ? $request->input('mulai') : '';
             $selesai = $request->input('selesai') != '-' ? $request->input('selesai') : '';
             $bulan = $request->input('bulan');
+            $tahun = $request->input('tahun');
 
             $request->session()->put([
                 'kategori' => $kategori,
@@ -341,18 +396,22 @@ class DashboardController extends Controller
                 'mulai' => $mulai,
                 'selesai' => $selesai,
                 'bulan' => $bulan,
+                'tahun' => $tahun,
             ]);
 
-            return redirect('/dashboard/bukukas');
+            return back();
         } else {
-            $request->session()->forget(['proyek', 'kategori', 'bulan', 'mulai', 'selesai']);
+            $request->session()->forget(['proyek', 'kategori', 'bulan', 'mulai', 'selesai', 'tahun']);
 
-            return redirect('/dashboard/bukukas');
+            return back();
         }
     }
 
     public function export()
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -574,12 +633,17 @@ class DashboardController extends Controller
                 break;
         endswitch;
 
-        return redirect('/dashboard/bukukas');
+        return back();
     }
 
     public function bukukas()
     {
-        $data['proyek'] = Proyek::get();
+        $data['proyek'] = Proyek::where(function ($query) {
+            if (Session::get('role') === 'operator') {
+                $query->where('proyek.pajak', 1);
+            }
+        })
+            ->get();
         $data['kategori'] = Kategori::get();
         $data_query = Bukukas::where(function ($query) {
             if (Session::get('kategori')) :
@@ -596,6 +660,12 @@ class DashboardController extends Controller
                     $sesi = Session::get('bulan');
                     $start = Carbon::parse($sesi)->startOfMonth();
                     $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('tahun')) :
+                    $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                    $start = Carbon::parse($sesi)->startOfYear();
+                    $end = Carbon::parse($sesi)->endOfYear();
                     $query->where('tanggal', '>=', $start)
                         ->where('tanggal', '<=', $end);
                 elseif (Session::get('mulai') || Session::get('selesai')) :
@@ -617,50 +687,55 @@ class DashboardController extends Controller
             })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->where(function ($query) {
+                if (Session::get('role') === 'operator') {
+                    $query->where('proyek.pajak', 1);
+                }
+            })
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
 
-        if (Session::get('sort_bukti')){
-            if (Session::get('sort_bukti') === 'asc'){
+        if (Session::get('sort_bukti')) {
+            if (Session::get('sort_bukti') === 'asc') {
                 $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'desc');
             }
         }
 
-        if (Session::get('sort_kategori')){
-            if (Session::get('sort_kategori') === 'asc'){
+        if (Session::get('sort_kategori')) {
+            if (Session::get('sort_kategori') === 'asc') {
                 $data_query2 = $data_query->orderBy('kategori.nama', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('kategori.nama', 'desc');
             }
         }
 
-        if (Session::get('sort_masuk')){
-            if (Session::get('sort_masuk') === 'asc'){
+        if (Session::get('sort_masuk')) {
+            if (Session::get('sort_masuk') === 'asc') {
                 $data_query2 = $data_query->orderBy('bukukas.masuk', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('bukukas.masuk', 'desc');
             }
         }
 
-        if (Session::get('sort_keluar')){
-            if (Session::get('sort_keluar') === 'asc'){
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
                 $data_query2 = $data_query->orderBy('bukukas.keluar', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('bukukas.keluar', 'desc');
             }
         }
 
-        if (Session::get('sort_proyek')){
-            if (Session::get('sort_proyek') === 'asc'){
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
                 $data_query2 = $data_query->orderBy('proyek.nama', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('proyek.nama', 'desc');
             }
         }
 
-        if (Session::get('sort_tanggal')){
-            if (Session::get('sort_tanggal') === 'asc'){
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
                 $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
             } else {
                 $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
@@ -686,6 +761,12 @@ class DashboardController extends Controller
                     $end = Carbon::parse($sesi)->endOfMonth();
                     $query->where('tanggal', '>=', $start)
                         ->where('tanggal', '<=', $end);
+                elseif (Session::get('tahun')) :
+                    $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                    $start = Carbon::parse($sesi)->startOfYear();
+                    $end = Carbon::parse($sesi)->endOfYear();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
                 elseif (Session::get('mulai') || Session::get('selesai')) :
                     $mulai = Session::get('mulai');
                     $selesai = Session::get('selesai');
@@ -705,6 +786,11 @@ class DashboardController extends Controller
             })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->where(function ($query) {
+                if (Session::get('role') === 'operator') {
+                    $query->where('proyek.pajak', 1);
+                }
+            })
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
 
         $data['bukukas'] = $data_query2->paginate(100);
@@ -715,6 +801,9 @@ class DashboardController extends Controller
 
     public function bukukas_tambah()
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
         return view('dashboard.bukukas_tambah', $data);
@@ -722,6 +811,9 @@ class DashboardController extends Controller
 
     public function bukukas_aksi(Request $request)
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
@@ -800,6 +892,9 @@ class DashboardController extends Controller
 
     public function bukukas_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
         $data['bukukas'] = bukukas::where('id', $id)->first();
@@ -808,6 +903,9 @@ class DashboardController extends Controller
 
     public function bukukas_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
@@ -893,6 +991,9 @@ class DashboardController extends Controller
 
     public function bukukas_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $nota = Bukukas::where('id', $id)->first();
         if ($nota->nota) {
             unlink(public_path('/images/nota/' . $nota->nota));
@@ -905,6 +1006,9 @@ class DashboardController extends Controller
 
     public function ambil_stok()
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
         $data['stok'] = Stok::where('kuantitas', '>', 0)->get();
@@ -913,6 +1017,9 @@ class DashboardController extends Controller
 
     public function ambil_stok_aksi(Request $request)
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -983,6 +1090,9 @@ class DashboardController extends Controller
 
     public function ambil_stok_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -1053,6 +1163,9 @@ class DashboardController extends Controller
 
     public function ambil_stok_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['ambil'] = Ambil::where('bukukas', $id)->first();
         $data['proyek'] = Proyek::get();
         $data['kategori'] = Kategori::get();
@@ -1062,6 +1175,9 @@ class DashboardController extends Controller
 
     public function ambil_stok_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $ambil = Ambil::where('bukukas', $id)->first();
         $stok = Stok::where('id', $ambil->stok)->first();
 
@@ -1077,19 +1193,138 @@ class DashboardController extends Controller
         return redirect('/dashboard/bukukas');
     }
 
+    public function pajak()
+    {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
+        $data['pajak'] = Pajak::first();
+
+        return view('dashboard.pajak', $data);
+    }
+
+    public function pajak_aksi(Request $request)
+    {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
+        $message = [
+            'required' => ':attribute tidak boleh kosong.',
+        ];
+        $attribute = [
+            'pajak' => 'Besar pajak',
+        ];
+        $validator = Validator::make($request->all(), [
+            'pajak' => 'required',
+        ], $message, $attribute);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator);
+        }
+
+        if ($request->input('id')) {
+            Pajak::where('id', $request->id)->update([
+                'pajak' => $request->pajak,
+            ]);
+        } else {
+            Pajak::create([
+                'pajak' => $request->pajak,
+            ]);
+        }
+        return redirect('/dashboard/invoice');
+    }
+
     public function invoice()
     {
-        $data['invoice'] = Invoice::get();
+        $data['proyek'] = Proyek::where(function ($query) {
+            if (Session::get('role') === 'operator') {
+                $query->where('proyek.pajak', 1);
+            }
+        })
+            ->get();
+        $data['kategori'] = Kategori::get();
+        $data_query = Invoice::where(function ($query) {
+            if (Session::get('bulan')) :
+                $sesi = Session::get('bulan');
+                $start = Carbon::parse($sesi)->startOfMonth();
+                $end = Carbon::parse($sesi)->endOfMonth();
+                $query->where('tanggal', '>=', $start)
+                    ->where('tanggal', '<=', $end);
+            elseif (Session::get('tahun')) :
+                $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                $start = Carbon::parse($sesi)->startOfYear();
+                $end = Carbon::parse($sesi)->endOfYear();
+                $query->where('tanggal', '>=', $start)
+                    ->where('tanggal', '<=', $end);
+            elseif (Session::get('mulai') || Session::get('selesai')) :
+                $mulai = Session::get('mulai');
+                $selesai = Session::get('selesai');
+                if ($mulai && $selesai) :
+                    $start = Carbon::parse($mulai)->startOfDay();
+                    $end = Carbon::parse($selesai)->endOfDay();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif ($mulai) :
+                    $start = Carbon::parse($mulai)->startOfDay();
+                    $query->where('tanggal', '>=', $start);
+                elseif ($selesai) :
+                    $end = Carbon::parse($selesai)->endOfDay();
+                    $query->where('tanggal', '<=', $end);
+                endif;
+            endif;
+        })
+            ->join('proyek', 'invoice.proyek', '=', 'proyek.id')
+            ->where(function ($query) {
+                if (Session::get('role') === 'operator') {
+                    $query->where('proyek.pajak', 1);
+                }
+            })
+            ->select('invoice.*', 'proyek.nama as namaproyek');
+
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.total', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.total', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.nama_perusahaan', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.nama_perusahaan', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
+            }
+        } else {
+            $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+        }
+
+        $data['invoice'] = $data_query2->paginate(50);
         return view('dashboard.invoice', $data);
     }
 
     public function invoice_tambah()
     {
-        return view('dashboard.invoice_tambah');
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
+        $data['proyek'] = Proyek::get();
+        return view('dashboard.invoice_tambah', $data);
     }
 
     public function invoice_aksi(Request $request)
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -1118,9 +1353,18 @@ class DashboardController extends Controller
         $telp = $request->input('telp');
         $npwp = $request->input('npwp');
         $dp = $request->input('dp');
-        $subtotal = $request->input('subtotal');
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
+        $proyek = $request->input('proyek');
+
+        $cek_pajak = Proyek::where('id', $proyek)->first();
+        $pajak = Pajak::first();
+
+        if ($faktur_pajak && $cek_pajak->pajak === 1) {
+            $total2 = $total * (100 + $pajak->pajak) / 100;
+        } else {
+            $total2 = $total;
+        }
 
         $start = Carbon::parse($tanggal)->startOfMonth();
         $end = Carbon::parse($tanggal)->endOfMonth();
@@ -1144,9 +1388,10 @@ class DashboardController extends Controller
             'telp' => $telp,
             'npwp' => $npwp,
             'dp' => $dp,
-            'subtotal' => $subtotal,
-            'total' => $total,
+            'subtotal' => $total - $dp,
+            'total' => $total2,
             'keterangan' => $keterangan,
+            'proyek' => $proyek,
             'kreator' => Session::get('id'),
         ]);
 
@@ -1155,12 +1400,19 @@ class DashboardController extends Controller
 
     public function invoice_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
+        $data['proyek'] = Proyek::get();
         $data['invoice'] = Invoice::where('id', $id)->first();
         return view('dashboard.invoice_edit', $data);
     }
 
     public function invoice_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
         ];
@@ -1190,9 +1442,19 @@ class DashboardController extends Controller
         $telp = $request->input('telp');
         $npwp = $request->input('npwp');
         $dp = $request->input('dp');
-        $subtotal = $request->input('subtotal');
         $total = $request->input('total');
         $keterangan = $request->input('keterangan');
+
+        $proyek = $request->input('proyek');
+
+        $cek_pajak = Proyek::where('id', $proyek)->first();
+        $pajak = Pajak::first();
+
+        if ($faktur_pajak && $cek_pajak->pajak === 1) {
+            $total2 = $total * (100 + $pajak->pajak) / 100;
+        } else {
+            $total2 = $total;
+        }
 
         Invoice::where('id', $id)->update([
             'faktur_pajak' => $faktur_pajak,
@@ -1203,9 +1465,10 @@ class DashboardController extends Controller
             'telp' => $telp,
             'npwp' => $npwp,
             'dp' => $dp,
-            'subtotal' => $subtotal,
-            'total' => $total,
+            'subtotal' => $total - $dp,
+            'total' => $total2,
             'keterangan' => $keterangan,
+            'proyek' => $proyek,
             'kreator' => Session::get('id'),
         ]);
 
@@ -1214,6 +1477,9 @@ class DashboardController extends Controller
 
     public function invoice_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         invoice::where('id', $id)->delete();
 
         return redirect('/dashboard/invoice');
@@ -1221,6 +1487,9 @@ class DashboardController extends Controller
 
     public function invoice_cetak($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['invoice'] = Invoice::where('id', $id)->first();
         return view('/dashboard/invoice_cetak', $data);
     }
@@ -1233,11 +1502,17 @@ class DashboardController extends Controller
 
     public function stok_tambah()
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         return view('dashboard.stok_tambah');
     }
 
     public function stok_aksi(Request $request)
     {
+        if (Session::get('role') === 'operator') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
@@ -1313,12 +1588,18 @@ class DashboardController extends Controller
 
     public function stok_edit($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $data['stok'] = stok::where('id', $id)->first();
         return view('dashboard.stok_edit', $data);
     }
 
     public function stok_update(Request $request)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
@@ -1398,6 +1679,9 @@ class DashboardController extends Controller
 
     public function stok_hapus($id)
     {
+        if (Session::get('role') !== 'owner') {
+            return redirect('/dashboard');
+        }
         $nota = Stok::where('id', $id)->first();
         if ($nota->nota) {
             unlink(public_path('/images/nota/' . $nota->nota));
@@ -1408,21 +1692,139 @@ class DashboardController extends Controller
         return redirect('/dashboard/stok');
     }
 
-    public function search(Request $request){
+    public function bukukas_search(Request $request)
+    {
         $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
 
-        $data['proyek'] = Proyek::get();
+        $data['proyek'] = Proyek::where(function ($query) {
+            if (Session::get('role') === 'operator') {
+                $query->where('proyek.pajak', 1);
+            }
+        })
+            ->get();
         $data['kategori'] = Kategori::get();
 
-        $data_query = Bukukas::where('keterangan','like','%'.$search.'%')
-        ->orWhere('no_bukti','like','%'.$search.'%')
-        ->orWhere('masuk','like','%'.$search.'%')
-        ->orWhere('keluar','like','%'.$search.'%')
-        ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
-        ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
-        ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+        $data_query = Bukukas::where('keterangan', 'like', '%' . $search . '%')
+            ->orWhere('no_bukti', 'like', '%' . $search . '%')
+            ->orWhere('masuk', 'like', '%' . $search . '%')
+            ->orWhere('keluar', 'like', '%' . $search . '%')
+            ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+            ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
 
-        $data['bukukas'] = $data_query->paginate(100);
-        return view('dashboard.search', $data);
+        if (Session::get('sort_bukti')) {
+            if (Session::get('sort_bukti') === 'asc') {
+                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'desc');
+            }
+        }
+
+        if (Session::get('sort_kategori')) {
+            if (Session::get('sort_kategori') === 'asc') {
+                $data_query2 = $data_query->orderBy('kategori.nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('kategori.nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_masuk')) {
+            if (Session::get('sort_masuk') === 'asc') {
+                $data_query2 = $data_query->orderBy('bukukas.masuk', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.masuk', 'desc');
+            }
+        }
+
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
+                $data_query2 = $data_query->orderBy('bukukas.keluar', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.keluar', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
+                $data_query2 = $data_query->orderBy('proyek.nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('proyek.nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
+            }
+        } else {
+            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+        }
+
+        $data_query3 = Bukukas::where('keterangan', 'like', '%' . $search . '%')
+            ->orWhere('no_bukti', 'like', '%' . $search . '%')
+            ->orWhere('masuk', 'like', '%' . $search . '%')
+            ->orWhere('keluar', 'like', '%' . $search . '%')
+            ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
+            ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
+            ->where(function ($query) {
+                if (Session::get('role') === 'operator') {
+                    $query->where('proyek.pajak', 1);
+                }
+            })
+            ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
+
+        $data['bukukas'] = $data_query2->paginate(100);
+
+        $data['keluar'] = $data_query3->sum('bukukas.keluar');
+        $data['masuk'] = $data_query3->sum('bukukas.masuk');
+        return view('dashboard.bukukas_search', $data);
+    }
+
+    public function invoice_search(Request $request)
+    {
+        $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
+
+        $data_query = Invoice::where('keterangan', 'like', '%' . $search . '%')
+            ->orWhere('no_invoice', 'like', '%' . $search . '%')
+            ->orWhere('total', 'like', '%' . $search . '%')
+            ->orWhere('nama_perusahaan', 'like', '%' . $search . '%')
+            ->join('proyek', 'invoice.proyek', '=', 'proyek.id')
+            ->where(function ($query) {
+                if (Session::get('role') === 'operator') {
+                    $query->where('proyek.pajak', 1);
+                }
+            })
+            ->select('invoice.*', 'proyek.nama as namaproyek');
+
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.total', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.total', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.nama_perusahaan', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.nama_perusahaan', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
+            }
+        } else {
+            $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+        }
+
+        $data['invoice'] = $data_query2->paginate(50);
+        return view('dashboard.invoice_search', $data);
     }
 }

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->double('total');
             $table->date('tanggal_posted')->nullable();
             $table->text('keterangan');
+            $table->integer('proyek');
             $table->integer('kreator');
             $table->timestamps();
         });

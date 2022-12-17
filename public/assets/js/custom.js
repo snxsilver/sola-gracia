@@ -159,20 +159,38 @@ $(document).ready(function () {
     $('.trigger_date').bind('click', function () {
         $(this).addClass('bg-primary')
         $('.trigger_month').removeClass('bg-primary')
+        $('.trigger_year').removeClass('bg-primary')
         $('.target_date').removeClass('d-none')
         $('.target_month').addClass('d-none')
+        $('.target_year').addClass('d-none')
         $('input[name=mulai').prop('disabled', false)
         $('input[name=selesai').prop('disabled', false)
         $('input[name=bulan').prop('disabled', true)
+        $('input[name=tahun').prop('disabled', true)
     })
     $('.trigger_month').bind('click', function () {
         $(this).addClass('bg-primary')
         $('.trigger_date').removeClass('bg-primary')
+        $('.trigger_year').removeClass('bg-primary')
         $('.target_date').addClass('d-none')
         $('.target_month').removeClass('d-none')
+        $('.target_year').addClass('d-none')
         $('input[name=mulai').prop('disabled', true)
         $('input[name=selesai').prop('disabled', true)
         $('input[name=bulan').prop('disabled', false)
+        $('input[name=tahun').prop('disabled', true)
+    })
+    $('.trigger_year').bind('click', function () {
+        $(this).addClass('bg-primary')
+        $('.trigger_date').removeClass('bg-primary')
+        $('.trigger_month').removeClass('bg-primary')
+        $('.target_date').addClass('d-none')
+        $('.target_month').addClass('d-none')
+        $('.target_year').removeClass('d-none')
+        $('input[name=mulai').prop('disabled', true)
+        $('input[name=selesai').prop('disabled', true)
+        $('input[name=bulan').prop('disabled', true)
+        $('input[name=tahun').prop('disabled', false)
     })
 })
 // /Date and Month Filter
@@ -194,6 +212,15 @@ $(document).ready(function () {
         setDate: new Date(),
         startView: "months", 
         minViewMode: "months"
+    })
+    $('.b-yearpicker').datepicker({
+        autoclose: true,
+        forceParse: false,
+        orientation: 'auto bottom',
+        format: 'yyyy',
+        setDate: new Date(),
+        startView: "years", 
+        minViewMode: "years"
     })
 })
 // /Datepicker

@@ -5,13 +5,15 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-md-12 col-sm-12 ">
+      <div class="col-12">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center">
                 <h3>Daftar Stok</h3>
+                @if (Session::get('role') !== 'operator')
                 <a class="btn btn-primary" href="{{ url('/dashboard/stok_tambah') }}"><i class="fa fa-plus"></i></a>
+                @endif
               </div>
             </div>
           </div>
@@ -27,7 +29,9 @@
                     <th>Satuan</th>
                     <th>Harga</th>
                     <th>No Bukti</th>
+                    @if (Session::get('role') === 'owner')
                     <th>Opsi</th>
+                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -41,12 +45,14 @@
                       <td>{{ $s->satuan }}</td>
                       <td>{{ 'Rp '.number_format($s->harga) }}</td>
                       <td>{{ $s->no_bukti }}</td>
+                      @if (Session::get('role') === 'owner')
                       <td>
                         <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/stok_edit/' . $s->id) }}"><i
                             class="fa fa-pencil"></i></a>
                         <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/stok_hapus/' . $s->id) }}"><i
                             class="fa fa-trash"></i></a>
                       </td>
+                      @endif
                     </tr>
                   @endforeach
                 </tbody>

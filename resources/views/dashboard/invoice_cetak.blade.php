@@ -6,7 +6,7 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-md-12 col-sm-12 target-invoice">
+      <div class="col-12 target-invoice">
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">
@@ -57,7 +57,7 @@
                           <tr>
                             <td>1</td>
                             <td style="white-space: pre-line">{{$invoice->keterangan}}</td>
-                            <td style="text-align: right">{{$invoice->subtotal}}</td>
+                            <td style="text-align: right">{{'Rp '.number_format($invoice->subtotal)}}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -68,11 +68,11 @@
                     <div class="col-4">
                       <div class="d-flex justify-content-between align-items-center">
                         <p>DP :</p>
-                        <p>{{$invoice->dp ?? 0}}</p>
+                        <p>{{'Rp '.number_format($invoice->dp ?? 0)}}</p>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p>Dasar Pengenaan Pajak :</p>
-                        <p>{{$invoice->subtotal}}</p>
+                        <p>{{'Rp '.number_format($invoice->subtotal)}}</p>
                       </div>
                       <div class="d-flex justify-content-between align-items-center">
                         <p>PPN :</p>
@@ -120,7 +120,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-sm-12 no-print">
+      <div class="col-12 no-print">
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">
@@ -131,7 +131,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-sm-12 target-kwitansi">
+      <div class="col-12 target-kwitansi">
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">
@@ -200,7 +200,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-sm-12 no-print">
+      <div class="col-12 no-print">
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">

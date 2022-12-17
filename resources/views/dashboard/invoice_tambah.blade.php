@@ -4,7 +4,7 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-md-12 col-sm-12 ">
+      <div class="col-12">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
@@ -82,7 +82,7 @@
                     @error('dp')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Subtotal</label>
                   <div class="col-md-9 col-sm-9 ">
                     <div class="input-group">
@@ -93,7 +93,7 @@
                     </div>
                     @error('subtotal')<small>*{{$message}}</small>@enderror
                   </div>
-                </div>
+                </div> --}}
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Total</label>
                   <div class="col-md-9 col-sm-9 ">
@@ -112,6 +112,17 @@
                     <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id="" cols="30" rows="3"></textarea>
                     {{-- <input type="text" class="form-control" placeholder="Masukkan Keterangan" name="keterangan"> --}}
                     @error('keterangan')<small>*{{$message}}</small>@enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <select name="proyek" class="form-control" id="">
+                      @foreach ($proyek as $p)
+                        <option value={{ $p->id }} @if (Session::get('proyek') == $p->id) selected @endif>
+                          {{ $p->nama }}</option>
+                      @endforeach
+                    </select>
                   </div>
                 </div>
                 <div class="ln_solid"></div>

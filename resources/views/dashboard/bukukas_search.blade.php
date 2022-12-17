@@ -14,7 +14,7 @@
           <div class="x_content">
             <div class="row">
               <div class="col-12">
-                <form action="{{ url('/dashboard/bukukas_search') }}">
+                <form action="{{ url('/dashboard/search') }}">
                   <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search" name="search">
                     <div class="input-group-append">
@@ -29,7 +29,7 @@
             <form action="{{ url('/dashboard/filter') }}" method="post">
               @csrf
               <div class="row">
-                <div class="col-md-6 col-12">
+                <div class="col-md-6">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Kategori</label>
                     <div class="col-md-9 col-sm-9 ">
@@ -43,7 +43,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12 mt-md-0 mt-1">
+                <div class="col-md-6 mt-md-0 mt-1">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
                     <div class="col-md-9 col-sm-9 ">
@@ -65,12 +65,10 @@
                     style="border-radius: 50px">Tanggal</button>
                   <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_month"
                     style="border-radius: 50px">Bulan</button>
-                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_year"
-                    style="border-radius: 50px">Tahun</button>
                 </div>
               </div>
               <div class="row mt-1 target_date">
-                <div class="col-md-6 col-12">
+                <div class="col-md-6">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Mulai</label>
                     <div class="col-md-9 col-sm-9 ">
@@ -79,7 +77,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 col-12 mt-md-0 mt-1">
+                <div class="col-md-6 mt-md-0 mt-1">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
@@ -90,7 +88,7 @@
                 </div>
               </div>
               <div class="row mt-1 target_month d-none">
-                <div class="col-md-6 col-12">
+                <div class="col-md-6">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Bulan</label>
                     <div class="col-md-9 col-sm-9 ">
@@ -99,17 +97,14 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row mt-1 target_year d-none">
-                <div class="col-md-6 col-12">
+                {{-- <div class="col-md-6 mt-md-0 mt-1">
                   <div class="form-group row">
-                    <label class="col-form-label col-md-3 col-sm-3 ">Tahun</label>
+                    <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-yearpicker" name="tahun" disabled
-                        value={{ Session::get('tahun') ?? '-' }}>
+                      <input type="date" class="form-control" name="selesai" value={{ now() }}>
                     </div>
                   </div>
-                </div>
+                </div> --}}
               </div>
               <div class="d-flex mt-1 justify-content-between">
                 <div class=""></div>
@@ -122,7 +117,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12">
+      <div class="col-md-12 col-sm-12 ">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
@@ -130,15 +125,13 @@
                 <h3>Buku Kas</h3>
                 <div class="align-items-center">
                   @if (Session::get('role') === 'owner')
-                    <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cetak Excel"
-                      href="{{ url('/dashboard/export') }}"><i class="fa fa-file-excel-o"></i></a>
+                    <a class="btn btn-secondary" href="{{ url('/dashboard/export') }}"><i
+                        class="fa fa-file-excel-o"></i></a>
                   @endif
                   @if (Session::get('role') !== 'operator')
-                    <a class="btn btn-success text-sm btn-sm fw-semibold" data-toggle="tooltip" data-placement="top"
-                      title="Tambah Transaksi dari Stok" href="{{ url('/dashboard/ambil_stok') }}"><span
+                    <a class="btn btn-success text-sm btn-sm fw-semibold" href="{{ url('/dashboard/ambil_stok') }}"><span
                         class="text-white mr-1"><i class="fa fa-plus"></i></span>Ambil Stok</a>
-                    <a class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-                      title="Tambah Transaksi Langsung" href="{{ url('/dashboard/bukukas_tambah') }}"><i
+                    <a class="btn btn-primary" href="{{ url('/dashboard/bukukas_tambah') }}"><i
                         class="fa fa-plus"></i></a>
                   @endif
                 </div>
@@ -207,12 +200,6 @@
                       @endif
                     </tr>
                   @endforeach
-                  {{-- <tr style='background: #c0c0c0'>
-                    <td colspan="6" class="sum text-center">JUMLAH</td>
-                    <td class="sum">{{'Rp '.number_format($masuk)}}</td>
-                    <td class="sum">{{'Rp '.number_format($keluar)}}</td>
-                    <td></td>
-                  </tr> --}}
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">

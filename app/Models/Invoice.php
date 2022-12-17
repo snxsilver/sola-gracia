@@ -25,6 +25,7 @@ class Invoice extends Model
         'total',
         'tanggal_posted',
         'keterangan',
+        'proyek',
         'kreator',
     ];
 }

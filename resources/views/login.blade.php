@@ -59,7 +59,8 @@
               <br />
 
               <div>
-                <h1>CV. Sola Gracia</h1>
+                <img src="{{ asset('/images/sola-gracia.png') }}" style="width: 150px; margin-bottom: 10px" alt="">
+                <h1 style="color: black">CV. Sola Gracia</h1>
                 <p>©2022 All Rights Reserved.</p>
               </div>
             </div>

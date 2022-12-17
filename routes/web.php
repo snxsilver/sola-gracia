@@ -47,7 +47,9 @@ Route::group(['middleware' => 'auth'], function () {
   Route::post('/dashboard/proyek_update', [DashboardController::class, 'proyek_update']);
   Route::get('/dashboard/proyek_hapus/{id}', [DashboardController::class, 'proyek_hapus']);
 
-  Route::get('/dashboard/search', [DashboardController::class, 'search']);
+  Route::get('/dashboard/bukukas_search', [DashboardController::class, 'bukukas_search']);
+  Route::get('/dashboard/invoice_search', [DashboardController::class, 'invoice_search']);
+
   Route::post('/dashboard/filter', [DashboardController::class, 'filter']);
   Route::get('/dashboard/bukukas_sort/{sort}', [DashboardController::class, 'bukukas_sort']);
 
@@ -72,6 +74,9 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard/invoice_hapus/{id}', [DashboardController::class, 'invoice_hapus']);
 
   Route::get('/dashboard/invoice_cetak/{id}', [DashboardController::class, 'invoice_cetak']);
+
+  Route::get('/dashboard/pajak', [DashboardController::class, 'pajak']);
+  Route::post('/dashboard/pajak_aksi', [DashboardController::class, 'pajak_aksi']);
 
   Route::get('/dashboard/stok', [DashboardController::class, 'stok']);
   Route::get('/dashboard/stok_tambah', [DashboardController::class, 'stok_tambah']);

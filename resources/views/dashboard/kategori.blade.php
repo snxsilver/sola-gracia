@@ -4,13 +4,15 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-md-12 col-sm-12 ">
+      <div class="col-12">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center">
                 <h3>Daftar Kategori Buku Kas</h3>
+                @if (Session::get('role') === 'owner')
                 <a class="btn btn-primary" href="{{ url('/dashboard/kategori_tambah') }}"><i class="fa fa-plus"></i></a>
+                @endif
               </div>
             </div>
           </div>
@@ -33,10 +35,12 @@
                       <td>
                         <a class="btn btn-sm btn-success" href="{{ url('/dashboard/kategori_view/' . $k->id) }}"><i
                             class="fa fa-eye"></i></a>
-                        <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/kategori_edit/' . $k->id) }}"><i
-                            class="fa fa-pencil"></i></a>
-                        <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/kategori_hapus/' . $k->id) }}"><i
-                            class="fa fa-trash"></i></a>
+                        @if (Session::get('role') === 'owner')
+                          <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/kategori_edit/' . $k->id) }}"><i
+                              class="fa fa-pencil"></i></a>
+                          <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/kategori_hapus/' . $k->id) }}"><i
+                              class="fa fa-trash"></i></a>
+                        @endif
                       </td>
                     </tr>
                   @endforeach

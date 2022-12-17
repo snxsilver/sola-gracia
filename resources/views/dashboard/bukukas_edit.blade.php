@@ -5,7 +5,7 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-md-12 col-sm-12 ">
+      <div class="col-12">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
@@ -115,6 +115,11 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
+                    @if($bukukas->nota)
+                    <div class="mt-2 ml-2">
+                      <a type="button" download="{{$bukukas->no_bukti ?? 'Nota'}}" href="{{url('/images/nota/'.$bukukas->nota)}}" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></a>
+                    </div>
+                    @endif
                     <img src="{{$bukukas->nota ? asset('/images/nota/'.$bukukas->nota) : ''}}" alt="" id="imgshowa">
                   </div>
                 </div>

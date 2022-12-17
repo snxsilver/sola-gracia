@@ -30,21 +30,26 @@
       <div class="col-md-3 left_col">
         <div class="left_col scroll-view">
           <div class="navbar nav_title mb-3" style="border: 0;">
-            <a href="index.html" class="site_title"><i class="fa fa-wrench"></i><span class="ml-2">CV Sola Gracia</span></a>
+            <a href="{{url('/dashboard')}}" class="site_title"><i class="fa fa-gears"></i><span class="ml-2">CV Sola Gracia</span></a>
           </div>
 
           <div class="clearfix"></div>
 
           <!-- menu profile quick info -->
-          {{-- <div class="profile clearfix">
+          <div class="profile clearfix ml-3">
             <div class="profile_pic">
-              <img src="{{ asset('images/img.jpg') }}" alt="..." class="img-circle profile_img">
+              <div class="img-circle profile_img" style="width: 50px; height: 50px">
+                <span class="d-flex justify-content-center align-items-center" style="height: 40px; font-size: 30px">
+                  <i class="fa fa-user"></i>
+                </span>
+              </div>
+              {{-- <img src="{{ asset('images/img.jpg') }}" alt="..." class="img-circle profile_img"> --}}
             </div>
             <div class="profile_info">
-              <span>Welcome,</span>
-              <h2>John Doe</h2>
+              <h2>{{Session::get('username')}}</h2>
+              <span>{{ucwords(Session::get('role'))}}</span>
             </div>
-          </div> --}}
+          </div>
           <!-- /menu profile quick info -->
 
           <br />
@@ -54,7 +59,7 @@
             <div class="menu_section">
               <h3>General</h3>
               <ul class="nav side-menu">
-                <li><a href="{{url('/dashboard')}}"><i class="fa fa-home"></i> Dashboard <span class="fa fa-chevron-right"></span></a></li>
+                {{-- <li><a href="{{url('/dashboard')}}"><i class="fa fa-home"></i> Dashboard <span class="fa fa-chevron-right"></span></a></li> --}}
                 {{-- <li><a href="{{url('/dashboard/kategori')}}"><i class="fa fa-tag"></i> Kategori <span class="fa fa-chevron-right"></span></a></li> --}}
                 <li><a href="{{url('/dashboard/proyek')}}"><i class="fa fa-institution"></i> Proyek <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/bukukas')}}"><i class="fa fa-book"></i> Buku Kas <span class="fa fa-chevron-right"></span></a>
@@ -65,7 +70,9 @@
                 </li>
                 <li><a href="{{url('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
+                @if(Session::get('role') === 'owner')
                 <li><a href="{{url('/dashboard/user')}}"><i class="fa fa-user"></i> User <span class="fa fa-chevron-right"></span></a></li>
+                @endif
                 <li><a href="{{url('/logout')}}"><i class="fa fa-sign-out"></i> Logout <span class="fa fa-chevron-right"></span></a></li>
                 {{-- <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
@@ -205,7 +212,7 @@
       <!-- footer content -->
       <footer class="no-print">
         <div class="pull-right">
-          Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+          {{-- Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a> --}}
         </div>
         <div class="clearfix"></div>
       </footer>
