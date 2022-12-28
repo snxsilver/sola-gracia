@@ -23,7 +23,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Kategori Transaksi</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Kategori Transaksi" name="kategori">
+                    <input type="text" class="form-control" placeholder="Masukkan Kategori Transaksi" name="kategori" value="{{old('kategori')}}">
                     @error('kategori')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

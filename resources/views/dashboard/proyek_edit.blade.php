@@ -23,7 +23,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Kode</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Kode Proyek" name="kode" value="{{$proyek->kode}}">
+                    <input type="text" class="form-control" placeholder="Masukkan Kode Proyek" name="kode" value="{{old('kode') ?? $proyek->kode}}">
                     <input type="hidden" class="form-control" placeholder="Masukkan Kode Proyek" name="id" value="{{$proyek->id}}">
                     @error('kode')<small>*{{$message}}</small>@enderror
                   </div>
@@ -31,7 +31,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nama</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nama Proyek" name="nama" value="{{$proyek->nama}}">
+                    <input type="text" class="form-control" placeholder="Masukkan Nama Proyek" name="nama" value="{{old('nama') ?? $proyek->nama}}">
                     @error('nama')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -42,7 +42,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai" value={{$proyek->nilai}}>
+                      <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai" value={{old('nilai') ?? $proyek->nilai}}>
                     </div>
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>

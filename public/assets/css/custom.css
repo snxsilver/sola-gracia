@@ -6287,6 +6287,10 @@ table .sum {
   font-weight: bold;
 }
 
+table th {
+  white-space: nowrap;
+}
+
 .datepicker,
 .table-condensed {
   width: 220px;
@@ -6294,8 +6298,14 @@ table .sum {
   font-size: x-small;
 }
 
-.form-group small {
+.form-group small:not(.warning) {
+  display: block;
   color: rgb(231, 76, 60);
+  font-style: italic;
+}
+
+.form-group small.warning {
+  display: block;
   font-style: italic;
 }
 
@@ -6384,42 +6394,62 @@ form .error {
     display: none;
   }
 
-  html, body {
-    height:100vh; 
-    margin: 0 !important; 
+  html,
+  body {
+    height: 100vh;
+    margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     -webkit-print-color-adjust: exact;
   }
 }
-.dropzone-wrapper{
-	position: relative;
-	border: 2px solid rgba(80, 80, 255, 0.3);
-	background-color: rgb(246, 246, 255);
-	/* height: 80px;
+
+.dropzone-wrapper {
+  position: relative;
+  border: 2px solid rgba(80, 80, 255, 0.3);
+  background-color: rgb(246, 246, 255);
+  /* height: 80px;
 	width:60px; */
-	overflow: hidden;
-	color:blue;
-	text-align: center;
-	/* background-color: red; */
+  overflow: hidden;
+  color: blue;
+  text-align: center;
+  /* background-color: red; */
 }
-.dropzone-desk{
-	position:absolute;
-	z-index: 12;
-	margin: 0 auto;
-	/* width: 60px; */
+
+.dropzone-desk {
+  position: absolute;
+  z-index: 12;
+  margin: 0 auto;
+  /* width: 60px; */
 }
-input[type="file"]{
-	cursor:pointer;
+
+input[type="file"] {
+  cursor: pointer;
 }
+
 .form-control-file {
   border-radius: 0;
   border: 1px solid #ced4da;
   padding: 5px;
   width: 100%;
 }
+
 .form-control-file:focus {
   border-color: #CCD0D7;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
+}
+
+.unhide-pass {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.position-relative input[name=password] {
+  padding-right: 40px;
 }

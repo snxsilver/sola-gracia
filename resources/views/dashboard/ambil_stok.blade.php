@@ -1,4 +1,5 @@
 @extends('dashboard.header');
+@inject('carbon', 'Carbon\Carbon')
 
 @section('halaman_admin')
   <!-- page content -->
@@ -25,7 +26,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" name="proyek">
                       @foreach ($proyek as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        <option value="{{ $p->id }}" @if(old('proyek') == $p->id) selected @endif>{{ $p->nama }}</option>
                       @endforeach
                     </select>
                     @error('proyek')
@@ -36,8 +37,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" readonly class="form-control" placeholder="Masukkan Kode Proyek" name="tanggal"
-                      value={{date_format(now(), 'd-M-Y')}}>
+                    <input type="text" readonly class="form-control b-datepicker" style="background: transparent" placeholder="Masukkan Kode Proyek" name="tanggal"
+                      value={{old('tanggal') ? $carbon::parse(old('tanggal'))->format('d-M-Y') : $carbon::parse(now())->format('d-M-Y')}}>
                     @error('tanggal')
                       <small>*{{ $message }}</small>
                     @enderror
@@ -48,7 +49,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" name="kategori">
                       @foreach ($kategori as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                        <option value="{{ $k->id }}" @if(old('kategori') == $k->id) selected @endif>{{ $k->nama }}</option>
                       @endforeach
                     </select>
                     @error('kategori')
@@ -61,7 +62,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" name="stok">
                       @foreach ($stok as $s)
-                        <option value="{{ $s->id }}">{{ $s->barang . ' - ' . $s->kuantitas . ' ' . $s->satuan }}</option>
+                        <option value="{{ $s->id }}" @if(old('stok') == $s->id) selected @endif>{{ $s->barang . ' - ' . $s->kuantitas . ' ' . $s->satuan }}</option>
                       @endforeach
                     </select>
                     @error('stok')
@@ -72,8 +73,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Jumlah</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Ambil Stok" name="kuantitas">
-                    <small>*Jumlah tidak boleh melebihi stok</small>
+                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas" value="{{old('kuantitas') ?? ''}}" step="0.1">
+                    <small class="warning">*Jumlah tidak boleh melebihi stok</small>
                     @error('kuantitas')
                       <small>*{{ $message }}</small>
                     @enderror

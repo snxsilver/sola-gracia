@@ -23,29 +23,29 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{date_format(now(), 'd-M-Y')}}>
+                    <input type="text" readonly class="form-control b-datepicker" style="background: transparent" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{date_format(now(), 'd-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nama Barang</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nama Barang" name="barang">
+                    <input type="text" class="form-control" placeholder="Masukkan Nama Barang" name="barang" value="{{old('barang')}}">
                     @error('barang')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Kuantitas</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas">
+                    <input type="number" class="form-control" placeholder="Masukkan Kuantitas" name="kuantitas" value="{{old('kuantitas')}}" step="0.1">
                     @error('kuantitas')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Satuan</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Satuan Jumlah Barang" name="satuan">
-                    @error('kuantitas')<small>*{{$message}}</small>@enderror
+                    <input type="text" class="form-control" placeholder="Masukkan Satuan Barang" name="satuan" value="{{old('satuan')}}">
+                    @error('satuan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
@@ -55,7 +55,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga">
+                      <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga" value="{{old('harga')}}">
                     </div>
                     @error('harga')<small>*{{$message}}</small>@enderror
                   </div>
@@ -63,7 +63,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang" name="bukti">
+                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang" name="bukti" value="{{old('bukti')}}">
                     @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

@@ -7,16 +7,12 @@
     <div class="row">
       <div class="col-12">
         <div class="x_panel">
-          <div class="x_title filter_toggler d-flex justify-content-between" style="cursor: pointer">
-            <span style="color: black; font-weight: bold">Filter</span>
-            <span style="color: black"><i class="fa fa-chevron-down"></i></span>
-          </div>
           <div class="x_content">
             <div class="row">
               <div class="col-12">
                 <form action="{{ url('/dashboard/bukukas_search') }}">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search">
+                    <input type="text" class="form-control" placeholder="Search" name="search" value={{$search ?? ''}}>
                     <div class="input-group-append">
                       <button type="submit" class="input-group-text"><i class="fa fa-search"></i></button>
                     </div>
@@ -24,6 +20,10 @@
                 </form>
               </div>
             </div>
+          </div>
+          <div class="x_title filter_toggler d-flex justify-content-between" style="cursor: pointer">
+            <span style="color: black; font-weight: bold">Filter</span>
+            <span style="color: black"><i class="fa fa-chevron-down"></i></span>
           </div>
           <div class="x_content filter_toggle d-none" style="color: black">
             <form action="{{ url('/dashboard/filter') }}" method="post">
@@ -169,10 +169,13 @@
                     <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa fa-sort"></i></a>
                     </th>
                     <th>Keterangan</th>
-                    <th>Kategori <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa fa-sort"></th>
-                    <th>No Bukti <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa fa-sort"></th>
-                    <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa fa-sort"></th>
-                    <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa fa-sort"></th>
+                    <th>Kategori <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th>No Bukti <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa fa-sort"></i></a></th>
+                    <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa fa-sort"></i></a>
+                    </th>
                     @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
                     @endif
@@ -193,28 +196,77 @@
                       @if (Session::get('role') === 'owner')
                         <td width="10%">
                           @if ($b->ambil_stok == 0)
+                            @if ($b->nota)
+                              <span data-toggle="tooltip" data-placement="bottom" title="Lihat Nota"><a class="btn btn-sm btn-success text-white" style="cursor: pointer" data-toggle="modal"
+                                data-target="#shownota" data-name="{{ $b->no_bukti ?? 'Nota' }}"
+                                data-url="{{ url('/images/nota/' . $b->nota) }}"
+                                data-whatever="{{ asset('/images/nota/' . $b->nota) }}"><i class="fa fa-eye"></i></a></span>
+                            @endif
                             <a class="btn btn-sm btn-secondary"
                               href="{{ url('/dashboard/bukukas_edit/' . $b->id) }}"><i class="fa fa-pencil"></i></a>
-                            <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/bukukas_hapus/' . $b->id) }}"><i
+                            <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
+                              data-target="#hapusitem"
+                              data-whatever="{{ url('/dashboard/bukukas_hapus/' . $b->id) }}"><i
                                 class="fa fa-trash"></i></a>
                           @else
                             <a class="btn btn-sm btn-secondary"
                               href="{{ url('/dashboard/ambil_stok_edit/' . $b->id) }}"><i class="fa fa-pencil"></i></a>
-                            <a class="btn btn-sm btn-danger"
-                              href="{{ url('/dashboard/ambil_stok_hapus/' . $b->id) }}"><i class="fa fa-trash"></i></a>
+                            <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
+                              data-target="#hapusitem"
+                              data-whatever="{{ url('/dashboard/ambil_stok_hapus/' . $b->id) }}"><i
+                                class="fa fa-trash"></i></a>
                           @endif
                         </td>
                       @endif
                     </tr>
                   @endforeach
-                  {{-- <tr style='background: #c0c0c0'>
-                    <td colspan="6" class="sum text-center">JUMLAH</td>
-                    <td class="sum">{{'Rp '.number_format($masuk)}}</td>
-                    <td class="sum">{{'Rp '.number_format($keluar)}}</td>
-                    <td></td>
-                  </tr> --}}
                 </tbody>
               </table>
+              {{-- Modal Open --}}
+              <div class="modal fade" id="hapusitem" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Hapus Buku Kas</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah Anda yakin akan menghapus buku kas?
+                    </div>
+                    <div class="modal-footer">
+                      <a class="btn btn-primary tombol-ya text-white" style="cursor: pointer">Ya</a>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {{-- End of Modal --}}
+              {{-- Modal Open --}}
+              <div class="modal fade" id="shownota" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Nota</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <img src="" class="showimage" style="width: 100%" alt="">
+                    </div>
+                    <div class="modal-footer">
+                      <a type="button" class="btn btn-primary tombol-ya" data-toggle="tooltip"
+                        data-placement="bottom" title="Download Nota"><i class="fa fa-download"></i></a>
+                      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {{-- End of Modal --}}
               <div class="d-flex justify-content-center">
                 {{ $bukukas->links() }}
               </div>

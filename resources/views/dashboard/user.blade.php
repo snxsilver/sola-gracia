@@ -35,7 +35,9 @@
                                         <td>{{$u->role}}</td>
                                         <td>
                                             <a class="btn btn-sm btn-secondary" href="{{url('/dashboard/user_edit/'.$u->id)}}"><i class="fa fa-pencil"></i></a>
+                                            @if (Session::get('id') !== $u->id)
                                             <a class="btn btn-sm btn-danger" href="{{url('/dashboard/user_hapus/'.$u->id)}}"><i class="fa fa-trash"></i></a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

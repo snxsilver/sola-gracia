@@ -25,7 +25,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" required name="proyek">
                       @foreach($proyek as $p)
-                      <option value="{{$p->id}}">{{$p->nama}}</option>
+                      <option value="{{$p->id}}" @if (old('proyek') == $p->id) selected @endif>{{$p->nama}}</option>
                       @endforeach
                     </select>
                     @error('proyek')<small>*{{$message}}</small>@enderror
@@ -34,14 +34,14 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Kode Proyek" name="tanggal" value={{date_format(now(), 'd-M-Y')}}>
+                    <input type="text" readonly style="background: transparent" class="form-control b-datepicker" placeholder="Masukkan Kode Proyek" name="tanggal" value={{old('tanggal') ?? date_format(now(), 'd-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id="" cols="30" rows="3"></textarea>
+                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id="" cols="30" rows="3">{{old('keterangan')}}</textarea>
                     {{-- <input type="text" class="form-control" placeholder="Masukkan Keterangan" name="keterangan"> --}}
                     @error('keterangan')<small>*{{$message}}</small>@enderror
                   </div>
@@ -51,7 +51,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" required name="kategori">
                       @foreach($kategori as $k)
-                      <option value="{{$k->id}}">{{$k->nama}}</option>
+                      <option value="{{$k->id}}" @if (old('kategori') == $k->id) selected @endif>{{$k->nama}}</option>
                       @endforeach
                     </select>
                     @error('kategori')<small>*{{$message}}</small>@enderror
@@ -64,7 +64,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk">
+                      <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk" value="{{old('masuk')}}">
                     </div>
                     @error('masuk')<small>*{{$message}}</small>@enderror
                   </div>
@@ -76,7 +76,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar">
+                      <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar" value="{{old('keluar')}}">
                     </div>
                     @error('keluar')<small>*{{$message}}</small>@enderror
                   </div>
@@ -84,7 +84,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti">
+                    <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"  value="{{old('bukti')}}">
                     @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

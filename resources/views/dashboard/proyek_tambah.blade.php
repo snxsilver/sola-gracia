@@ -23,14 +23,14 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Kode</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Kode Proyek" name="kode">
+                    <input type="text" class="form-control" placeholder="Masukkan Kode Proyek" name="kode" value="{{old('kode')}}">
                     @error('kode')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nama</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nama Proyek" name="nama">
+                    <input type="text" class="form-control" placeholder="Masukkan Nama Proyek" name="nama" value="{{old('nama')}}">
                     @error('nama')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -41,12 +41,11 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai">
+                      <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai" value="{{old('nilai')}}">
                     </div>
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                @if(Session::get('role') == "owner")
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Pajak</label>
                   <div class="col-md-9 col-sm-9 ">
@@ -57,7 +56,6 @@
                     @error('role')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                @endif
                 <div class="ln_solid"></div>
                 <div class="form-group row">
                   <div class="col-md-9 col-sm-9  offset-md-3">

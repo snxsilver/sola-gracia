@@ -39,10 +39,11 @@
               <small class="error">*{{ $message }}</small>
             @enderror
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="off" />
+              <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="off" value="{{old('username')}}" />
             </div>
-            <div class="form-group">
+            <div class="form-group bg-secondary position-relative">
               <input type="password" class="form-control" placeholder="Password" name="password" />
+              <span class="unhide-pass"><i class="fa fa-eye"></i></span>
             </div>
             <div class="d-flex justify-content-end">
               <button type="submit" class="btn btn-success">Login</button>
@@ -69,6 +70,8 @@
       </div>
     </div>
   </div>
+  <script src="{{ asset('/vendors/jquery/dist/jquery.min.js') }}"></script>
+  <script src="{{ asset('/assets/js/custom.js') }}"></script>
 </body>
 
 </html>

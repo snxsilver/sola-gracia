@@ -23,7 +23,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Username</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Username" name="username">
+                    <input type="text" class="form-control" placeholder="Masukkan Username" name="username"  value="{{old('username')}}">
                     @error('username')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

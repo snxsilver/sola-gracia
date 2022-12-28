@@ -74,7 +74,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $username = $request->input('username');
@@ -127,7 +127,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $username = $request->input('username');
@@ -154,6 +154,9 @@ class DashboardController extends Controller
     {
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
+        }
+        if (Session::get('id' === $id)){
+            return redirect('/dashboard/user');
         }
         User::where('id', $id)->delete();
 
@@ -200,7 +203,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $kategori = $request->input('kategori');
@@ -239,7 +242,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -265,11 +268,48 @@ class DashboardController extends Controller
 
     public function proyek()
     {
-        if (Session::get('role') === 'operator') {
-            $data['proyek'] = Proyek::where('pajak', 1)->get();
-        } else {
-            $data['proyek'] = Proyek::get();
+        $data_query = Proyek::where(function($query){
+            if (Session::get('role') === 'operator'):
+                $query->where('pajak', 1);
+            endif;
+        });
+
+        if (Session::get('sort_kategori')) {
+            if (Session::get('sort_kategori') === 'asc') {
+                $data_query2 = $data_query->orderBy('kode', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('kode', 'desc');
+            }
         }
+
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
+                $data_query2 = $data_query->orderBy('nilai', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('nilai', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
+                $data_query2 = $data_query->orderBy('nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
+                $data_query2 = $data_query->orderBy('id', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('id', 'desc');
+            }
+        } else {
+            $data_query2 = $data_query->orderBy('id', 'desc');
+        }
+
+        $data['proyek'] = $data_query2->paginate(50);
+
         return view('dashboard.proyek', $data);
     }
 
@@ -301,7 +341,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $nama = $request->input('nama');
@@ -349,7 +389,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -643,8 +683,8 @@ class DashboardController extends Controller
                 $query->where('proyek.pajak', 1);
             }
         })
-            ->get();
-        $data['kategori'] = Kategori::get();
+            ->orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         $data_query = Bukukas::where(function ($query) {
             if (Session::get('kategori')) :
                 $query->where('kategori', Session::get('kategori'));
@@ -736,12 +776,12 @@ class DashboardController extends Controller
 
         if (Session::get('sort_tanggal')) {
             if (Session::get('sort_tanggal') === 'asc') {
-                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc')->orderBy('id', 'asc');
             } else {
-                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc');
+                $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc')->orderBy('id', 'desc');
             }
         } else {
-            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'asc');
+            $data_query2 = $data_query->orderBy('bukukas.tanggal', 'desc')->orderBy('id', 'desc');
         }
 
         $data_query3 = Bukukas::where(function ($query) {
@@ -804,8 +844,8 @@ class DashboardController extends Controller
         if (Session::get('role') === 'operator') {
             return redirect('/dashboard');
         }
-        $data['proyek'] = Proyek::get();
-        $data['kategori'] = Kategori::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         return view('dashboard.bukukas_tambah', $data);
     }
 
@@ -837,7 +877,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $proyek = $request->input('proyek');
@@ -895,8 +935,8 @@ class DashboardController extends Controller
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
         }
-        $data['proyek'] = Proyek::get();
-        $data['kategori'] = Kategori::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         $data['bukukas'] = bukukas::where('id', $id)->first();
         return view('dashboard.bukukas_edit', $data);
     }
@@ -932,7 +972,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -955,8 +995,16 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        $nota = Bukukas::where('id', $id)->first();
+
+        if ($request->input('d_nota') === 'hapus'){
+            unlink(public_path('/images/nota/' . $nota->nota));
+            Bukukas::where('id', $id)->update([
+                'nota' => ''
+            ]);
+        }
+
         if ($request->hasFile('nota')) {
-            $nota = Bukukas::where('id', $id)->first();
             if ($nota->nota) {
                 unlink(public_path('/images/nota/' . $nota->nota));
             }
@@ -996,7 +1044,9 @@ class DashboardController extends Controller
         }
         $nota = Bukukas::where('id', $id)->first();
         if ($nota->nota) {
-            unlink(public_path('/images/nota/' . $nota->nota));
+            if (file_exists(public_path('/images/nota/' . $nota->nota))){
+                unlink(public_path('/images/nota/' . $nota->nota));
+            }
         }
 
         bukukas::where('id', $id)->delete();
@@ -1009,8 +1059,8 @@ class DashboardController extends Controller
         if (Session::get('role') === 'operator') {
             return redirect('/dashboard');
         }
-        $data['proyek'] = Proyek::get();
-        $data['kategori'] = Kategori::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         $data['stok'] = Stok::where('kuantitas', '>', 0)->get();
         return view('dashboard.ambil_stok', $data);
     }
@@ -1039,7 +1089,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $proyek = $request->input('proyek');
@@ -1112,7 +1162,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -1219,7 +1269,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         if ($request->input('id')) {
@@ -1236,13 +1286,6 @@ class DashboardController extends Controller
 
     public function invoice()
     {
-        $data['proyek'] = Proyek::where(function ($query) {
-            if (Session::get('role') === 'operator') {
-                $query->where('proyek.pajak', 1);
-            }
-        })
-            ->get();
-        $data['kategori'] = Kategori::get();
         $data_query = Invoice::where(function ($query) {
             if (Session::get('bulan')) :
                 $sesi = Session::get('bulan');
@@ -1304,7 +1347,7 @@ class DashboardController extends Controller
                 $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
             }
         } else {
-            $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+            $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
         }
 
         $data['invoice'] = $data_query2->paginate(50);
@@ -1316,7 +1359,7 @@ class DashboardController extends Controller
         if (Session::get('role') === 'operator') {
             return redirect('/dashboard');
         }
-        $data['proyek'] = Proyek::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
         return view('dashboard.invoice_tambah', $data);
     }
 
@@ -1342,7 +1385,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $faktur_pajak = $request->input('faktur_pajak');
@@ -1403,7 +1446,7 @@ class DashboardController extends Controller
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
         }
-        $data['proyek'] = Proyek::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
         $data['invoice'] = Invoice::where('id', $id)->first();
         return view('dashboard.invoice_edit', $data);
     }
@@ -1430,7 +1473,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -1521,7 +1564,7 @@ class DashboardController extends Controller
             'tanggal' => 'Tanggal pembelian barang',
             'barang' => 'Nama barang',
             'nota' => 'Nota',
-            'kuantitas' => 'Jumlah barang',
+            'kuantitas' => 'Kuantitas barang',
             'satuan' => 'Satuan jumlah barang',
             'harga' => 'Harga barang',
         ];
@@ -1535,7 +1578,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
@@ -1607,7 +1650,7 @@ class DashboardController extends Controller
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
             'barang' => 'Nama barang',
-            'kuantitas' => 'Jumlah barang',
+            'kuantitas' => 'Kuantitas barang',
             'satuan' => 'Satuan jumlah barang',
             'harga' => 'Harga barang',
             'nota' => 'Nota',
@@ -1622,7 +1665,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator);
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
         $id = $request->input('id');
@@ -1643,8 +1686,16 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        $nota = Stok::where('id', $id)->first();
+
+        if ($request->input('d_nota') === 'hapus'){
+            unlink(public_path('/images/nota/' . $nota->nota));
+            Stok::where('id', $id)->update([
+                'nota' => ''
+            ]);
+        }
+
         if ($request->hasFile('nota')) {
-            $nota = Stok::where('id', $id)->first();
             if ($nota->nota) {
                 unlink(public_path('/images/nota/' . $nota->nota));
             }
@@ -1683,7 +1734,7 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $nota = Stok::where('id', $id)->first();
-        if ($nota->nota) {
+        if (isset($nota->nota)) {
             unlink(public_path('/images/nota/' . $nota->nota));
         }
 
@@ -1695,14 +1746,15 @@ class DashboardController extends Controller
     public function bukukas_search(Request $request)
     {
         $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
+        $data['search'] = $search;
 
         $data['proyek'] = Proyek::where(function ($query) {
             if (Session::get('role') === 'operator') {
                 $query->where('proyek.pajak', 1);
             }
         })
-            ->get();
-        $data['kategori'] = Kategori::get();
+            ->orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
 
         $data_query = Bukukas::where('keterangan', 'like', '%' . $search . '%')
             ->orWhere('no_bukti', 'like', '%' . $search . '%')
@@ -1779,12 +1831,13 @@ class DashboardController extends Controller
 
         $data['keluar'] = $data_query3->sum('bukukas.keluar');
         $data['masuk'] = $data_query3->sum('bukukas.masuk');
-        return view('dashboard.bukukas_search', $data);
+        return view('dashboard.bukukas', $data);
     }
 
     public function invoice_search(Request $request)
     {
         $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
+        $data['search'] = $search;
 
         $data_query = Invoice::where('keterangan', 'like', '%' . $search . '%')
             ->orWhere('no_invoice', 'like', '%' . $search . '%')
@@ -1825,6 +1878,57 @@ class DashboardController extends Controller
         }
 
         $data['invoice'] = $data_query2->paginate(50);
-        return view('dashboard.invoice_search', $data);
+        return view('dashboard.invoice', $data);
+    }
+
+    public function proyek_search(Request $request){
+        $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
+        $data['search'] = $search;
+
+        $data_query = Proyek::where(function($query){
+            if (Session::get('role') === 'operator'):
+                $query->where('pajak', 1);
+            endif;
+        })->where('kode', 'like', '%' . $search . '%' )
+        ->orWhere('nama', 'like', '%' . $search . '%')
+        ->orWhere('nilai', 'like', '%' . $search . '%');
+
+        if (Session::get('sort_kategori')) {
+            if (Session::get('sort_kategori') === 'asc') {
+                $data_query2 = $data_query->orderBy('kode', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('kode', 'desc');
+            }
+        }
+
+        if (Session::get('sort_keluar')) {
+            if (Session::get('sort_keluar') === 'asc') {
+                $data_query2 = $data_query->orderBy('nilai', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('nilai', 'desc');
+            }
+        }
+
+        if (Session::get('sort_proyek')) {
+            if (Session::get('sort_proyek') === 'asc') {
+                $data_query2 = $data_query->orderBy('nama', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('nama', 'desc');
+            }
+        }
+
+        if (Session::get('sort_tanggal')) {
+            if (Session::get('sort_tanggal') === 'asc') {
+                $data_query2 = $data_query->orderBy('id', 'asc');
+            } else {
+                $data_query2 = $data_query->orderBy('id', 'desc');
+            }
+        } else {
+            $data_query2 = $data_query->orderBy('id', 'asc');
+        }
+
+        $data['proyek'] = $data_query2->paginate(50);
+
+        return view('dashboard.proyek', $data);
     }
 }

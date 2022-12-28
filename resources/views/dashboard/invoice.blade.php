@@ -7,16 +7,12 @@
     <div class="row">
       <div class="col-12">
         <div class="x_panel">
-          <div class="x_title filter_toggler d-flex justify-content-between" style="cursor: pointer">
-            <span style="color: black; font-weight: bold">Filter</span>
-            <span style="color: black"><i class="fa fa-chevron-down"></i></span>
-          </div>
           <div class="x_content">
             <div class="row">
               <div class="col-12">
                 <form action="{{ url('/dashboard/invoice_search') }}">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search">
+                    <input type="text" class="form-control" placeholder="Search" name="search" value={{$search ?? ''}}>
                     <div class="input-group-append">
                       <button type="submit" class="input-group-text"><i class="fa fa-search"></i></button>
                     </div>
@@ -24,6 +20,10 @@
                 </form>
               </div>
             </div>
+          </div>
+          <div class="x_title filter_toggler d-flex justify-content-between" style="cursor: pointer">
+            <span style="color: black; font-weight: bold">Filter</span>
+            <span style="color: black"><i class="fa fa-chevron-down"></i></span>
           </div>
           <div class="x_content filter_toggle d-none" style="color: black">
             <form action="{{ url('/dashboard/filter') }}" method="post">
@@ -146,7 +146,8 @@
                               class="fa fa-eye"></i></a>
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/invoice_edit/' . $i->id) }}"><i
                               class="fa fa-pencil"></i></a>
-                          <a class="btn btn-sm btn-danger" href="{{ url('/dashboard/invoice_hapus/' . $i->id) }}"><i
+                          <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
+                            data-target="#hapusitem" data-whatever="{{ url('/dashboard/invoice_hapus/' . $i->id) }}"><i
                               class="fa fa-trash"></i></a>
                         </td>
                       @endif
@@ -154,6 +155,28 @@
                   @endforeach
                 </tbody>
               </table>
+              {{-- Modal Open --}}
+              <div class="modal fade" id="hapusitem" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Hapus Invoice</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah Anda yakin akan menghapus invoice?
+                    </div>
+                    <div class="modal-footer">
+                      <a class="btn btn-primary tombol-ya text-white" style="cursor: pointer">Ya</a>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {{-- End of Modal --}}
               <div class="d-flex justify-content-center">
                 {{ $invoice->links() }}
               </div>

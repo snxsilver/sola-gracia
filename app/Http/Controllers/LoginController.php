@@ -39,7 +39,7 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return Redirect::back()->withErrors([
                 'message' => 'Username atau password salah.'
-            ]);
+            ])->withInput();
         }
 
         $credentials = $request->validate([
@@ -61,7 +61,7 @@ class LoginController extends Controller
 
         return Redirect::route('root')->withErrors([
             'message' => 'Username atau password salah.'
-        ]);
+        ])->withInput();
     }
     public function register(){
         return view('register');

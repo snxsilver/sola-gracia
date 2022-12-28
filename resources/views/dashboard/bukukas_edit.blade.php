@@ -27,7 +27,7 @@
                     <input type="hidden" name="id" value="{{ $bukukas->id }}">
                     <select id="role" class="form-control" required name="proyek">
                       @foreach ($proyek as $p)
-                        <option value="{{ $p->id }}" @if ($bukukas->proyek === $p->id) selected @endif>
+                        <option value="{{ $p->id }}" @if (old('proyek') ? old('proyek') == $p->id : $bukukas->proyek == $p->id) selected @endif>
                           {{ $p->nama }}</option>
                       @endforeach
                     </select>
@@ -39,8 +39,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Kode Proyek"
-                      name="tanggal" value={{ $carbon->parse($bukukas->tanggal)->format('d-M-Y') }}>
+                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Kode Proyek" style="background: transparent"
+                      name="tanggal" value={{ old('tanggal') ? $carbon->parse(old('tanggal'))->format('d-M-Y') : $carbon->parse($bukukas->tanggal)->format('d-M-Y') }}>
                     @error('tanggal')
                       <small>*{{ $message }}</small>
                     @enderror
@@ -50,7 +50,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
                   <div class="col-md-9 col-sm-9 ">
                     <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id="" cols="30"
-                      rows="3">{{ $bukukas->keterangan }}</textarea>
+                      rows="3">{{ old('keterangan') ?? $bukukas->keterangan }}</textarea>
                     {{-- <input type="text" class="form-control" placeholder="Masukkan Keterangan" name="keterangan"> --}}
                     @error('keterangan')
                       <small>*{{ $message }}</small>
@@ -62,7 +62,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" required name="kategori">
                       @foreach ($kategori as $k)
-                        <option value="{{ $k->id }}" @if ($bukukas->kategori === $k->id) selected @endif>
+                        <option value="{{ $k->id }}" @if (old('kategori') ? old('kategori') == $k->id : $bukukas->kategori == $k->id) selected @endif>
                           {{ $k->nama }}</option>
                       @endforeach
                     </select>
@@ -79,7 +79,7 @@
                         <span class="input-group-text">Rp</span>
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk"
-                        value={{ $bukukas->masuk ?? '' }}>
+                        value={{ old('masuk') ?? $bukukas->masuk ?? '' }}>
                     </div>
                     @error('masuk')
                       <small>*{{ $message }}</small>
@@ -94,7 +94,7 @@
                         <span class="input-group-text">Rp</span>
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar"
-                        value={{ $bukukas->keluar ?? '' }}>
+                        value={{ old('keluar') ?? $bukukas->keluar ?? '' }}>
                     </div>
                     @error('keluar')
                       <small>*{{ $message }}</small>
@@ -105,7 +105,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"
-                      value="{{ $bukukas->no_bukti ?? '' }}">
+                      value="{{ old('bukti') ?? $bukukas->no_bukti ?? '' }}">
                     @error('bukti')
                       <small>*{{ $message }}</small>
                     @enderror
@@ -116,8 +116,11 @@
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
                     @if($bukukas->nota)
-                    <div class="mt-2 ml-2">
-                      <a type="button" download="{{$bukukas->no_bukti ?? 'Nota'}}" href="{{url('/images/nota/'.$bukukas->nota)}}" class="btn btn-primary btn-sm"><i class="fa fa-download"></i></a>
+                    <div class="my-2 ml-2">
+                      <div class="d-flex align-items-center">
+                        <input type="checkbox" name="d_nota" value="hapus" style="cursor: pointer">
+                        <label for="d_nota" class="ml-2 hapus-nota" style="margin-bottom: 0; cursor: pointer">Hapus Nota</label>
+                      </div>
                     </div>
                     @endif
                     <img src="{{$bukukas->nota ? asset('/images/nota/'.$bukukas->nota) : ''}}" alt="" id="imgshowa">

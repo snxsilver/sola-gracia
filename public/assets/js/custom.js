@@ -210,7 +210,7 @@ $(document).ready(function () {
         orientation: 'auto bottom',
         format: 'M-yyyy',
         setDate: new Date(),
-        startView: "months", 
+        startView: "months",
         minViewMode: "months"
     })
     $('.b-yearpicker').datepicker({
@@ -219,21 +219,21 @@ $(document).ready(function () {
         orientation: 'auto bottom',
         format: 'yyyy',
         setDate: new Date(),
-        startView: "years", 
+        startView: "years",
         minViewMode: "years"
     })
 })
 // /Datepicker
 
 // Print Invoice and Kwitansi
-$(document).ready(function(){
-    $('.print-invoice').bind('click', function(){
+$(document).ready(function () {
+    $('.print-invoice').bind('click', function () {
         $('.target-invoice').removeClass('no-print')
         $('.target-kwitansi').addClass('no-print')
         window.print()
     })
-    
-    $('.print-kwitansi').bind('click', function(){
+
+    $('.print-kwitansi').bind('click', function () {
         $('.target-kwitansi').removeClass('no-print')
         $('.target-invoice').addClass('no-print')
         window.print()
@@ -253,6 +253,55 @@ $("#imgload").change(function () {
     }
 });
 // /Upload Image
+
+// Unhide Password
+$(".unhide-pass").bind('click', function () {
+    if ($(this).prev().prop('type') == 'password') {
+        $(this).prev().prop('type', 'text')
+        $(this).children().removeClass('fa-eye')
+        $(this).children().addClass('fa-eye-slash')
+    } else {
+        $(this).prev().prop('type', 'password')
+        $(this).children().removeClass('fa-eye-slash')
+        $(this).children().addClass('fa-eye')
+    }
+})
+// /Unhide Password
+
+// Modal Hapus Item
+$(document).ready(function () {
+    $('#hapusitem').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var linkAksi = button.data('whatever')
+        var linkTombol = this.querySelector('.tombol-ya');
+
+        linkTombol.setAttribute('href', linkAksi);
+      })
+})
+// /Modal Hapus Item
+
+// Modal Show Nota
+$(document).ready(function () {
+    $('#shownota').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var linkAksi = button.data('whatever')
+        var linkTombol = this.querySelector('.showimage')
+        var linkDownload = this.querySelector('.tombol-ya')
+
+        linkTombol.setAttribute('src', linkAksi)
+        linkDownload.setAttribute('download', button.data('name'))
+        linkDownload.setAttribute('href', button.data('url'))
+      })
+})
+// /Modal Show Nota
+
+// Hapus Nota Checkbox
+$(document).ready(function () {
+    $('.hapus-nota').bind('click', function(){
+        $(this).prev().prop('checked', !$(this).prev().prop('checked'))
+    })
+})
+// /Hapus Nota Checkbox
 
 // /User Added
 

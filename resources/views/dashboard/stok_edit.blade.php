@@ -25,42 +25,42 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Tanggal</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="hidden" name="id" value={{$stok->id}}>
-                    <input type="text" readonly class="form-control b-datepicker" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{$carbon::parse($stok->tanggal)->format('d-M-Y')}}>
+                    <input type="text" style="background: transparent" readonly class="form-control b-datepicker" placeholder="Masukkan Tanggal Beli Stok" name="tanggal" value={{old('tanggal') ? $carbon::parse(old('tanggal'))->format('d-M-Y') : $carbon::parse($stok->tanggal)->format('d-M-Y')}}>
                     @error('tanggal')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nama Barang</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nama Barang" name="barang" value="{{$stok->barang}}">
+                    <input type="text" class="form-control" placeholder="Masukkan Nama Barang" name="barang" value="{{old('barang') ?? $stok->barang}}">
                     @error('barang')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Kuantitas</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas" value="{{$stok->kuantitas}}">
+                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas" value="{{old('kuantitas') ?? $stok->kuantitas}}" step="0.1">
                     @error('kuantitas')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Satuan</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Satuan Jumlah Barang" name="satuan" value="{{$stok->satuan}}">
-                    @error('kuantitas')<small>*{{$message}}</small>@enderror
+                    <input type="text" class="form-control" placeholder="Masukkan Satuan Jumlah Barang" name="satuan" value="{{old('satuan') ?? $stok->satuan}}">
+                    @error('satuan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Harga</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga" value="{{$stok->harga}}">
+                    <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga" value="{{old('harga') ?? $stok->harga}}">
                     @error('harga')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang" name="bukti" value="{{$stok->no_bukti ?? ''}}">
+                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang" name="bukti" value="{{old('bukti') ?? $stok->no_bukti ?? ''}}">
                     @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -68,6 +68,14 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
+                    @if($stok->nota)
+                    <div class="my-2 ml-2">
+                      <div class="d-flex align-items-center">
+                        <input type="checkbox" name="d_nota" value="hapus" style="cursor: pointer">
+                        <label for="d_nota" class="ml-2 hapus-nota" style="margin-bottom: 0; cursor: pointer">Hapus Nota</label>
+                      </div>
+                    </div>
+                    @endif
                     <img src="{{$stok->nota ? asset('/images/nota/'.$stok->nota) : ''}}" alt="" id="imgshowa">
                   </div>
                 </div>
