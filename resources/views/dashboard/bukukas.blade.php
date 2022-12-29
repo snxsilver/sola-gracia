@@ -25,7 +25,7 @@
             <span style="color: black; font-weight: bold">Filter</span>
             <span style="color: black"><i class="fa fa-chevron-down"></i></span>
           </div>
-          <div class="x_content filter_toggle d-none" style="color: black">
+          <div class="x_content filter_toggle @if(Session::get('proyek') || Session::get('kategori') || Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) @else d-none @endif" style="color: black">
             <form action="{{ url('/dashboard/filter') }}" method="post">
               @csrf
               <div class="row">
@@ -61,20 +61,20 @@
               <div class="row mb-2">
                 <div class="ml-2" style="background: #c0c0c0; border-radius: 50px">
                   <button type="button"
-                    class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 bg-primary trigger_date"
+                    class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_date @if(!Session::get('bulan') && !Session::get('tahun')) bg-primary @endif"
                     style="border-radius: 50px">Tanggal</button>
-                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_month"
+                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_month @if(Session::get('bulan')) bg-primary @endif"
                     style="border-radius: 50px">Bulan</button>
-                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_year"
+                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_year @if(Session::get('tahun')) bg-primary @endif"
                     style="border-radius: 50px">Tahun</button>
                 </div>
               </div>
-              <div class="row mt-1 target_date">
+              <div class="row mt-1 target_date @if(Session::get('bulan') || Session::get('tahun')) d-none @endif">
                 <div class="col-md-6 col-12">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Mulai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-datepicker" name="mulai"
+                      <input type="text" readonly class="form-control b-datepicker" name="mulai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
                         value={{ Session::get('mulai') ?? '-' }}>
                     </div>
                   </div>
@@ -83,29 +83,29 @@
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-datepicker" name="selesai"
+                      <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
                         value={{ Session::get('selesai') ?? '-' }}>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row mt-1 target_month d-none">
+              <div class="row mt-1 target_month @if(!Session::get('bulan')) d-none @endif">
                 <div class="col-md-6 col-12">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Bulan</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-monthpicker" name="bulan" disabled
+                      <input type="text" readonly class="form-control b-monthpicker" name="bulan" @if(!Session::get('bulan')) disabled @endif
                         value={{ Session::get('bulan') ?? '-' }}>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row mt-1 target_year d-none">
+              <div class="row mt-1 target_year @if(!Session::get('tahun')) d-none @endif">
                 <div class="col-md-6 col-12">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Tahun</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-yearpicker" name="tahun" disabled
+                      <input type="text" readonly class="form-control b-yearpicker" name="tahun" @if(!Session::get('tahun')) disabled @endif
                         value={{ Session::get('tahun') ?? '-' }}>
                     </div>
                   </div>
