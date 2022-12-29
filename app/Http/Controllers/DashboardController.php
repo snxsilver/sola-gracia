@@ -155,7 +155,7 @@ class DashboardController extends Controller
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
         }
-        if (Session::get('id' === $id)){
+        if (Session::get('id' === $id)) {
             return redirect('/dashboard/user');
         }
         User::where('id', $id)->delete();
@@ -268,8 +268,8 @@ class DashboardController extends Controller
 
     public function proyek()
     {
-        $data_query = Proyek::where(function($query){
-            if (Session::get('role') === 'operator'):
+        $data_query = Proyek::where(function ($query) {
+            if (Session::get('role') === 'operator') :
                 $query->where('pajak', 1);
             endif;
         });
@@ -328,6 +328,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'kode' => 'Kode Proyek',
@@ -337,7 +339,7 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'nama' => 'required',
-            'nilai' => 'required',
+            'nilai' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -376,6 +378,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'kode' => 'Kode Proyek',
@@ -385,7 +389,7 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'nama' => 'required',
-            'nilai' => 'required',
+            'nilai' => 'required|numeric|gte',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -498,48 +502,6 @@ class DashboardController extends Controller
         $keluar = $data_query->sum('bukukas.keluar');
         $masuk = $data_query->sum('bukukas.masuk');
 
-        // return Excel::download(new UsersExport, 'users.xlsx');
-        $sheet->setCellValue('A1', 'Laporan Keuangan Buku Kas CV. Sola Gracia');
-        $sheet->setCellValue('A3', 'No');
-        $sheet->setCellValue('B3', 'Proyek');
-        $sheet->setCellValue('C3', 'Tanggal');
-        $sheet->setCellValue('D3', 'Keterangan');
-        $sheet->setCellValue('E3', 'Kategori');
-        $sheet->setCellValue('F3', 'No Bukti');
-        $sheet->setCellValue('G3', 'Masuk');
-        $sheet->setCellValue('H3', 'Keluar');
-
-        $no = 4;
-        foreach ($bukukas as $b) {
-            $sheet->setCellValue('A' . $no, $no - 3);
-            $sheet->setCellValue('B' . $no, $b->namaproyek);
-            $sheet->setCellValue('C' . $no, $b->tanggal);
-            $sheet->setCellValue('D' . $no, $b->keterangan);
-            $sheet->setCellValue('E' . $no, $b->namakategori);
-            $sheet->setCellValue('F' . $no, $b->no_bukti ?? '-');
-            $sheet->setCellValue('G' . $no, $b->masuk ?? '-');
-            $sheet->setCellValue('H' . $no, $b->keluar ?? '-');
-            $no++;
-        }
-
-        $sheet->setCellValue('A' . $no, 'Jumlah');
-        $sheet->setCellValue('G' . $no, $masuk);
-        $sheet->setCellValue('H' . $no, $keluar);
-
-        $sheet->mergeCells('A1:H1');
-        $sheet->mergeCells('A' . $no . ':F' . $no);
-
-        $sheet->getStyle('G4:H' . $no)->getNumberFormat()->setFormatCode('"Rp "#,##0');
-
-        $sheet->getColumnDimension('A')->setWidth(25, 'px');
-        $sheet->getColumnDimension('B')->setWidth(100, 'px');
-        $sheet->getColumnDimension('C')->setWidth(100, 'px');
-        $sheet->getColumnDimension('D')->setWidth(180, 'px');
-        $sheet->getColumnDimension('E')->setWidth(90, 'px');
-        $sheet->getColumnDimension('F')->setWidth(80, 'px');
-        $sheet->getColumnDimension('G')->setWidth(120, 'px');
-        $sheet->getColumnDimension('H')->setWidth(120, 'px');
-
         $centerBold = [
             'font' => [
                 'bold' => true,
@@ -576,18 +538,122 @@ class DashboardController extends Controller
             ],
         ];
 
+        // return Excel::download(new UsersExport, 'users.xlsx');
+        $sheet->setCellValue('A1', 'Laporan Keuangan Buku Kas CV. Sola Gracia');
+        $x = 2;
+        if (Session::get('proyek') || Session::get('kategori')) {
+            $kategori = Kategori::where('id', Session::get('kategori'))->first();
+            $proyek = Proyek::where('id', Session::get('proyek'))->first();
+            $state = ($proyek ? 'Proyek ' . $proyek->nama : '') . (Session::get('proyek') && Session::get('kategori') && ' ') . ($kategori ? 'Kategori ' . $kategori->nama : '');
+        } else {
+            $state = 'Semua Data';
+        }
+
+        $sheet->setCellValue('A' . $x, $state);
+
+        $sheet->mergeCells('A'.$x.':H'.$x);
+        $sheet->getStyle('A'.$x)->applyFromArray($centerBold);
+
+        $x++;
+        
+        if (Session::get('mulai') || Session::get('selesai') || Session::get('bulan')){
+            if (Session::get('mulai') && Session::get('selesai')){
+                $mulai = Carbon::parse(Session::get('mulai'))->locale('id');
+                $mulai->settings(['formatFunction' => 'translatedFormat']);
+                $get_mulai = $mulai->format('j F Y');
+                $selesai = Carbon::parse(Session::get('selesai'))->locale('id');
+                $selesai->settings(['formatFunction' => 'translatedFormat']);
+                $get_selesai = $selesai->format('j F Y');
+                $state = 'Dari '.$get_mulai.' Sampai '.$get_selesai;
+            } else if (Session::get('mulai')){
+                $mulai = Carbon::parse(Session::get('mulai'))->locale('id');
+                $mulai->settings(['formatFunction' => 'translatedFormat']);
+                $get_mulai = $mulai->format('j F Y');
+                $selesai = Carbon::parse(now())->locale('id');
+                $selesai->settings(['formatFunction' => 'translatedFormat']);
+                $get_selesai = $selesai->format('j F Y');
+                $state = 'Dari '.$get_mulai.' Sampai '.$get_selesai;
+            } else if (Session::get('selesai')){
+                $selesai = Carbon::parse(Session::get('selesai'))->locale('id');
+                $selesai->settings(['formatFunction' => 'translatedFormat']);
+                $get_selesai = $selesai->format('j F Y');
+                $state = 'Per '.$get_selesai;
+            } else if (Session::get('bulan')){
+                $selesai = Carbon::parse(Session::get('bulan'))->locale('id');
+                $selesai->settings(['formatFunction' => 'translatedFormat']);
+                $get_selesai = $selesai->format('F Y');
+                $state = 'Bulan '.$get_selesai;
+            }
+        } else {
+            $selesai = Carbon::parse(now())->locale('id');
+            $selesai->settings(['formatFunction' => 'translatedFormat']);
+            $get_selesai = $selesai->format('j F Y');
+            $state = 'Per '.$get_selesai;
+        }
+        $sheet->setCellValue('A' . $x, $state);
+
+        $sheet->mergeCells('A'.$x.':H'.$x);
+        $sheet->getStyle('A'.$x)->applyFromArray($centerBold);
+        $x++;
+
+        $x++;
+
+        $sheet->setCellValue('A'.$x, 'No');
+        $sheet->setCellValue('B'.$x, 'Proyek');
+        $sheet->setCellValue('C'.$x, 'Tanggal');
+        $sheet->setCellValue('D'.$x, 'Keterangan');
+        $sheet->setCellValue('E'.$x, 'Kategori');
+        $sheet->setCellValue('F'.$x, 'No Bukti');
+        $sheet->setCellValue('G'.$x, 'Masuk');
+        $sheet->setCellValue('H'.$x, 'Keluar');
+
+        $y = $x;
+        $x++;
+        $no = 1;
+
+        foreach ($bukukas as $b) {
+            $sheet->setCellValue('A' . $x, $no);
+            $sheet->setCellValue('B' . $x, $b->namaproyek);
+            $sheet->setCellValue('C' . $x, $b->tanggal);
+            $sheet->setCellValue('D' . $x, $b->keterangan);
+            $sheet->setCellValue('E' . $x, $b->namakategori);
+            $sheet->setCellValue('F' . $x, $b->no_bukti ?? '-');
+            $sheet->setCellValue('G' . $x, $b->masuk ?? '-');
+            $sheet->setCellValue('H' . $x, $b->keluar ?? '-');
+            $no++;
+            $x++;
+        }
+
+        $sheet->setCellValue('A' . $x, 'Jumlah');
+        $sheet->setCellValue('G' . $x, $masuk);
+        $sheet->setCellValue('H' . $x, $keluar);
+
+        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A' . $x . ':F' . $x);
+
+        $sheet->getStyle('G4:H' . $x)->getNumberFormat()->setFormatCode('"Rp "#,##0');
+
+        $sheet->getColumnDimension('A')->setWidth(35, 'px');
+        $sheet->getColumnDimension('B')->setWidth(100, 'px');
+        $sheet->getColumnDimension('C')->setWidth(100, 'px');
+        $sheet->getColumnDimension('D')->setWidth(180, 'px');
+        $sheet->getColumnDimension('E')->setWidth(90, 'px');
+        $sheet->getColumnDimension('F')->setWidth(80, 'px');
+        $sheet->getColumnDimension('G')->setWidth(120, 'px');
+        $sheet->getColumnDimension('H')->setWidth(120, 'px');
+
         $sheet->getStyle('A1')->applyFromArray($centerBold);
         $sheet->getStyle('A3:F3')->applyFromArray($bold);
         $sheet->getStyle('G3:H3')->applyFromArray($rightBold);
-        $sheet->getStyle('F4:F' . $no - 1)->applyFromArray($left);
-        $sheet->getStyle('G4:H' . $no - 1)->applyFromArray($right);
+        $sheet->getStyle('F4:F' . $x - 1)->applyFromArray($left);
+        $sheet->getStyle('G4:H' . $x - 1)->applyFromArray($right);
         // $sheet->getStyle('A4:B'.($no-1))->applyFromArray($center);
         // $sheet->getStyle('D4:E'.($no-1))->applyFromArray($center);
-        $sheet->getStyle('A' . $no . ':F' . $no)->applyFromArray($rightBold);
-        $sheet->getStyle('G' . $no . ':H' . $no)->applyFromArray($rightBold);
+        $sheet->getStyle('A' . $x . ':F' . $x)->applyFromArray($rightBold);
+        $sheet->getStyle('G' . $x . ':H' . $x)->applyFromArray($rightBold);
 
-        $sheet->getStyle('A3:H3')->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $sheet->getStyle('A' . $no . ':H' . $no)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $sheet->getStyle('A'.$y.':H'.$y)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $sheet->getStyle('A' . $x . ':H' . $x)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
 
         ob_end_clean();
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -857,6 +923,8 @@ class DashboardController extends Controller
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -874,6 +942,8 @@ class DashboardController extends Controller
             'keterangan' => 'required',
             'kategori' => 'required',
             'nota' => 'mimes:jpg,jpeg,png',
+            'masuk' => 'numeric|gte:0',
+            'keluar' => 'numeric|gte:0'
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -949,6 +1019,8 @@ class DashboardController extends Controller
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -966,9 +1038,8 @@ class DashboardController extends Controller
             'keterangan' => 'required',
             'kategori' => 'required',
             'nota' => 'mimes:jpg,jpeg,png',
-            // 'bukti' => 'required',
-            // 'masuk' => 'required',
-            // 'keluar' => 'required',
+            'masuk' => 'numeric|gte:0',
+            'keluar' => 'numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -997,7 +1068,7 @@ class DashboardController extends Controller
 
         $nota = Bukukas::where('id', $id)->first();
 
-        if ($request->input('d_nota') === 'hapus'){
+        if ($request->input('d_nota') === 'hapus') {
             unlink(public_path('/images/nota/' . $nota->nota));
             Bukukas::where('id', $id)->update([
                 'nota' => ''
@@ -1044,7 +1115,7 @@ class DashboardController extends Controller
         }
         $nota = Bukukas::where('id', $id)->first();
         if ($nota->nota) {
-            if (file_exists(public_path('/images/nota/' . $nota->nota))){
+            if (file_exists(public_path('/images/nota/' . $nota->nota))) {
                 unlink(public_path('/images/nota/' . $nota->nota));
             }
         }
@@ -1072,6 +1143,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gt' => ':attribute harus lebih dari 0.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -1085,7 +1158,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'kategori' => 'required',
             'stok' => 'required',
-            'kuantitas' => 'required',
+            'kuantitas' => 'required|numeric|gt:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1145,6 +1218,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka.',
+            'gt' => ':attribute harus lebih dari 0.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -1158,7 +1233,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'kategori' => 'required',
             'stok' => 'required',
-            'kuantitas' => 'required',
+            'kuantitas' => 'required|numeric|gt:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1217,8 +1292,8 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $data['ambil'] = Ambil::where('bukukas', $id)->first();
-        $data['proyek'] = Proyek::get();
-        $data['kategori'] = Kategori::get();
+        $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         $data['stok'] = Stok::where('id', $data['ambil']->stok)->first();
         return view('dashboard.ambil_stok_edit', $data);
     }
@@ -1260,12 +1335,14 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'pajak' => 'Besar pajak',
         ];
         $validator = Validator::make($request->all(), [
-            'pajak' => 'required',
+            'pajak' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1370,6 +1447,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
@@ -1381,7 +1460,8 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'nama_perusahaan' => 'required',
             'keterangan' => 'required',
-            'total' => 'required',
+            'total' => 'required|numeric|gte:0',
+            'dp' => 'numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1458,6 +1538,8 @@ class DashboardController extends Controller
         }
         $message = [
             'required' => ':attribute tidak boleh kosong.',
+            'numeric' => ':attribute harus berupa angka',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
@@ -1469,7 +1551,8 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'nama_perusahaan' => 'required',
             'keterangan' => 'required',
-            'total' => 'required',
+            'total' => 'required|numeric|gte:0',
+            'total' => 'numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1559,6 +1642,9 @@ class DashboardController extends Controller
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
+            'numeric' => ':attribute harus berupa angka.',
+            'gt' => ':attribute harus lebih dari 0.',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
@@ -1571,10 +1657,10 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'barang' => 'required',
-            'kuantitas' => 'required',
+            'kuantitas' => 'required|numeric|gt:0',
             'nota' => 'mimes:jpg,jpeg,png',
             'satuan' => 'required',
-            'harga' => 'required',
+            'harga' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1646,6 +1732,9 @@ class DashboardController extends Controller
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
+            'numeric' => ':attribute harus berupa angka.',
+            'gt' => ':attribute harus lebih dari 0.',
+            'gte' => ':attribute harus lebih dari atau sama dengan 0.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
@@ -1658,10 +1747,10 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'barang' => 'required',
-            'kuantitas' => 'required',
+            'kuantitas' => 'required|numeric|gt:0',
             'nota' => 'mimes:jpg,jpeg,png',
             'satuan' => 'required',
-            'harga' => 'required',
+            'harga' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1688,7 +1777,7 @@ class DashboardController extends Controller
 
         $nota = Stok::where('id', $id)->first();
 
-        if ($request->input('d_nota') === 'hapus'){
+        if ($request->input('d_nota') === 'hapus') {
             unlink(public_path('/images/nota/' . $nota->nota));
             Stok::where('id', $id)->update([
                 'nota' => ''
@@ -1881,17 +1970,18 @@ class DashboardController extends Controller
         return view('dashboard.invoice', $data);
     }
 
-    public function proyek_search(Request $request){
+    public function proyek_search(Request $request)
+    {
         $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
         $data['search'] = $search;
 
-        $data_query = Proyek::where(function($query){
-            if (Session::get('role') === 'operator'):
+        $data_query = Proyek::where(function ($query) {
+            if (Session::get('role') === 'operator') :
                 $query->where('pajak', 1);
             endif;
-        })->where('kode', 'like', '%' . $search . '%' )
-        ->orWhere('nama', 'like', '%' . $search . '%')
-        ->orWhere('nilai', 'like', '%' . $search . '%');
+        })->where('kode', 'like', '%' . $search . '%')
+            ->orWhere('nama', 'like', '%' . $search . '%')
+            ->orWhere('nilai', 'like', '%' . $search . '%');
 
         if (Session::get('sort_kategori')) {
             if (Session::get('sort_kategori') === 'asc') {

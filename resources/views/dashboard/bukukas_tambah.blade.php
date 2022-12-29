@@ -92,10 +92,10 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
+                    @error('nota')<small>{{$message}}</small>@enderror
                     <img src="" alt="" id="imgshowa">
                   </div>
                 </div>
-                @error('nota')<small>{{$message}}</small>@enderror
                 <div class="ln_solid"></div>
                 <div class="form-group row">
                   <div class="col-md-9 col-sm-9  offset-md-3">
