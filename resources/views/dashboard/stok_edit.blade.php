@@ -40,6 +40,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Kuantitas</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas" value="{{old('kuantitas') ?? $stok->kuantitas}}" step="0.1">
+                    <small class="warning">Note: Kuantitas dapat diisi angka desimal maksimal 1 digit.</small>
                     @error('kuantitas')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -54,13 +55,14 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Harga</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="number" class="form-control" placeholder="Masukkan Harga Barang" name="harga" value="{{old('harga') ?? $stok->harga}}">
+                    <small class="warning">Note: Harga harus berisi angka bulat bukan desimal.</small>
                     @error('harga')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang" name="bukti" value="{{old('bukti') ?? $stok->no_bukti ?? ''}}">
+                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang (Opsional)" name="bukti" value="{{old('bukti') ?? $stok->no_bukti ?? ''}}">
                     @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

@@ -6450,6 +6450,10 @@ input[type="file"] {
   cursor: pointer;
 }
 
+.up-2 {
+  right: 24px;
+}
+
 .position-relative input[name=password] {
   padding-right: 40px;
 }

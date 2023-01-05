@@ -129,6 +129,8 @@
               <div class="d-flex justify-content-between align-items-center">
                 <h3>Buku Kas</h3>
                 <div class="align-items-center">
+                  <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
+                      href="{{ url('/dashboard/bukukas_refresh/bukukas') }}"><i class="fa fa-refresh"></i></a>
                   @if (Session::get('role') === 'owner')
                     <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cetak Excel"
                       href="{{ url('/dashboard/export') }}"><i class="fa fa-file-excel-o"></i></a>
@@ -147,6 +149,7 @@
           </div>
           <div class="x_content">
             <div class="col-12">
+              @if(count($bukukas) > 0)
               <div class="row">
                 <div class="col-6">
                   <div class="d-flex justify-content-between">
@@ -164,17 +167,17 @@
                   <tr>
                     <th width="5%">No <a href="{{ url('/dashboard/bukukas_sort/clear') }}"><i
                           class="fa fa-refresh"></i></a></th>
-                    <th>Proyek <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa fa-sort"></i></a>
+                    <th>Proyek <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa fa-sort"></i></a>
+                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa @if(Session::get('sort_tanggal') === 'asc') fa-sort-asc @elseif(Session::get('sort_tanggal') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
                     <th>Keterangan</th>
-                    <th>Kategori <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa fa-sort"></i></a>
+                    <th>Kategori <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    <th>No Bukti <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa fa-sort"></i></a>
+                    <th>No Bukti <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa fa-sort"></i></a></th>
-                    <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa fa-sort"></i></a>
+                    <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa @if(Session::get('sort_masuk') === 'asc') fa-sort-asc @elseif(Session::get('sort_masuk') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
+                    <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
                     @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
@@ -270,6 +273,9 @@
               <div class="d-flex justify-content-center">
                 {{ $bukukas->links() }}
               </div>
+              @else
+              <h3 class="text-center">Data tidak ditemukan</h3>
+              @endif
             </div>
           </div>
         </div>

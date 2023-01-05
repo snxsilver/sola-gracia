@@ -74,6 +74,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan user.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -87,6 +88,7 @@ class DashboardController extends Controller
             'role' => $role,
         ]);
 
+        notify()->success('User berhasil ditambahkan.');
         return redirect('/dashboard/user');
     }
 
@@ -127,6 +129,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan user.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -146,7 +149,7 @@ class DashboardController extends Controller
                 'role' => $role,
             ]);
         }
-
+        notify()->success('User berhasil diupdate.');
         return redirect('/dashboard/user');
     }
 
@@ -159,7 +162,7 @@ class DashboardController extends Controller
             return redirect('/dashboard/user');
         }
         User::where('id', $id)->delete();
-
+        notify()->success('User berhasil dihapus.');
         return redirect('/dashboard/user');
     }
 
@@ -203,6 +206,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan kategori.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -213,6 +217,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Kategori berhasil ditambahkan.');
         return redirect('/dashboard/kategori');
     }
 
@@ -242,6 +247,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate kategori.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -253,6 +259,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id')
         ]);
 
+        notify()->success('Kategori berhasil diupdate.');
         return redirect('/dashboard/kategori');
     }
 
@@ -263,6 +270,7 @@ class DashboardController extends Controller
         }
         Kategori::where('id', $id)->delete();
 
+        notify()->success('Kategori berhasil dihapus.');
         return redirect('/dashboard/kategori');
     }
 
@@ -343,6 +351,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan proyek.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -359,6 +368,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Proyek berhasil ditambahkan.');
         return redirect('/dashboard/proyek');
     }
 
@@ -389,10 +399,11 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'nama' => 'required',
-            'nilai' => 'required|numeric|gte',
+            'nilai' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate proyek.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -410,6 +421,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Proyek berhasil diupdate.');
         return redirect('/dashboard/proyek');
     }
 
@@ -420,6 +432,7 @@ class DashboardController extends Controller
         }
         Proyek::where('id', $id)->delete();
 
+        notify()->success('Proyek berhasil dihapus.');
         return redirect('/dashboard/proyek');
     }
 
@@ -551,61 +564,61 @@ class DashboardController extends Controller
 
         $sheet->setCellValue('A' . $x, $state);
 
-        $sheet->mergeCells('A'.$x.':H'.$x);
-        $sheet->getStyle('A'.$x)->applyFromArray($centerBold);
+        $sheet->mergeCells('A' . $x . ':H' . $x);
+        $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
 
         $x++;
-        
-        if (Session::get('mulai') || Session::get('selesai') || Session::get('bulan')){
-            if (Session::get('mulai') && Session::get('selesai')){
+
+        if (Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) {
+            if (Session::get('mulai') && Session::get('selesai')) {
                 $mulai = Carbon::parse(Session::get('mulai'))->locale('id');
                 $mulai->settings(['formatFunction' => 'translatedFormat']);
                 $get_mulai = $mulai->format('j F Y');
                 $selesai = Carbon::parse(Session::get('selesai'))->locale('id');
                 $selesai->settings(['formatFunction' => 'translatedFormat']);
                 $get_selesai = $selesai->format('j F Y');
-                $state = 'Dari '.$get_mulai.' Sampai '.$get_selesai;
-            } else if (Session::get('mulai')){
+                $state = 'Dari ' . $get_mulai . ' Sampai ' . $get_selesai;
+            } else if (Session::get('mulai')) {
                 $mulai = Carbon::parse(Session::get('mulai'))->locale('id');
                 $mulai->settings(['formatFunction' => 'translatedFormat']);
                 $get_mulai = $mulai->format('j F Y');
                 $selesai = Carbon::parse(now())->locale('id');
                 $selesai->settings(['formatFunction' => 'translatedFormat']);
                 $get_selesai = $selesai->format('j F Y');
-                $state = 'Dari '.$get_mulai.' Sampai '.$get_selesai;
-            } else if (Session::get('selesai')){
+                $state = 'Dari ' . $get_mulai . ' Sampai ' . $get_selesai;
+            } else if (Session::get('selesai')) {
                 $selesai = Carbon::parse(Session::get('selesai'))->locale('id');
                 $selesai->settings(['formatFunction' => 'translatedFormat']);
                 $get_selesai = $selesai->format('j F Y');
-                $state = 'Per '.$get_selesai;
-            } else if (Session::get('bulan')){
+                $state = 'Per ' . $get_selesai;
+            } else if (Session::get('bulan')) {
                 $selesai = Carbon::parse(Session::get('bulan'))->locale('id');
                 $selesai->settings(['formatFunction' => 'translatedFormat']);
                 $get_selesai = $selesai->format('F Y');
-                $state = 'Bulan '.$get_selesai;
+                $state = 'Bulan ' . $get_selesai;
             }
         } else {
             $selesai = Carbon::parse(now())->locale('id');
             $selesai->settings(['formatFunction' => 'translatedFormat']);
             $get_selesai = $selesai->format('j F Y');
-            $state = 'Per '.$get_selesai;
+            $state = 'Per ' . $get_selesai;
         }
         $sheet->setCellValue('A' . $x, $state);
 
-        $sheet->mergeCells('A'.$x.':H'.$x);
-        $sheet->getStyle('A'.$x)->applyFromArray($centerBold);
+        $sheet->mergeCells('A' . $x . ':H' . $x);
+        $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
         $x++;
 
         $x++;
 
-        $sheet->setCellValue('A'.$x, 'No');
-        $sheet->setCellValue('B'.$x, 'Proyek');
-        $sheet->setCellValue('C'.$x, 'Tanggal');
-        $sheet->setCellValue('D'.$x, 'Keterangan');
-        $sheet->setCellValue('E'.$x, 'Kategori');
-        $sheet->setCellValue('F'.$x, 'No Bukti');
-        $sheet->setCellValue('G'.$x, 'Masuk');
-        $sheet->setCellValue('H'.$x, 'Keluar');
+        $sheet->setCellValue('A' . $x, 'No');
+        $sheet->setCellValue('B' . $x, 'Proyek');
+        $sheet->setCellValue('C' . $x, 'Tanggal');
+        $sheet->setCellValue('D' . $x, 'Keterangan');
+        $sheet->setCellValue('E' . $x, 'Kategori');
+        $sheet->setCellValue('F' . $x, 'No Bukti');
+        $sheet->setCellValue('G' . $x, 'Masuk');
+        $sheet->setCellValue('H' . $x, 'Keluar');
 
         $y = $x;
         $x++;
@@ -652,7 +665,7 @@ class DashboardController extends Controller
         $sheet->getStyle('A' . $x . ':F' . $x)->applyFromArray($rightBold);
         $sheet->getStyle('G' . $x . ':H' . $x)->applyFromArray($rightBold);
 
-        $sheet->getStyle('A'.$y.':H'.$y)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $sheet->getStyle('A' . $y . ':H' . $y)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $sheet->getStyle('A' . $x . ':H' . $x)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
 
         ob_end_clean();
@@ -947,6 +960,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -997,6 +1011,7 @@ class DashboardController extends Controller
             ]);
         }
 
+        notify()->success('Transaksi berhasil ditambahkan.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1043,6 +1058,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1105,6 +1121,7 @@ class DashboardController extends Controller
             ]);
         }
 
+        notify()->success('Transaksi berhasil diupdate.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1122,6 +1139,7 @@ class DashboardController extends Controller
 
         bukukas::where('id', $id)->delete();
 
+        notify()->success('Transaksi berhasil dihapus.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1162,6 +1180,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1174,6 +1193,7 @@ class DashboardController extends Controller
         $stok = Stok::where('id', $idstok)->first();
 
         if ($kuantitas > $stok->kuantitas) {
+            notify()->error('Gagal menambahkan transaksi.');
             return Redirect::back()->withErrors([
                 'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
             ]);
@@ -1207,7 +1227,7 @@ class DashboardController extends Controller
             'bukukas' => $idbukukas,
             'kreator' => Session::get('id'),
         ]);
-
+        notify()->success('Transaksi berhasil ditambahkan.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1237,6 +1257,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1251,6 +1272,7 @@ class DashboardController extends Controller
         $ambil = Ambil::where('id', $id)->first();
 
         if ($kuantitas > $stok->kuantitas + $ambil->kuantitas) {
+            notify()->error('Gagal mengupdate transaksi.');
             return Redirect::back()->withErrors([
                 'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
             ]);
@@ -1283,6 +1305,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Transaksi berhasil diupdate.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1291,7 +1314,9 @@ class DashboardController extends Controller
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
         }
-        $data['ambil'] = Ambil::where('bukukas', $id)->first();
+        $data['ambil'] = Ambil::where('bukukas', $id)
+            ->join('bukukas', 'ambil_stok.bukukas', '=', 'bukukas.id')
+            ->first();
         $data['proyek'] = Proyek::orderBy('nama', 'asc')->get();
         $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
         $data['stok'] = Stok::where('id', $data['ambil']->stok)->first();
@@ -1314,7 +1339,7 @@ class DashboardController extends Controller
         Ambil::where('bukukas', $id)->delete();
 
         Bukukas::where('id', $id)->delete();
-
+        notify()->success('Transaksi berhasil dihapus.');
         return redirect('/dashboard/bukukas');
     }
 
@@ -1346,6 +1371,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate pajak.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1358,6 +1384,8 @@ class DashboardController extends Controller
                 'pajak' => $request->pajak,
             ]);
         }
+
+        notify()->success('Pajak berhasil ditambahkan.');
         return redirect('/dashboard/invoice');
     }
 
@@ -1461,10 +1489,11 @@ class DashboardController extends Controller
             'nama_perusahaan' => 'required',
             'keterangan' => 'required',
             'total' => 'required|numeric|gte:0',
-            'dp' => 'numeric|gte:0',
+            'dp' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan invoice.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1518,6 +1547,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Invoice berhasil ditambahkan.');
         return redirect('/dashboard/invoice');
     }
 
@@ -1556,6 +1586,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate invoice.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1598,6 +1629,7 @@ class DashboardController extends Controller
             'kreator' => Session::get('id'),
         ]);
 
+        notify()->success('Invoice berhasil diupdate.');
         return redirect('/dashboard/invoice');
     }
 
@@ -1607,7 +1639,7 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         invoice::where('id', $id)->delete();
-
+        notify()->success('Invoice berhasil dihapus.');
         return redirect('/dashboard/invoice');
     }
 
@@ -1664,6 +1696,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal menambahkan stok.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1712,6 +1745,7 @@ class DashboardController extends Controller
             ]);
         }
 
+        notify()->success('Stok berhasil ditambahkan.');
         return redirect('/dashboard/stok');
     }
 
@@ -1754,6 +1788,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            notify()->error('Gagal mengupdate stok.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -1814,6 +1849,7 @@ class DashboardController extends Controller
             ]);
         }
 
+        notify()->success('Stok berhasil diupdate.');
         return redirect('/dashboard/stok');
     }
 
@@ -1829,6 +1865,7 @@ class DashboardController extends Controller
 
         stok::where('id', $id)->delete();
 
+        notify()->success('Stok berhasil dihapus.');
         return redirect('/dashboard/stok');
     }
 
@@ -2020,5 +2057,35 @@ class DashboardController extends Controller
         $data['proyek'] = $data_query2->paginate(50);
 
         return view('dashboard.proyek', $data);
+    }
+    public function bukukas_refresh(Request $request, $link){
+        $request->session()->forget([
+            'proyek',
+            'kategori',
+            'bulan',
+            'mulai',
+            'selesai',
+            'tahun',
+            'sort_tanggal',
+            'sort_proyek',
+            'sort_kategori',
+            'sort_bukti',
+            'sort_masuk',
+            'sort_keluar',
+        ]);
+
+        switch($link):
+            case "bukukas":
+                return redirect('/dashboard/bukukas');
+                break;
+            case "proyek":
+                return redirect('/dashboard/proyek');
+                break;
+            case "invoice":
+                return redirect('/dashboard/invoice');
+                break;
+            default:
+                return redirect('/dashboard/bukukas');
+            endswitch;
     }
 }

@@ -10,7 +10,8 @@
   <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
   <title>CV. Sola Gracia</title>
-
+  
+  @notifyCss
   <!-- Bootstrap -->
   <link href="{{ asset('/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
   <!-- Font Awesome -->
@@ -22,6 +23,7 @@
   <link href="{{ asset('/vendors/bootstrap-datepicker/css/bootstrap-datepicker.css') }}" rel="stylesheet">
   <!-- Custom Theme Style -->
   <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet">
+
 </head>
 
 <body class="nav-md">
@@ -219,6 +221,7 @@
       <!-- /footer content -->
     </div>
   </div>
+  <x:notify-messages />
 
   <!-- jQuery -->
   <script src="{{ asset('/vendors/jquery/dist/jquery.min.js') }}"></script>
@@ -239,6 +242,7 @@
 
   <!-- Custom Theme Scripts -->
   <script src="{{ asset('/assets/js/custom.js') }}"></script>
+  @notifyJs
 
 </body>
 

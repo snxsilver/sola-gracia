@@ -41,7 +41,7 @@
             <div class="form-group">
               <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="off" value="{{old('username')}}" />
             </div>
-            <div class="form-group bg-secondary position-relative">
+            <div class="form-group position-relative">
               <input type="password" class="form-control" placeholder="Password" name="password" />
               <span class="unhide-pass"><i class="fa fa-eye"></i></span>
             </div>

@@ -43,6 +43,7 @@
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan Nilai Proyek" name="nilai" value="{{old('nilai')}}">
                     </div>
+                    <small class="warning">Note: Nilai harus berisi angka bulat bukan desimal.</small>
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

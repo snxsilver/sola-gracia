@@ -26,7 +26,7 @@
                   <div class="col-md-9 col-sm-9 ">
                     <input type="hidden" name="id" value={{$invoice->id}}>
                     <input type="text" class="form-control" placeholder="Masukkan Faktur Pajak" name="faktur_pajak" value="{{old('faktur_pajak') ?? $invoice->faktur_pajak}}">
-                    <small class="warning">*wajib diisi apabila menggunakan pajak</small>
+                    <small class="warning">Note: Wajib diisi apabila menggunakan pajak</small>
                     @error('faktur_pajak')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -83,6 +83,7 @@
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan DP" name="dp" value={{old('dp') ?? $invoice->dp}}>
                     </div>
+                    <small class="warning">Note: DP harus berupa angka bulat bukan desimal.</small>
                     @error('dp')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -95,6 +96,7 @@
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan Total Invoice (Wajib diisi)" name="total" value={{old('total') ?? $invoice->total}}>
                     </div>
+                    <small class="warning">Note: Total pembayaran harus berupa angka bulat bukan desimal.</small>
                     @error('total')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

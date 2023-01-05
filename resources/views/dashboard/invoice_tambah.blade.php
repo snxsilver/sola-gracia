@@ -24,7 +24,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Faktur Pajak</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="text" class="form-control" placeholder="Masukkan Faktur Pajak" name="faktur_pajak" value="{{old('faktur_pajak')}}">
-                    <small class="warning">*wajib diisi apabila menggunakan pajak</small>
+                    <small class="warning">Note: Wajib diisi apabila menggunakan pajak</small>
                     @error('faktur_pajak')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -78,8 +78,9 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan DP" name="dp" value="{{old('dp')}}">
+                      <input type="number" class="form-control" placeholder="Masukkan DP (Opsional)" name="dp" value="{{old('dp')}}">
                     </div>
+                    <small class="warning">Note: DP harus berupa angka bulat bukan desimal.</small>
                     @error('dp')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -92,13 +93,14 @@
                       </div>
                       <input type="number" class="form-control" placeholder="Masukkan Total Invoice (Wajib diisi)" name="total" value="{{old('total')}}">
                     </div>
+                    <small class="warning">Note: Total pembayaran harus berupa angka bulat bukan desimal.</small>
                     @error('total')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan (Wajib diisi)" id="" cols="30" rows="3">{{old('faktur_pajak')}}</textarea>
+                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan (Wajib diisi)" id="" cols="30" rows="3">{{old('keterangan')}}</textarea>
                     @error('keterangan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

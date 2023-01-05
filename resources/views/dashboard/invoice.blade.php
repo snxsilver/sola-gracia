@@ -99,6 +99,8 @@
               <div class="d-flex justify-content-between align-items-center">
                 <h3>Daftar Invoice</h3>
                 <div class="align-items-center">
+                  <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
+                  href="{{ url('/dashboard/bukukas_refresh/invoice') }}"><i class="fa fa-refresh"></i></a>
                   @if (Session::get('role') === 'owner')
                     <a class="btn btn-secondary" href="{{ url('/dashboard/pajak') }}" data-toggle="tooltip"
                       data-placement="top" title="Atur Pajak"><i class="fa fa-gear"></i></a>
@@ -113,17 +115,18 @@
           </div>
           <div class="x_content">
             <div class="col-12">
+              @if (count($invoice) > 0)
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th width="5%">No <a href="{{ url('/dashboard/bukukas_sort/clear') }}"><i
                           class="fa fa-refresh"></i></a></th>
-                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa fa-sort"></i></a>
+                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa @if(Session::get('sort_tanggal') === 'asc') fa-sort-asc @elseif(Session::get('sort_tanggal') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
                     <th>No Invoice</th>
-                    <th>Total <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa fa-sort"></i></a></th>
+                    <th>Total <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Keterangan</th>
-                    <th>Perusahaan <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa fa-sort"></i></a>
+                    <th>Perusahaan <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
                     @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
@@ -180,6 +183,9 @@
               <div class="d-flex justify-content-center">
                 {{ $invoice->links() }}
               </div>
+              @else
+              <h3 class="text-center">Data tidak ditemukan</h3>
+              @endif
             </div>
           </div>
         </div>

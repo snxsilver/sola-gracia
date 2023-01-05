@@ -10,7 +10,7 @@
           <div class="x_title">
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center">
-                <h3>Ambil Stok</h3>
+                <h3>Edit Ambil Stok</h3>
                 <div class="d-flex align-items-center justify-content-end">
                   <a href="{{ url('/dashboard/bukukas') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i></a>
                 </div>
@@ -72,8 +72,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Jumlah</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Ambil Stok" name="kuantitas" value={{$ambil->kuantitas}}>
-                    <small class="warning">*Jumlah tidak boleh melebihi stok</small>
+                    <input type="number" class="form-control" placeholder="Masukkan Jumlah Ambil Stok" name="kuantitas" value={{$ambil->kuantitas}} step="0.1">
+                    <small class="warning">Note: Jumlah tidak boleh melebihi stok dan dapat diisi angka desimal maksimal 1 digit.</small>
                     @error('kuantitas')
                       <small>*{{ $message }}</small>
                     @enderror

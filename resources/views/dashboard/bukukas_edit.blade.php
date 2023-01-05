@@ -81,6 +81,7 @@
                       <input type="number" class="form-control" placeholder="Masukkan Uang Masuk" name="masuk"
                         value={{ old('masuk') ?? $bukukas->masuk ?? '' }}>
                     </div>
+                    <small class="warning">Note: Uang masuk harus berisi angka bulat bukan desimal.</small>
                     @error('masuk')
                       <small>*{{ $message }}</small>
                     @enderror
@@ -96,6 +97,7 @@
                       <input type="number" class="form-control" placeholder="Masukkan Uang Keluar" name="keluar"
                         value={{ old('keluar') ?? $bukukas->keluar ?? '' }}>
                     </div>
+                    <small class="warning">Note: Uang keluar harus berisi angka bulat bukan desimal.</small>
                     @error('keluar')
                       <small>*{{ $message }}</small>
                     @enderror

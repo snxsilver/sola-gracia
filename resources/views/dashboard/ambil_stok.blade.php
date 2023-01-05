@@ -74,7 +74,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Jumlah</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="number" class="form-control" placeholder="Masukkan Jumlah Barang" name="kuantitas" value="{{old('kuantitas') ?? ''}}" step="0.1">
-                    <small class="warning">*Jumlah tidak boleh melebihi stok</small>
+                    <small class="warning">Note: Jumlah tidak boleh melebihi stok dan dapat diisi angka desimal maksimal 1 digit.</small>
                     @error('kuantitas')
                       <small>*{{ $message }}</small>
                     @enderror

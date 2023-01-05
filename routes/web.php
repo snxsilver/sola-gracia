@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
 
   Route::post('/dashboard/filter', [DashboardController::class, 'filter']);
   Route::get('/dashboard/bukukas_sort/{sort}', [DashboardController::class, 'bukukas_sort']);
+  Route::get('/dashboard/bukukas_refresh/{link}', [DashboardController::class, 'bukukas_refresh']);
 
   Route::get('/dashboard/bukukas', [DashboardController::class, 'bukukas']);
   Route::get('/dashboard/bukukas_tambah', [DashboardController::class, 'bukukas_tambah']);

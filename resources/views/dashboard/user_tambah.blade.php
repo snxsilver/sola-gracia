@@ -29,15 +29,17 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Password</label>
-                  <div class="col-md-9 col-sm-9 ">
+                  <div class="col-md-9 col-sm-9 position-relative">
                     <input type="password" class="form-control" placeholder="Masukkan Password" name="password">
+                    <span class="unhide-pass up-2"><i class="fa fa-eye"></i></span>
                     @error('password')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Konfirmasi Password</label>
-                  <div class="col-md-9 col-sm-9 ">
+                  <div class="col-md-9 col-sm-9 position-relative">
                     <input type="password" class="form-control" placeholder="Masukkan Konfirmasi Password" name="confirm_password">
+                    <span class="unhide-pass up-2"><i class="fa fa-eye"></i></span>
                     @error('confirm_password')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
