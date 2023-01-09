@@ -87,6 +87,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
                   <div class="col-md-9 col-sm-9 ">
                     <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"  value="{{old('bukti')}}">
+                    <small class="warning">(opsional)</small>
                     @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -94,6 +95,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
+                    <small class="warning">(opsional)</small>
                     @error('nota')<small>{{$message}}</small>@enderror
                     <img src="" alt="" id="imgshowa">
                   </div>

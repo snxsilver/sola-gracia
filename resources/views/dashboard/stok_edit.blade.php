@@ -70,6 +70,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
+                    <small class="warning">(opsional)</small>
                     @error('nota')<small>{{$message}}</small>@enderror
                     @if($stok->nota)
                     <div class="my-2 ml-2">

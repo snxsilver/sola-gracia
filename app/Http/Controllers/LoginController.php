@@ -48,18 +48,20 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $data = User::where('username',$request->username)->firstOrFail();
-            $data_session = [
-                'id' => $data->id,
-                'username' => $data->username,
-                'role' => $data->role
-            ];
-            $request->session()->put($data_session);
-
-            return redirect()->intended('dashboard');
+            $data = User::whereRaw('BINARY `username` = ?',$request->username)->first();
+            if ($data){
+                $data_session = [
+                    'id' => $data->id,
+                    'username' => $data->username,
+                    'role' => $data->role
+                ];
+                $request->session()->put($data_session);
+                
+                return redirect()->intended('dashboard');
+            }
         }
 
-        return Redirect::route('root')->withErrors([
+        return Redirect::back()->withErrors([
             'message' => 'Username atau password salah.'
         ])->withInput();
     }

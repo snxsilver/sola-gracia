@@ -45,7 +45,8 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nama Perusahaan</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nama Perusahaan (Wajib diisi)" name="nama_perusahaan" value="{{old('nama_perusahaan')}}">
+                    <input type="text" class="form-control" placeholder="Masukkan Nama Perusahaan" name="nama_perusahaan" value="{{old('nama_perusahaan')}}">
+                    <small class="warning">Note: Wajib diisi.</small>
                     @error('nama_perusahaan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -91,9 +92,9 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Total Invoice (Wajib diisi)" name="total" value="{{old('total')}}">
+                      <input type="number" class="form-control" placeholder="Masukkan Total Invoice" name="total" value="{{old('total')}}">
                     </div>
-                    <small class="warning">Note: Total pembayaran harus berupa angka bulat bukan desimal.</small>
+                    <small class="warning">Note: Wajib diisi dengan total pembayaran harus berupa angka bulat bukan desimal.</small>
                     @error('total')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
@@ -101,6 +102,7 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
                   <div class="col-md-9 col-sm-9 ">
                     <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan (Wajib diisi)" id="" cols="30" rows="3">{{old('keterangan')}}</textarea>
+                    <small class="warning">Note: Wajib diisi.</small>
                     @error('keterangan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>

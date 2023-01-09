@@ -107,7 +107,7 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $id = $request->input('id');
-
+        $olddata = User::where('id',$id)->first();
         User::where('id', $id)->update([
             'username' => 'xFaP12',
         ]);
@@ -129,6 +129,9 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            User::where('id', $id)->update([
+                'username' => $olddata->username,
+            ]);
             notify()->error('Gagal menambahkan user.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
@@ -338,6 +341,7 @@ class DashboardController extends Controller
             'required' => ':attribute tidak boleh kosong.',
             'numeric' => ':attribute harus berupa angka',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'unique' => ':attribute telah dipakai.'
         ];
         $attribute = [
             'kode' => 'Kode Proyek',
@@ -345,7 +349,7 @@ class DashboardController extends Controller
             'nilai' => 'Nilai Proyek',
         ];
         $validator = Validator::make($request->all(), [
-            'kode' => 'required',
+            'kode' => 'required|unique:proyek,kode',
             'nama' => 'required',
             'nilai' => 'required|numeric|gte:0',
         ], $message, $attribute);
@@ -386,10 +390,16 @@ class DashboardController extends Controller
         if (Session::get('role') !== 'owner') {
             return redirect('/dashboard');
         }
+        $id = $request->input('id');
+        $olddata = Proyek::where('id',$id)->first();
+        Proyek::where('id',$id)->update([
+            'kode' => 'xFaP12'
+        ]);
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'numeric' => ':attribute harus berupa angka',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'unique' => ':attribute telah dipakai.'
         ];
         $attribute = [
             'kode' => 'Kode Proyek',
@@ -397,17 +407,19 @@ class DashboardController extends Controller
             'nilai' => 'Nilai Proyek',
         ];
         $validator = Validator::make($request->all(), [
-            'kode' => 'required',
+            'kode' => 'required|unique:proyek,kode',
             'nama' => 'required',
             'nilai' => 'required|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
+            Proyek::where('id',$id)->update([
+                'kode' => $olddata->kode
+            ]);
             notify()->error('Gagal mengupdate proyek.');
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
-        $id = $request->input('id');
         $nama = $request->input('nama');
         $kode = $request->input('kode');
         $nilai = $request->input('nilai');
@@ -555,19 +567,40 @@ class DashboardController extends Controller
         $sheet->setCellValue('A1', 'Laporan Keuangan Buku Kas CV. Sola Gracia');
         $x = 2;
         if (Session::get('proyek') || Session::get('kategori')) {
-            $kategori = Kategori::where('id', Session::get('kategori'))->first();
-            $proyek = Proyek::where('id', Session::get('proyek'))->first();
-            $state = ($proyek ? 'Proyek ' . $proyek->nama : '') . (Session::get('proyek') && Session::get('kategori') && ' ') . ($kategori ? 'Kategori ' . $kategori->nama : '');
+            if(Session::get('proyek')){
+                $proyek = Proyek::where('id', Session::get('proyek'))->first();
+                $state = 'Proyek ' . $proyek->nama;
+
+                $sheet->setCellValue('A' . $x, $state);
+                
+                $sheet->mergeCells('A' . $x . ':H' . $x);
+                $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
+                
+                $x++;
+            }
+            if (Session::get('kategori')){
+                $kategori = Kategori::where('id', Session::get('kategori'))->first();
+
+                $state = 'Kategori ' . $kategori->nama;
+
+                $sheet->setCellValue('A' . $x, $state);
+                
+                $sheet->mergeCells('A' . $x . ':H' . $x);
+                $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
+                
+                $x++;
+            }
         } else {
             $state = 'Semua Data';
+
+            $sheet->setCellValue('A' . $x, $state);
+    
+            $sheet->mergeCells('A' . $x . ':H' . $x);
+            $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
+    
+            $x++;
         }
 
-        $sheet->setCellValue('A' . $x, $state);
-
-        $sheet->mergeCells('A' . $x . ':H' . $x);
-        $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
-
-        $x++;
 
         if (Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) {
             if (Session::get('mulai') && Session::get('selesai')) {
@@ -656,14 +689,32 @@ class DashboardController extends Controller
         $sheet->getColumnDimension('H')->setWidth(120, 'px');
 
         $sheet->getStyle('A1')->applyFromArray($centerBold);
-        $sheet->getStyle('A3:F3')->applyFromArray($bold);
-        $sheet->getStyle('G3:H3')->applyFromArray($rightBold);
-        $sheet->getStyle('F4:F' . $x - 1)->applyFromArray($left);
-        $sheet->getStyle('G4:H' . $x - 1)->applyFromArray($right);
-        // $sheet->getStyle('A4:B'.($no-1))->applyFromArray($center);
-        // $sheet->getStyle('D4:E'.($no-1))->applyFromArray($center);
+        $sheet->getStyle('A'.$y.':F'.$y)->applyFromArray($bold);
+        $sheet->getStyle('G'.$y.':H'.$y)->applyFromArray($rightBold);
+        $sheet->getStyle('F'. $y + 1 .':F' . $x - 1)->applyFromArray($left);
+        $sheet->getStyle('G'. $y + 1 .':H' . $x - 1)->applyFromArray($right);
         $sheet->getStyle('A' . $x . ':F' . $x)->applyFromArray($rightBold);
         $sheet->getStyle('G' . $x . ':H' . $x)->applyFromArray($rightBold);
+
+        $border = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        $color = [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'ffddd9c4',
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A'.$y.':H'.$x)->applyFromArray($border);
+        $sheet->getStyle('A'.$y.':H'.$y)->applyFromArray($color);
+        $sheet->getStyle('A'.$x.':H'.$x)->applyFromArray($color);
 
         $sheet->getStyle('A' . $y . ':H' . $y)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $sheet->getStyle('A' . $x . ':H' . $x)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
@@ -680,6 +731,7 @@ class DashboardController extends Controller
     {
         switch ($sort):
             case "tanggal":
+                $request->session()->forget(['sort_proyek', 'sort_kategori', 'sort_bukti', 'sort_masuk', 'sort_keluar']);
                 if (Session::get('sort_tanggal') === "asc") {
                     $request->session()->put([
                         'sort_tanggal' => 'desc'
@@ -691,6 +743,7 @@ class DashboardController extends Controller
                 }
                 break;
             case "proyek":
+                $request->session()->forget(['sort_tanggal', 'sort_kategori', 'sort_bukti', 'sort_masuk', 'sort_keluar']);
                 if (Session::get('sort_proyek') === "asc") {
                     $request->session()->put([
                         'sort_proyek' => 'desc'
@@ -702,6 +755,7 @@ class DashboardController extends Controller
                 }
                 break;
             case "kategori":
+                $request->session()->forget(['sort_tanggal', 'sort_proyek', 'sort_bukti', 'sort_masuk', 'sort_keluar']);
                 if (Session::get('sort_kategori') === "asc") {
                     $request->session()->put([
                         'sort_kategori' => 'desc'
@@ -713,6 +767,7 @@ class DashboardController extends Controller
                 }
                 break;
             case "bukti":
+                $request->session()->forget(['sort_tanggal', 'sort_proyek', 'sort_kategori', 'sort_masuk', 'sort_keluar']);
                 if (Session::get('sort_bukti') === "desc") {
                     $request->session()->put([
                         'sort_bukti' => 'asc'
@@ -724,7 +779,7 @@ class DashboardController extends Controller
                 }
                 break;
             case "masuk":
-                $request->session()->forget(['sort_keluar']);
+                $request->session()->forget(['sort_tanggal', 'sort_proyek', 'sort_kategori', 'sort_bukti', 'sort_keluar']);
                 if (Session::get('sort_masuk') === "asc") {
                     $request->session()->put([
                         'sort_masuk' => 'desc'
@@ -736,7 +791,7 @@ class DashboardController extends Controller
                 }
                 break;
             case "keluar":
-                $request->session()->forget(['sort_masuk']);
+                $request->session()->forget(['sort_tanggal', 'sort_proyek', 'sort_kategori', 'sort_bukti', 'sort_masuk']);
                 if (Session::get('sort_keluar') === "asc") {
                     $request->session()->put([
                         'sort_keluar' => 'desc'
@@ -955,8 +1010,8 @@ class DashboardController extends Controller
             'keterangan' => 'required',
             'kategori' => 'required',
             'nota' => 'mimes:jpg,jpeg,png',
-            'masuk' => 'numeric|gte:0',
-            'keluar' => 'numeric|gte:0'
+            'masuk' => 'nullable|numeric|gte:0',
+            'keluar' => 'nullable|numeric|gte:0'
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -968,7 +1023,7 @@ class DashboardController extends Controller
         $tanggal = date('Y-m-d', strtotime($request->input('tanggal')));
         $keterangan = $request->input('keterangan');
         $kategori = $request->input('kategori');
-        $bukti = $request->input('bukti');
+        $bukti = $request->input('bukti') ?? null;
         $masuk = $request->input('masuk');
         $keluar = $request->input('keluar');
 
@@ -989,7 +1044,7 @@ class DashboardController extends Controller
             $gbr = $request->file('nota');
             $ext = $request->nota->extension();
             $slug = Str::slug($bukti, '-');
-            $gbrnama = $slug . '-' . rand(99, 999) . '.' . $ext;
+            $gbrnama = $slug ? $slug . '-' . rand(99, 999) . '.' . $ext : rand(99, 999) . '-' . rand(99, 999) . '.' . $ext;
             $path = public_path('/images/nota/' . $gbrnama);
             $gbresize = Image::make($gbr->path());
             $width = $gbresize->width();
@@ -1053,8 +1108,8 @@ class DashboardController extends Controller
             'keterangan' => 'required',
             'kategori' => 'required',
             'nota' => 'mimes:jpg,jpeg,png',
-            'masuk' => 'numeric|gte:0',
-            'keluar' => 'numeric|gte:0',
+            'masuk' => 'nullable|numeric|gte:0',
+            'keluar' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1269,7 +1324,7 @@ class DashboardController extends Controller
         $kuantitas = $request->input('kuantitas');
 
         $stok = Stok::where('id', $idstok)->first();
-        $ambil = Ambil::where('id', $id)->first();
+        $ambil = Ambil::where('bukukas', $id)->first();
 
         if ($kuantitas > $stok->kuantitas + $ambil->kuantitas) {
             notify()->error('Gagal mengupdate transaksi.');
@@ -1296,7 +1351,7 @@ class DashboardController extends Controller
             'harga' => $stok->harga + $ambil->harga - $keluar,
         ]);
 
-        Ambil::where('id', $id)->update([
+        Ambil::where('bukukas', $id)->update([
             'tanggal' => $tanggal,
             'stok' => $idstok,
             'kuantitas' => $kuantitas,
@@ -1860,7 +1915,9 @@ class DashboardController extends Controller
         }
         $nota = Stok::where('id', $id)->first();
         if (isset($nota->nota)) {
-            unlink(public_path('/images/nota/' . $nota->nota));
+            if (file_exists(public_path('/images/nota/' . $nota->nota))) {
+                unlink(public_path('/images/nota/' . $nota->nota));
+            }
         }
 
         stok::where('id', $id)->delete();
@@ -2058,7 +2115,8 @@ class DashboardController extends Controller
 
         return view('dashboard.proyek', $data);
     }
-    public function bukukas_refresh(Request $request, $link){
+    public function bukukas_refresh(Request $request, $link)
+    {
         $request->session()->forget([
             'proyek',
             'kategori',
@@ -2074,7 +2132,7 @@ class DashboardController extends Controller
             'sort_keluar',
         ]);
 
-        switch($link):
+        switch ($link):
             case "bukukas":
                 return redirect('/dashboard/bukukas');
                 break;
@@ -2086,6 +2144,6 @@ class DashboardController extends Controller
                 break;
             default:
                 return redirect('/dashboard/bukukas');
-            endswitch;
+        endswitch;
     }
 }

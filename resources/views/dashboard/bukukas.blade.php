@@ -12,7 +12,7 @@
               <div class="col-12">
                 <form action="{{ url('/dashboard/bukukas_search') }}">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search" value={{$search ?? ''}}>
+                    <input type="text" class="form-control" placeholder="Search" name="search" value="{{$search ?? ''}}">
                     <div class="input-group-append">
                       <button type="submit" class="input-group-text"><i class="fa fa-search"></i></button>
                     </div>

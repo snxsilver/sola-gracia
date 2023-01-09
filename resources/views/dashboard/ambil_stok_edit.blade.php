@@ -24,7 +24,7 @@
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Proyek</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <input type="hidden" name="id" value={{$ambil->id}}>
+                    <input type="hidden" name="id" value={{$ambil->bukukas}}>
                     <select id="role" class="form-control" name="proyek">
                       @foreach ($proyek as $p)
                         <option value="{{ $p->id }}" @if(old('proyek') ? old('proyek') == $p->id : $ambil->proyek == $p->id) selected @endif>{{ $p->nama }}</option>
