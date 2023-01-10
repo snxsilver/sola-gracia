@@ -36,7 +36,7 @@
                       <select name="kategori" class="form-control" id="">
                         <option value="" @if (!Session::get('kategori')) selected @endif>Semua Kategori</option>
                         @foreach ($kategori as $k)
-                          <option value={{ $k->id }} @if (Session::get('kategori') == $k->id) selected @endif>
+                          <option value={{ $k->id }} @if (old('kategori') ? old('kategori') == $k->id : Session::get('kategori') == $k->id) selected @endif>
                             {{ $k->nama }}</option>
                         @endforeach
                       </select>
@@ -50,7 +50,7 @@
                       <select name="proyek" class="form-control" id="">
                         <option value="" @if (!Session::get('proyek')) selected @endif>Semua Proyek</option>
                         @foreach ($proyek as $p)
-                          <option value={{ $p->id }} @if (Session::get('proyek') == $p->id) selected @endif>
+                          <option value={{ $p->id }} @if (old('proyek') ? old('proyek') == $p->id : Session::get('proyek') == $p->id) selected @endif>
                             {{ $p->nama }}</option>
                         @endforeach
                       </select>
@@ -75,7 +75,7 @@
                     <label class="col-form-label col-md-3 col-sm-3 ">Mulai</label>
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-datepicker" name="mulai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
-                        value={{ Session::get('mulai') ?? '-' }}>
+                        value={{ old('mulai') ?? Session::get('mulai') ?? '-' }}>
                     </div>
                   </div>
                 </div>
@@ -84,7 +84,8 @@
                     <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
-                        value={{ Session::get('selesai') ?? '-' }}>
+                        value={{ old('selesai') ?? Session::get('selesai') ?? '-' }}>
+                        @error('selesai')<small>*{{$message}}</small>@enderror
                     </div>
                   </div>
                 </div>
@@ -95,7 +96,7 @@
                     <label class="col-form-label col-md-3 col-sm-3 ">Bulan</label>
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-monthpicker" name="bulan" @if(!Session::get('bulan')) disabled @endif
-                        value={{ Session::get('bulan') ?? '-' }}>
+                        value={{ old('bulan') ?? Session::get('bulan') ?? '-' }}>
                     </div>
                   </div>
                 </div>
@@ -106,7 +107,7 @@
                     <label class="col-form-label col-md-3 col-sm-3 ">Tahun</label>
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-yearpicker" name="tahun" @if(!Session::get('tahun')) disabled @endif
-                        value={{ Session::get('tahun') ?? '-' }}>
+                        value={{ old('tahun') ?? Session::get('tahun') ?? '-' }}>
                     </div>
                   </div>
                 </div>

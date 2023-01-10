@@ -55,6 +55,7 @@
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
                         value={{ Session::get('selesai') ?? '-' }}>
+                        @error('selesai')<small>*{{$message}}</small>@enderror
                     </div>
                   </div>
                 </div>

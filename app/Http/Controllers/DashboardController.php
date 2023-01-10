@@ -456,6 +456,12 @@ class DashboardController extends Controller
             $proyek = $request->input('proyek');
             $mulai = $request->input('mulai') != '-' ? $request->input('mulai') : '';
             $selesai = $request->input('selesai') != '-' ? $request->input('selesai') : '';
+            if ($mulai && $selesai){
+            if (Carbon::parse($selesai) < Carbon::parse($mulai)){
+                return Redirect::back()->withErrors([
+                'selesai' => 'Tanggal selesai harus lebih besar dari tanggal mulai.'
+            ])->withInput();
+            }}
             $bulan = $request->input('bulan');
             $tahun = $request->input('tahun');
 
@@ -993,6 +999,7 @@ class DashboardController extends Controller
             'mimes' => ':attribute harus jpg, jpeg atau png.',
             'numeric' => ':attribute harus berupa angka',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'max' => ':attribute melebihi :max kB.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -1009,7 +1016,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
-            'nota' => 'mimes:jpg,jpeg,png',
+            'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'masuk' => 'nullable|numeric|gte:0',
             'keluar' => 'nullable|numeric|gte:0'
         ], $message, $attribute);
@@ -1091,6 +1098,7 @@ class DashboardController extends Controller
             'mimes' => ':attribute harus jpg, jpeg atau png.',
             'numeric' => ':attribute harus berupa angka',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'max' => ':attribute melebihi :max kB.',
         ];
         $attribute = [
             'proyek' => 'Proyek',
@@ -1107,7 +1115,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'keterangan' => 'required',
             'kategori' => 'required',
-            'nota' => 'mimes:jpg,jpeg,png',
+            'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'masuk' => 'nullable|numeric|gte:0',
             'keluar' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
@@ -1251,7 +1259,7 @@ class DashboardController extends Controller
             notify()->error('Gagal menambahkan transaksi.');
             return Redirect::back()->withErrors([
                 'kuantitas' => 'Jumlah ambil stok melebihi stok yang tersedia.'
-            ]);
+            ])->withInput();
         }
 
         $keterangan = $stok->barang . ' ' . $kuantitas . ' ' . $stok->satuan;
@@ -1386,10 +1394,12 @@ class DashboardController extends Controller
         $ambil = Ambil::where('bukukas', $id)->first();
         $stok = Stok::where('id', $ambil->stok)->first();
 
-        Stok::where('id', $ambil->stok)->update([
+        if($stok){
+            Stok::where('id', $ambil->stok)->update([
             'kuantitas' => $stok->kuantitas + $ambil->kuantitas,
             'harga' => $stok->harga + $ambil->harga,
         ]);
+        }
 
         Ambil::where('bukukas', $id)->delete();
 
@@ -1732,6 +1742,7 @@ class DashboardController extends Controller
             'numeric' => ':attribute harus berupa angka.',
             'gt' => ':attribute harus lebih dari 0.',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'max' => ':attribute melebihi :max kB.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
@@ -1745,7 +1756,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'barang' => 'required',
             'kuantitas' => 'required|numeric|gt:0',
-            'nota' => 'mimes:jpg,jpeg,png',
+            'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'satuan' => 'required',
             'harga' => 'required|numeric|gte:0',
         ], $message, $attribute);
@@ -1824,6 +1835,7 @@ class DashboardController extends Controller
             'numeric' => ':attribute harus berupa angka.',
             'gt' => ':attribute harus lebih dari 0.',
             'gte' => ':attribute harus lebih dari atau sama dengan 0.',
+            'max' => ':attribute melebihi :max kB.',
         ];
         $attribute = [
             'tanggal' => 'Tanggal pembelian barang',
@@ -1837,7 +1849,7 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'barang' => 'required',
             'kuantitas' => 'required|numeric|gt:0',
-            'nota' => 'mimes:jpg,jpeg,png',
+            'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'satuan' => 'required',
             'harga' => 'required|numeric|gte:0',
         ], $message, $attribute);
@@ -1914,7 +1926,7 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $nota = Stok::where('id', $id)->first();
-        if (isset($nota->nota)) {
+        if ($nota->nota) {
             if (file_exists(public_path('/images/nota/' . $nota->nota))) {
                 unlink(public_path('/images/nota/' . $nota->nota));
             }
