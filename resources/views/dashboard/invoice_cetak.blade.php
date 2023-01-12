@@ -10,9 +10,9 @@
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">
-              <div class="mt-3 mb-5 invoice-cetak">
+              <div class="invoice-cetak">
                 <div class="align-items-center d-flex">
-                  <img src="{{asset('/images/solagracia.png')}}" height="100px" alt="">
+                  <img src="{{asset('/images/solagracia.png')}}" style="height: 70px" alt="">
                   <div class="align-items-center ml-3">
                     <h4 class="font-weight-bold">CV. Sola Gracia</h4>
                     <p>Jl. Kimar III No. 10, Semarang</p>
@@ -22,7 +22,7 @@
                 <div class="d-flex justify-content-center">
                   <h3>INVOICE</h3>
                 </div>
-                <div class="px-5">
+                <div class="">
                   <div class="row">
                     <div class="col-8">
                       @if(!$invoice->alamat)
@@ -135,9 +135,9 @@
         <div class="x_panel">
           <div class="x_content">
             <div class="col-12">
-              <div class="mt-3 mb-5 invoice-cetak">
+              <div class="invoice-cetak">
                 <div class="align-items-center d-flex">
-                  <img src="{{asset('/images/solagracia.png')}}" height="100px" alt="">
+                  <img src="{{asset('/images/solagracia.png')}}" style="height: 70px" alt="">
                   <div class="align-items-center ml-3">
                     <h4 class="font-weight-bold">CV. Sola Gracia</h4>
                     <p>Jl. Kimar III No. 10, Semarang</p>
@@ -147,7 +147,7 @@
                 <div class="d-flex justify-content-center">
                   <h3>KWITANSI</h3>
                 </div>
-                <div class="px-5 mb-1">
+                <div class="mb-1">
                   <div class="d-flex justify-content-left">
                     <p>No: {{$invoice->no_invoice}}</p>
                   </div>

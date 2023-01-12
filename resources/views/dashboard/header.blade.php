@@ -29,7 +29,7 @@
 <body class="nav-md">
   <div class="container body">
     <div class="main_container">
-      <div class="col-md-3 left_col">
+      <div class="col-md-3 left_col no-print">
         <div class="left_col scroll-view">
           <div class="navbar nav_title mb-3" style="border: 0;">
             <a href="{{url('/dashboard')}}" class="site_title"><i class="fa fa-gears"></i><span class="ml-2">CV Sola Gracia</span></a>
