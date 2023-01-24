@@ -6367,7 +6367,7 @@ form .error {
 }
 
 .invoice-cetak .signature-box-2 {
-  margin-top: 48px;
+  margin-top: 32px;
 }
 
 .invoice-cetak .signature {
@@ -6391,16 +6391,17 @@ form .error {
 
 @media print {
   @page {
-    size: A4;
+    size: A5;
     /* DIN A4 standard, Europe */
     margin: 0;
+    size: auto;
   }
 
   .no-print {
     display: none;
   }
 
-  .invoice-cetak {
+  .invoice-body {
     position: fixed;
     left: 0;
     top: 0;
@@ -6408,6 +6409,14 @@ form .error {
     bottom: 0;
     background-color: #FFF;
     margin: 0;
+    padding: 25px 25px;
+  }
+
+  .invoice-footer {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
     padding: 25px 25px;
   }
 
@@ -6419,6 +6428,195 @@ form .error {
     overflow: hidden;
     -webkit-print-color-adjust: exact;
   }
+}
+
+.borongan-cetak {
+  color: black;
+}
+
+.borongan-cetak h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.borongan-cetak h4 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.borongan-cetak h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.borongan-cetak p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.borongan-cetak small {
+  margin: 0;
+  font-size: 12px;
+}
+
+.borongan-cetak .row {
+  margin: 0 -15px;
+}
+
+.borongan-cetak table {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.borongan-cetak .table thead th {
+  border: 2px solid black;
+  /* border-bottom: 1px solid black; */
+  text-align: center;
+  padding: 1rem;
+}
+
+.borongan-cetak .table tbody td {
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+@media print {
+  @page {
+    size: A5;
+    /* DIN A4 standard, Europe */
+    margin: 0;
+    size: auto;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .borongan-body {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFF;
+    margin: 0;
+    padding: 25px 25px;
+  }
+
+  /* .invoice-footer {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 25px 25px;
+  } */
+
+  html,
+  body {
+    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+.harian-cetak {
+  color: black;
+}
+
+.harian-cetak h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.harian-cetak h4 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.harian-cetak h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.harian-cetak p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.harian-cetak small {
+  margin: 0;
+  font-size: 12px;
+}
+
+.harian-cetak .row {
+  margin: 0 -15px;
+}
+
+.harian-cetak table {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.harian-cetak .table tbody td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 0.5rem;
+}
+
+.harian-cetak {
+  color: black;
+}
+
+.harian-cetak h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.harian-cetak h4 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.harian-cetak h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.harian-cetak p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.harian-cetak small {
+  margin: 0;
+  font-size: 12px;
+}
+
+.harian-cetak .row {
+  margin: 0 -15px;
+}
+
+.harian-cetak table {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.harian-cetak .table tbody td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 0.5rem;
 }
 
 .dropzone-wrapper {

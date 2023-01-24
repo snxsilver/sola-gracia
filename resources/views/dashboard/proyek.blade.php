@@ -110,7 +110,7 @@
                 </div>
                 {{-- End of Modal --}}
                 <div class="d-flex justify-content-center">
-                  {{ $proyek->links() }}
+                  {{ $proyek->appends(request()->input())->links() }}
                 </div>
               @else
                 <h3 class="text-center">Data tidak ditemukan</h3>

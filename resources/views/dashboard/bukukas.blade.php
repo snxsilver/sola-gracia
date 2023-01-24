@@ -25,7 +25,7 @@
             <span style="color: black; font-weight: bold">Filter</span>
             <span style="color: black"><i class="fa fa-chevron-down"></i></span>
           </div>
-          <div class="x_content filter_toggle @if(Session::get('proyek') || Session::get('kategori') || Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) @else d-none @endif" style="color: black">
+          <div class="x_content filter_toggle @if(Session::get('proyek') || Session::get('kategori') || Session::get('mulai') || Session::get('selesai') || Session::get('bulan') || $errors->has('selesai')) @else d-none @endif" style="color: black">
             <form action="{{ url('/dashboard/filter') }}" method="post">
               @csrf
               <div class="row">
@@ -272,7 +272,7 @@
               </div>
               {{-- End of Modal --}}
               <div class="d-flex justify-content-center">
-                {{ $bukukas->links() }}
+                {{ $bukukas->appends(request()->input())->links() }}
               </div>
               @else
               <h3 class="text-center">Data tidak ditemukan</h3>

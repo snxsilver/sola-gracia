@@ -107,7 +107,7 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $id = $request->input('id');
-        $olddata = User::where('id',$id)->first();
+        $olddata = User::where('id', $id)->first();
         User::where('id', $id)->update([
             'username' => 'xFaP12',
         ]);
@@ -391,8 +391,8 @@ class DashboardController extends Controller
             return redirect('/dashboard');
         }
         $id = $request->input('id');
-        $olddata = Proyek::where('id',$id)->first();
-        Proyek::where('id',$id)->update([
+        $olddata = Proyek::where('id', $id)->first();
+        Proyek::where('id', $id)->update([
             'kode' => 'xFaP12'
         ]);
         $message = [
@@ -413,7 +413,7 @@ class DashboardController extends Controller
         ], $message, $attribute);
 
         if ($validator->fails()) {
-            Proyek::where('id',$id)->update([
+            Proyek::where('id', $id)->update([
                 'kode' => $olddata->kode
             ]);
             notify()->error('Gagal mengupdate proyek.');
@@ -456,12 +456,13 @@ class DashboardController extends Controller
             $proyek = $request->input('proyek');
             $mulai = $request->input('mulai') != '-' ? $request->input('mulai') : '';
             $selesai = $request->input('selesai') != '-' ? $request->input('selesai') : '';
-            if ($mulai && $selesai){
-            if (Carbon::parse($selesai) < Carbon::parse($mulai)){
-                return Redirect::back()->withErrors([
-                'selesai' => 'Tanggal selesai harus lebih besar dari tanggal mulai.'
-            ])->withInput();
-            }}
+            if ($mulai && $selesai) {
+                if (Carbon::parse($selesai) < Carbon::parse($mulai)) {
+                    return Redirect::back()->withErrors([
+                        'selesai' => 'Tanggal selesai harus lebih besar dari tanggal mulai.'
+                    ])->withInput();
+                }
+            }
             $bulan = $request->input('bulan');
             $tahun = $request->input('tahun');
 
@@ -573,37 +574,37 @@ class DashboardController extends Controller
         $sheet->setCellValue('A1', 'Laporan Keuangan Buku Kas CV. Sola Gracia');
         $x = 2;
         if (Session::get('proyek') || Session::get('kategori')) {
-            if(Session::get('proyek')){
+            if (Session::get('proyek')) {
                 $proyek = Proyek::where('id', Session::get('proyek'))->first();
                 $state = 'Proyek ' . $proyek->nama;
 
                 $sheet->setCellValue('A' . $x, $state);
-                
+
                 $sheet->mergeCells('A' . $x . ':H' . $x);
                 $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
-                
+
                 $x++;
             }
-            if (Session::get('kategori')){
+            if (Session::get('kategori')) {
                 $kategori = Kategori::where('id', Session::get('kategori'))->first();
 
                 $state = 'Kategori ' . $kategori->nama;
 
                 $sheet->setCellValue('A' . $x, $state);
-                
+
                 $sheet->mergeCells('A' . $x . ':H' . $x);
                 $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
-                
+
                 $x++;
             }
         } else {
             $state = 'Semua Data';
 
             $sheet->setCellValue('A' . $x, $state);
-    
+
             $sheet->mergeCells('A' . $x . ':H' . $x);
             $sheet->getStyle('A' . $x)->applyFromArray($centerBold);
-    
+
             $x++;
         }
 
@@ -695,10 +696,10 @@ class DashboardController extends Controller
         $sheet->getColumnDimension('H')->setWidth(120, 'px');
 
         $sheet->getStyle('A1')->applyFromArray($centerBold);
-        $sheet->getStyle('A'.$y.':F'.$y)->applyFromArray($bold);
-        $sheet->getStyle('G'.$y.':H'.$y)->applyFromArray($rightBold);
-        $sheet->getStyle('F'. $y + 1 .':F' . $x - 1)->applyFromArray($left);
-        $sheet->getStyle('G'. $y + 1 .':H' . $x - 1)->applyFromArray($right);
+        $sheet->getStyle('A' . $y . ':F' . $y)->applyFromArray($bold);
+        $sheet->getStyle('G' . $y . ':H' . $y)->applyFromArray($rightBold);
+        $sheet->getStyle('F' . $y + 1 . ':F' . $x - 1)->applyFromArray($left);
+        $sheet->getStyle('G' . $y + 1 . ':H' . $x - 1)->applyFromArray($right);
         $sheet->getStyle('A' . $x . ':F' . $x)->applyFromArray($rightBold);
         $sheet->getStyle('G' . $x . ':H' . $x)->applyFromArray($rightBold);
 
@@ -718,9 +719,9 @@ class DashboardController extends Controller
             ],
         ];
 
-        $sheet->getStyle('A'.$y.':H'.$x)->applyFromArray($border);
-        $sheet->getStyle('A'.$y.':H'.$y)->applyFromArray($color);
-        $sheet->getStyle('A'.$x.':H'.$x)->applyFromArray($color);
+        $sheet->getStyle('A' . $y . ':H' . $x)->applyFromArray($border);
+        $sheet->getStyle('A' . $y . ':H' . $y)->applyFromArray($color);
+        $sheet->getStyle('A' . $x . ':H' . $x)->applyFromArray($color);
 
         $sheet->getStyle('A' . $y . ':H' . $y)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
         $sheet->getStyle('A' . $x . ':H' . $x)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
@@ -1394,11 +1395,11 @@ class DashboardController extends Controller
         $ambil = Ambil::where('bukukas', $id)->first();
         $stok = Stok::where('id', $ambil->stok)->first();
 
-        if($stok){
+        if ($stok) {
             Stok::where('id', $ambil->stok)->update([
-            'kuantitas' => $stok->kuantitas + $ambil->kuantitas,
-            'harga' => $stok->harga + $ambil->harga,
-        ]);
+                'kuantitas' => $stok->kuantitas + $ambil->kuantitas,
+                'harga' => $stok->harga + $ambil->harga,
+            ]);
         }
 
         Ambil::where('bukukas', $id)->delete();
@@ -1586,7 +1587,7 @@ class DashboardController extends Controller
         $start = Carbon::parse($tanggal)->startOfMonth();
         $end = Carbon::parse($tanggal)->endOfMonth();
 
-        $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count();
+        $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
         if (strlen($no) == 1) {
             $no = "0" . $no;
         }
@@ -1951,10 +1952,53 @@ class DashboardController extends Controller
             ->orderBy('nama', 'asc')->get();
         $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
 
-        $data_query = Bukukas::where('keterangan', 'like', '%' . $search . '%')
-            ->orWhere('no_bukti', 'like', '%' . $search . '%')
-            ->orWhere('masuk', 'like', '%' . $search . '%')
-            ->orWhere('keluar', 'like', '%' . $search . '%')
+        $data_query = Bukukas::where(function ($query) use ($search) {
+            $query
+                ->where('keterangan', 'like', '%' . $search . '%')
+                ->orWhere('no_bukti', 'like', '%' . $search . '%')
+                ->orWhere('masuk', 'like', '%' . $search . '%')
+                ->orWhere('keluar', 'like', '%' . $search . '%');
+        })
+            ->where(function ($query) {
+                if (Session::get('kategori')) :
+                    $query->where('kategori', Session::get('kategori'));
+                endif;
+            })
+            ->where(function ($query) {
+                if (Session::get('proyek')) :
+                    $query->where('proyek', Session::get('proyek'));
+                endif;
+            })
+            ->where(function ($query) {
+                if (Session::get('bulan')) :
+                    $sesi = Session::get('bulan');
+                    $start = Carbon::parse($sesi)->startOfMonth();
+                    $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('tahun')) :
+                    $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                    $start = Carbon::parse($sesi)->startOfYear();
+                    $end = Carbon::parse($sesi)->endOfYear();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('mulai') || Session::get('selesai')) :
+                    $mulai = Session::get('mulai');
+                    $selesai = Session::get('selesai');
+                    if ($mulai && $selesai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '>=', $start)
+                            ->where('tanggal', '<=', $end);
+                    elseif ($mulai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $query->where('tanggal', '>=', $start);
+                    elseif ($selesai) :
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '<=', $end);
+                    endif;
+                endif;
+            })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
             ->join('proyek', 'bukukas.proyek', '=', 'proyek.id')
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
@@ -2034,10 +2078,43 @@ class DashboardController extends Controller
         $search = htmlentities(trim($request->input('search')) ? trim($request->input('search')) : '');
         $data['search'] = $search;
 
-        $data_query = Invoice::where('keterangan', 'like', '%' . $search . '%')
-            ->orWhere('no_invoice', 'like', '%' . $search . '%')
-            ->orWhere('total', 'like', '%' . $search . '%')
-            ->orWhere('nama_perusahaan', 'like', '%' . $search . '%')
+        $data_query = Invoice::where(function ($query) use ($search) {
+            $query
+                ->where('keterangan', 'like', '%' . $search . '%')
+                ->orWhere('no_invoice', 'like', '%' . $search . '%')
+                ->orWhere('total', 'like', '%' . $search . '%')
+                ->orWhere('nama_perusahaan', 'like', '%' . $search . '%');
+        })
+            ->where(function ($query) {
+                if (Session::get('bulan')) :
+                    $sesi = Session::get('bulan');
+                    $start = Carbon::parse($sesi)->startOfMonth();
+                    $end = Carbon::parse($sesi)->endOfMonth();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('tahun')) :
+                    $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                    $start = Carbon::parse($sesi)->startOfYear();
+                    $end = Carbon::parse($sesi)->endOfYear();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
+                elseif (Session::get('mulai') || Session::get('selesai')) :
+                    $mulai = Session::get('mulai');
+                    $selesai = Session::get('selesai');
+                    if ($mulai && $selesai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '>=', $start)
+                            ->where('tanggal', '<=', $end);
+                    elseif ($mulai) :
+                        $start = Carbon::parse($mulai)->startOfDay();
+                        $query->where('tanggal', '>=', $start);
+                    elseif ($selesai) :
+                        $end = Carbon::parse($selesai)->endOfDay();
+                        $query->where('tanggal', '<=', $end);
+                    endif;
+                endif;
+            })
             ->join('proyek', 'invoice.proyek', '=', 'proyek.id')
             ->where(function ($query) {
                 if (Session::get('role') === 'operator') {
@@ -2085,9 +2162,12 @@ class DashboardController extends Controller
             if (Session::get('role') === 'operator') :
                 $query->where('pajak', 1);
             endif;
-        })->where('kode', 'like', '%' . $search . '%')
-            ->orWhere('nama', 'like', '%' . $search . '%')
-            ->orWhere('nilai', 'like', '%' . $search . '%');
+        })->where(function ($query) use ($search) {
+            $query
+                ->where('kode', 'like', '%' . $search . '%')
+                ->orWhere('nama', 'like', '%' . $search . '%')
+                ->orWhere('nilai', 'like', '%' . $search . '%');
+        });
 
         if (Session::get('sort_kategori')) {
             if (Session::get('sort_kategori') === 'asc') {

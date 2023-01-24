@@ -163,10 +163,10 @@ $(document).ready(function () {
         $('.target_date').removeClass('d-none')
         $('.target_month').addClass('d-none')
         $('.target_year').addClass('d-none')
-        $('input[name=mulai').prop('disabled', false)
-        $('input[name=selesai').prop('disabled', false)
-        $('input[name=bulan').prop('disabled', true)
-        $('input[name=tahun').prop('disabled', true)
+        $('input[name=mulai]').prop('disabled', false)
+        $('input[name=selesai]').prop('disabled', false)
+        $('input[name=bulan]').prop('disabled', true)
+        $('input[name=tahun]').prop('disabled', true)
     })
     $('.trigger_month').bind('click', function () {
         $(this).addClass('bg-primary')
@@ -175,10 +175,10 @@ $(document).ready(function () {
         $('.target_date').addClass('d-none')
         $('.target_month').removeClass('d-none')
         $('.target_year').addClass('d-none')
-        $('input[name=mulai').prop('disabled', true)
-        $('input[name=selesai').prop('disabled', true)
-        $('input[name=bulan').prop('disabled', false)
-        $('input[name=tahun').prop('disabled', true)
+        $('input[name=mulai]').prop('disabled', true)
+        $('input[name=selesai]').prop('disabled', true)
+        $('input[name=bulan]').prop('disabled', false)
+        $('input[name=tahun]').prop('disabled', true)
     })
     $('.trigger_year').bind('click', function () {
         $(this).addClass('bg-primary')
@@ -187,16 +187,73 @@ $(document).ready(function () {
         $('.target_date').addClass('d-none')
         $('.target_month').addClass('d-none')
         $('.target_year').removeClass('d-none')
-        $('input[name=mulai').prop('disabled', true)
-        $('input[name=selesai').prop('disabled', true)
-        $('input[name=bulan').prop('disabled', true)
-        $('input[name=tahun').prop('disabled', false)
+        $('input[name=mulai]').prop('disabled', true)
+        $('input[name=selesai]').prop('disabled', true)
+        $('input[name=bulan]').prop('disabled', true)
+        $('input[name=tahun]').prop('disabled', false)
     })
 })
 // /Date and Month Filter
 
+// Tukang Harian
+$(document).ready(function () {
+    $('.trigger_harian_a').bind('click', function(){
+        $(this).addClass('bg-primary')
+        $('.trigger_harian_b').removeClass('bg-primary')
+        $('.trigger_harian_c').removeClass('bg-primary')
+        $('.target_harian_a').removeClass('d-none')
+        $('.target_harian_b').addClass('d-none')
+        $('.target_harian_c').addClass('d-none')
+        $('input[name=nama]').prop('disabled',false)
+        $('input[name=alamat]').prop('disabled',false)
+        $('input[name=telp]').prop('disabled',false)
+        $('select[name=tukang_harian]').prop('disabled',true)
+        $('select[name=tukang_mandor]').prop('disabled',true)
+    })
+    $('.trigger_harian_b').bind('click', function(){
+        $(this).addClass('bg-primary')
+        $('.trigger_harian_a').removeClass('bg-primary')
+        $('.trigger_harian_c').removeClass('bg-primary')
+        $('.target_harian_b').removeClass('d-none')
+        $('.target_harian_a').addClass('d-none')
+        $('.target_harian_c').addClass('d-none')
+        $('input[name=nama]').prop('disabled',true)
+        $('input[name=alamat]').prop('disabled',true)
+        $('input[name=telp]').prop('disabled',true)
+        $('select[name=tukang_harian]').prop('disabled',false)
+        $('select[name=tukang_mandor]').prop('disabled',true)
+    })
+    $('.trigger_harian_c').bind('click', function(){
+        $(this).addClass('bg-primary')
+        $('.trigger_harian_b').removeClass('bg-primary')
+        $('.trigger_harian_a').removeClass('bg-primary')
+        $('.target_harian_c').removeClass('d-none')
+        $('.target_harian_a').addClass('d-none')
+        $('.target_harian_b').addClass('d-none')
+        $('input[name=nama]').prop('disabled',true)
+        $('input[name=alamat]').prop('disabled',true)
+        $('input[name=telp]').prop('disabled',true)
+        $('select[name=tukang_harian]').prop('disabled',true)
+        $('select[name=tukang_mandor]').prop('disabled',false)
+    })
+})
+// /Tukang Harian
+
+
 // Datepicker
 $(document).ready(function () {
+    // $('.b-datepicker').bind('click', function(){
+    //     alert('hello')
+    // })
+    $(document).on('click','.bo-datepicker',function(){
+        $(this).datepicker({
+            autoclose: true,
+            forceParse: false,
+            orientation: 'auto',
+            format: 'dd-M-yyyy',
+            setDate: new Date()
+        }).focus()
+    })
     $('.b-datepicker').datepicker({
         autoclose: true,
         forceParse: false,
@@ -280,6 +337,40 @@ $(document).ready(function () {
 })
 // /Modal Hapus Item
 
+// Modal Approve
+$(document).ready(function () {
+    $('#hapusitem2').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var linkAksi = button.data('whatever')
+        var linkTombol = this.querySelector('.tombol-ya');
+
+        linkTombol.setAttribute('href', linkAksi);
+      })
+})
+// /Modal Approve
+
+// Modal Approve Gaji
+$(document).ready(function () {
+    $('#gajiapproval').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var tombolYa = this.querySelector('.tombol-ya')
+        var tombolNo = this.querySelector('.tombol-no')
+
+        // var nomLama = this.querySelector('.nominal_lama')
+
+        // nomLama.text(button.data('nomlama'))
+        $(this).find('.pokok_lama').text(button.data('polama'))
+        $(this).find('.pokok_baru').text(button.data('pobaru'))
+        $(this).find('.lembur_lama').text(button.data('lelama'))
+        $(this).find('.lembur_baru').text(button.data('lebaru'))
+        $(this).find('.tanggal_approve').text(button.data('tanggal'))
+
+        tombolYa.setAttribute('href', button.data('yes'))
+        tombolNo.setAttribute('href', button.data('no'))
+      })
+})
+// /Modal Approve Gaji
+
 // Modal Show Nota
 $(document).ready(function () {
     $('#shownota').on('show.bs.modal', function (event) {
@@ -294,6 +385,27 @@ $(document).ready(function () {
       })
 })
 // /Modal Show Nota
+
+// Modal Approval Tunjangan
+$(document).ready(function () {
+    $('#approval').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var tombolYa = this.querySelector('.tombol-ya')
+        var tombolNo = this.querySelector('.tombol-no')
+
+        // var nomLama = this.querySelector('.nominal_lama')
+
+        // nomLama.text(button.data('nomlama'))
+        $(this).find('.nominal_lama').text(button.data('nomlama'))
+        $(this).find('.nominal_baru').text(button.data('nombaru'))
+        $(this).find('.tanggal_approve').text(button.data('tanggal'))
+
+        tombolYa.setAttribute('href', button.data('yes'))
+        tombolNo.setAttribute('href', button.data('no'))
+      })
+})
+// /Modal Approval Tunjangan
+
 
 // Hapus Nota Checkbox
 $(document).ready(function () {

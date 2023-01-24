@@ -70,6 +70,21 @@
                   <li><a href="{{url('/dashboard/kategori')}}">Kategori</a></li>
                 </ul>
                 </li>
+                <li><a><i class="fa fa-list-alt"></i> Penggajian <span class="fa fa-chevron-right"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="{{url('/dashboard/tukang_mandor')}}">Tukang dengan Mandor</a></li>
+                  <li><a href="{{url('/dashboard/tukang_harian')}}">Tukang Harian</a></li>
+                  <li><a href="{{url('/dashboard/tukang_borongan')}}">Tukang Borongan</a></li>
+                </ul>
+                </li>
+                <li><a><i class="fa fa-gear"></i> Pengaturan Gaji <span class="fa fa-chevron-right"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="{{url('/dashboard/pengaturan_tunjangan')}}">Tunjangan</a></li>
+                  <li><a href="{{url('/dashboard/gaji_mandor')}}">Gaji per Mandor</a></li>
+                  <li><a href="{{url('/dashboard/daftar_mandor')}}">Daftar Mandor</a></li>
+                  <li><a href="{{url('/dashboard/daftar_tukang')}}">Daftar Tukang</a></li>
+                </ul>
+                </li>
                 <li><a href="{{url('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
                 @if(Session::get('role') === 'owner')
@@ -241,6 +256,7 @@
   <script src="{{ asset('/vendors/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
 
   <!-- Custom Theme Scripts -->
+  <script src="{{ asset('/assets/js/custom2.js') }}"></script>
   <script src="{{ asset('/assets/js/custom.js') }}"></script>
   @notifyJs
 

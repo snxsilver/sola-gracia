@@ -49,9 +49,11 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Role</label>
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" required name="role">
-                      <option value="operator" @if($user->role === "operator") selected @endif>Operator</option>
                       <option value="admin" @if($user->role === "admin") selected @endif>Admin</option>
+                      <option value="manager" @if($user->role === "manager") selected @endif>Manager</option>
+                      <option value="operator" @if($user->role === "operator") selected @endif>Operator</option>
                       <option value="owner" @if($user->role === "owner") selected @endif>Owner</option>
+                      <option value="supervisor" @if($user->role === "supervisor") selected @endif>Supervisor</option>
                     </select>
                     @error('role')<small>*{{$message}}</small>@enderror
                   </div>

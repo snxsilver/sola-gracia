@@ -5,14 +5,14 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
-      <div class="col-12">
+      {{-- <div class="col-12">
         <div class="x_panel">
           <div class="x_content">
             <div class="row">
               <div class="col-12">
                 <form action="{{ url('/dashboard/invoice_search') }}">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search" value="{{$search ?? ''}}">
+                    <input type="text" class="form-control" placeholder="Search" name="search" value="">
                     <div class="input-group-append">
                       <button type="submit" class="input-group-text"><i class="fa fa-search"></i></button>
                     </div>
@@ -55,7 +55,7 @@
                     <div class="col-md-9 col-sm-9 ">
                       <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
                         value={{ old('selesai') ?? Session::get('selesai') ?? '-' }}>
-                        @error('selesai')<small>*{{$message}}</small>@enderror
+                        @error('selesai')<small>*{{$tessage}}</small>@enderror
                     </div>
                   </div>
                 </div>
@@ -92,22 +92,18 @@
             </form>
           </div>
         </div>
-      </div>
+      </div> --}}
       <div class="col-12">
         <div class="x_panel">
           <div class="x_title">
             <div class="col-12">
               <div class="d-flex justify-content-between align-items-center">
-                <h3>Daftar Invoice</h3>
+                <h3>Daftar Tukang</h3>
                 <div class="align-items-center">
                   <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
                   href="{{ url('/dashboard/bukukas_refresh/invoice') }}"><i class="fa fa-refresh"></i></a>
-                  @if (Session::get('role') === 'owner')
-                    <a class="btn btn-secondary" href="{{ url('/dashboard/pajak') }}" data-toggle="tooltip"
-                      data-placement="top" title="Atur Pajak"><i class="fa fa-gear"></i></a>
-                  @endif
                   @if (Session::get('role') !== 'operator')
-                    <a class="btn btn-primary" href="{{ url('/dashboard/invoice_tambah') }}"><i
+                    <a class="btn btn-primary" href="{{ url('/dashboard/daftar_tukang_tambah') }}"><i
                         class="fa fa-plus"></i></a>
                   @endif
                 </div>
@@ -116,19 +112,15 @@
           </div>
           <div class="x_content">
             <div class="col-12">
-              @if (count($invoice) > 0)
+              {{-- @if (count($invoice) > 0) --}}
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th width="5%">No <a href="{{ url('/dashboard/bukukas_sort/clear') }}"><i
                           class="fa fa-refresh"></i></a></th>
-                    <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa @if(Session::get('sort_tanggal') === 'asc') fa-sort-asc @elseif(Session::get('sort_tanggal') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
-                    </th>
-                    <th>No Invoice</th>
-                    <th>Total <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
-                    <th>Keterangan</th>
-                    <th>Perusahaan <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
-                    </th>
+                    <th>Nama <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
+                    <th>No HP <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
+                    <th>Mandor <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
                     @endif
@@ -136,22 +128,25 @@
                 </thead>
                 <tbody>
                   @php($no = 1)
-                  @foreach ($invoice as $i)
+                  @foreach ($tukang as $t)
                     <tr>
                       <td>{{ $no++ }}</td>
-                      <td>{{ $carbon::parse($i->tanggal)->format('d M Y') }}</td>
-                      <td>{{ $i->no_invoice }}</td>
-                      <td>{{ 'Rp ' . number_format($i->total) }}</td>
-                      <td style="white-space: pre-line" width="20%">{{ $i->keterangan }}</td>
-                      <td>{{ $i->nama_perusahaan }}</td>
+                      <td>{{ $t->nama }}</td>
+                      <td>{{ $t->hp }}</td>
+                      @php($mandor = DB::table('mandor')->where('id',$t->mandor)->first())
+                      @if($t->mandor === 0)
+                      <td>Harian</td>
+                      @else
+                      <td>{{ $mandor->nama }}</td>
+                      @endif
                       @if (Session::get('role') === 'owner')
                         <td>
-                          <a class="btn btn-sm btn-success" href="{{ url('/dashboard/invoice_cetak/' . $i->id) }}"><i
+                          <a class="btn btn-sm btn-success" href="{{ url('/dashboard/daftar_tukang_cetak/' . $t->id) }}"><i
                               class="fa fa-eye"></i></a>
-                          <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/invoice_edit/' . $i->id) }}"><i
+                          <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/daftar_tukang_edit/' . $t->id) }}"><i
                               class="fa fa-pencil"></i></a>
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
-                            data-target="#hapusitem" data-whatever="{{ url('/dashboard/invoice_hapus/' . $i->id) }}"><i
+                            data-target="#hapusitem" data-whatever="{{ url('/dashboard/daftar_tukang_hapus/' . $t->id) }}"><i
                               class="fa fa-trash"></i></a>
                         </td>
                       @endif
@@ -165,13 +160,13 @@
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Hapus Invoice</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Hapus Tukang</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
                     <div class="modal-body">
-                      Apakah Anda yakin akan menghapus invoice?
+                      Apakah Anda yakin akan menghapus tukang?
                     </div>
                     <div class="modal-footer">
                       <a class="btn btn-primary tombol-ya text-white" style="cursor: pointer">Ya</a>
@@ -181,12 +176,12 @@
                 </div>
               </div>
               {{-- End of Modal --}}
-              <div class="d-flex justify-content-center">
+              {{-- <div class="d-flex justify-content-center">
                 {{ $invoice->appends(request()->input())->links() }}
-              </div>
-              @else
+              </div> --}}
+              {{-- @else
               <h3 class="text-center">Data tidak ditemukan</h3>
-              @endif
+              @endif --}}
             </div>
           </div>
         </div>

@@ -47,9 +47,11 @@
                   <label class="col-form-label col-md-3 col-sm-3 ">Role</label>
                   <div class="col-md-9 col-sm-9 ">
                     <select id="role" class="form-control" required name="role">
-                      <option value="operator">Operator</option>
                       <option value="admin">Admin</option>
+                      <option value="manager">Manager</option>
+                      <option value="operator">Operator</option>
                       <option value="owner">Owner</option>
+                      <option value="supervisor">Supervisor</option>
                     </select>
                     @error('role')<small>*{{$message}}</small>@enderror
                   </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GajiController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -88,4 +89,77 @@ Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard/stok_hapus/{id}', [DashboardController::class, 'stok_hapus']);
 
   Route::get('/dashboard/export', [DashboardController::class, 'export']);
+
+  Route::get('/dashboard/tukang_borongan', [GajiController::class, 'tukang_borongan']);
+  Route::get('/dashboard/tukang_borongan_tambah', [GajiController::class, 'tukang_borongan_tambah']);
+  Route::get('/dashboard/tukang_borongan_edit/{id}', [GajiController::class, 'tukang_borongan_edit']);
+  Route::get('/dashboard/tukang_borongan_hapus/{id}', [GajiController::class, 'tukang_borongan_hapus']);
+  Route::post('/dashboard/tukang_borongan_aksi', [GajiController::class, 'tukang_borongan_aksi']);
+  Route::post('/dashboard/tukang_borongan_update', [GajiController::class, 'tukang_borongan_update']);
+
+  Route::get('/dashboard/tukang_borongan_cetak/{id}', [GajiController::class, 'tukang_borongan_cetak']);
+  Route::get('/dashboard/tukang_borongan_ekspor/{id}', [GajiController::class, 'tukang_borongan_ekspor']);
+
+  Route::get('/dashboard/tukang_harian', [GajiController::class, 'tukang_harian']);
+  Route::get('/dashboard/tukang_harian_tambah', [GajiController::class, 'tukang_harian_tambah']);
+  Route::get('/dashboard/tukang_harian_edit/{id}', [GajiController::class, 'tukang_harian_edit']);
+  Route::get('/dashboard/tukang_harian_approve/{id}', [GajiController::class, 'tukang_harian_approve']);
+  Route::get('/dashboard/tukang_harian_disapprove/{id}', [GajiController::class, 'tukang_harian_disapprove']);
+  Route::get('/dashboard/tukang_harian_hapus/{id}', [GajiController::class, 'tukang_harian_hapus']);
+  Route::post('/dashboard/tukang_harian_aksi', [GajiController::class, 'tukang_harian_aksi']);
+  Route::post('/dashboard/tukang_harian_update', [GajiController::class, 'tukang_harian_update']);
+
+  Route::get('/dashboard/tukang_harian_cetak/{id}', [GajiController::class, 'tukang_harian_cetak']);
+  Route::get('/dashboard/tukang_harian_ekspor/{id}', [GajiController::class, 'tukang_harian_ekspor']);
+
+  Route::get('/dashboard/tukang_mandor', [GajiController::class, 'tukang_mandor']);
+  Route::post('/dashboard/tukang_mandor_before', [GajiController::class, 'tukang_mandor_before']);
+  Route::get('/dashboard/tukang_mandor_tambah/{id}/{date}/{ot?}', [GajiController::class, 'tukang_mandor_tambah']);
+  Route::get('/dashboard/tukang_mandor_tambah_b/{id}/{date}', [GajiController::class, 'tukang_mandor_tambah_b']);
+  Route::get('/dashboard/tukang_mandor_tambah_c/{id}/{date}', [GajiController::class, 'tukang_mandor_tambah_c']);
+  Route::post('/dashboard/tukang_mandor_aksi_b', [GajiController::class, 'tukang_mandor_aksi_b']);
+  Route::post('/dashboard/tukang_mandor_aksi_c', [GajiController::class, 'tukang_mandor_aksi_c']);
+  Route::get('/dashboard/tukang_mandor_edit/{id}', [GajiController::class, 'tukang_mandor_edit']);
+  Route::get('/dashboard/tukang_mandor_approve/{id}', [GajiController::class, 'tukang_mandor_approve']);
+  Route::get('/dashboard/tukang_mandor_disapprove/{id}', [GajiController::class, 'tukang_mandor_disapprove']);
+  Route::get('/dashboard/tukang_mandor_hapus/{id}', [GajiController::class, 'tukang_mandor_hapus']);
+  Route::get('/dashboard/tukang_mandor_hapus_a/{id}', [GajiController::class, 'tukang_mandor_hapus_a']);
+  Route::get('/dashboard/tukang_mandor_daftar_a/{id}', [GajiController::class, 'tukang_mandor_daftar_a']);
+  Route::get('/dashboard/tukang_mandor_daftar_b/{id}/{ic}', [GajiController::class, 'tukang_mandor_daftar_b']);
+  Route::post('/dashboard/tukang_mandor_aksi', [GajiController::class, 'tukang_mandor_aksi']);
+  Route::post('/dashboard/tukang_mandor_aksi_a', [GajiController::class, 'tukang_mandor_aksi_a']);
+  Route::post('/dashboard/tukang_mandor_update', [GajiController::class, 'tukang_mandor_update']);
+
+  Route::get('/dashboard/tukang_mandor_cetak/{id}', [GajiController::class, 'tukang_mandor_cetak']);
+  Route::get('/dashboard/tukang_mandor_ekspor/{id}', [GajiController::class, 'tukang_mandor_ekspor']);
+
+  Route::get('/dashboard/pengaturan_tunjangan', [GajiController::class, 'pengaturan_tunjangan']);
+  Route::get('/dashboard/pengaturan_tunjangan_tambah', [GajiController::class, 'pengaturan_tunjangan_tambah']);
+  Route::get('/dashboard/pengaturan_tunjangan_approve/{id}/{aksi}', [GajiController::class, 'pengaturan_tunjangan_approve']);
+  Route::get('/dashboard/pengaturan_tunjangan_edit/{id}', [GajiController::class, 'pengaturan_tunjangan_edit']);
+  Route::get('/dashboard/pengaturan_tunjangan_hapus/{id}', [GajiController::class, 'pengaturan_tunjangan_hapus']);
+  Route::post('/dashboard/pengaturan_tunjangan_aksi', [GajiController::class, 'pengaturan_tunjangan_aksi']);
+  Route::post('/dashboard/pengaturan_tunjangan_update', [GajiController::class, 'pengaturan_tunjangan_update']);
+
+  Route::get('/dashboard/daftar_tukang', [GajiController::class, 'daftar_tukang']);
+  Route::get('/dashboard/daftar_tukang_tambah', [GajiController::class, 'daftar_tukang_tambah']);
+  Route::get('/dashboard/daftar_tukang_edit/{id}', [GajiController::class, 'daftar_tukang_edit']);
+  Route::get('/dashboard/daftar_tukang_hapus/{id}', [GajiController::class, 'daftar_tukang_hapus']);
+  Route::post('/dashboard/daftar_tukang_aksi', [GajiController::class, 'daftar_tukang_aksi']);
+  Route::post('/dashboard/daftar_tukang_update', [GajiController::class, 'daftar_tukang_update']);
+
+  Route::get('/dashboard/daftar_mandor', [GajiController::class, 'daftar_mandor']);
+  Route::get('/dashboard/daftar_mandor_tambah', [GajiController::class, 'daftar_mandor_tambah']);
+  Route::get('/dashboard/daftar_mandor_edit/{id}', [GajiController::class, 'daftar_mandor_edit']);
+  Route::get('/dashboard/daftar_mandor_hapus/{id}', [GajiController::class, 'daftar_mandor_hapus']);
+  Route::post('/dashboard/daftar_mandor_aksi', [GajiController::class, 'daftar_mandor_aksi']);
+  Route::post('/dashboard/daftar_mandor_update', [GajiController::class, 'daftar_mandor_update']);
+
+  Route::get('/dashboard/gaji_mandor', [GajiController::class, 'gaji_mandor']);
+  Route::get('/dashboard/gaji_mandor_tambah', [GajiController::class, 'gaji_mandor_tambah']);
+  Route::get('/dashboard/gaji_mandor_edit/{id}', [GajiController::class, 'gaji_mandor_edit']);
+  Route::get('/dashboard/gaji_mandor_approve/{id}/{aksi}', [GajiController::class, 'gaji_mandor_approve']);
+  Route::get('/dashboard/gaji_mandor_hapus/{id}', [GajiController::class, 'gaji_mandor_hapus']);
+  Route::post('/dashboard/gaji_mandor_aksi', [GajiController::class, 'gaji_mandor_aksi']);
+  Route::post('/dashboard/gaji_mandor_update', [GajiController::class, 'gaji_mandor_update']);
 });

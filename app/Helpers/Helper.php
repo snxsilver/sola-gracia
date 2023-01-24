@@ -58,4 +58,61 @@ class Helper
     }
     return $returnValue;
   }
+
+  public static function formatHari($tanggal){
+    $bulan = array (
+      1 =>   'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agt',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
+    );
+    $date = date('Y-m-d', strtotime($tanggal));
+
+    $pecahkan = explode('-', $date);
+    $hari = date("D", strtotime($tanggal));
+    
+    switch($hari){
+      case 'Sun':
+        $hari_ini = "Mng";
+      break;
+   
+      case 'Mon':			
+        $hari_ini = "Sen";
+      break;
+   
+      case 'Tue':
+        $hari_ini = "Sel";
+      break;
+   
+      case 'Wed':
+        $hari_ini = "Rab";
+      break;
+   
+      case 'Thu':
+        $hari_ini = "Kam";
+      break;
+   
+      case 'Fri':
+        $hari_ini = "Jum";
+      break;
+   
+      case 'Sat':
+        $hari_ini = "Sab";
+      break;
+      
+      default:
+        $hari_ini = "Tidak di ketahui";		
+      break;
+    }
+   
+    return $hari_ini . ', ' . (int)$pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ];
+  }
 }
