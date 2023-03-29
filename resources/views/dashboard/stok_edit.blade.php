@@ -60,13 +60,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <input type="textr" class="form-control" placeholder="Masukkan No Bukti Pembelian Barang (Opsional)" name="bukti" value="{{old('bukti') ?? $stok->no_bukti ?? ''}}">
-                    @error('bukti')<small>*{{$message}}</small>@enderror
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
@@ -81,6 +74,13 @@
                     </div>
                     @endif
                     <img src="{{$stok->nota ? asset('/images/nota/'.$stok->nota) : ''}}" alt="" id="imgshowa">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Nomor Nota</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <input type="textr" class="form-control" placeholder="Masukkan Nomor Nota Pembelian Barang (Opsional)" name="bukti" value="{{old('bukti') ?? $stok->no_bukti ?? ''}}">
+                    @error('bukti')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="ln_solid"></div>

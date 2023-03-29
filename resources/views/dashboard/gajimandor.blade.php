@@ -43,28 +43,30 @@
                       @php($mandor = DB::table('mandor')->where('id', $g->mandor)->first())
                       <td>{{ $mandor->nama }}</td>
                       <td>{{ $g->level }}</td>
-                      <td>{{ $g->pokok }}</td>
-                      <td>{{ $g->lembur }}</td>
-                      @if (Session::get('role') === 'owner')
-                        <td>
+                      <td>Rp {{ number_format($g->pokok) }}</td>
+                      <td>Rp {{ number_format($g->lembur) }}</td>
+                      <td>
+                          @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                           @if (($g->pokok_baru !== null || $g->lembur_baru !== null) && $g->approved === 0)
                             <a class="btn btn-sm btn-success text-white" data-toggle="modal" style="cursor: pointer"
                               data-target="#gajiapproval"
                               data-yes="{{ url('/dashboard/gaji_mandor_approve/' . $g->id . '/yes') }}"
                               data-no="{{ url('/dashboard/gaji_mandor_approve/' . $g->id . '/no') }}"
-                              data-polama="{{ $g->pokok }}" data-pobaru="{{ $g->pokok_baru }}"
-                              data-lelama="{{ $g->lembur }}" data-lebaru="{{ $g->lembur_baru }}"
-                              data-tanggal="{{ $carbon::parse($g->tanggal)->format('d M Y') }}"><i
+                              data-polama="{{ $g->pokok ? 'Rp '.number_format($g->pokok) : '-' }}" data-pobaru="Rp {{ number_format($g->pokok_baru) }}"
+                              data-lelama="{{ $g->lembur ? 'Rp '.number_format($g->lembur) : '-' }}" data-lebaru="Rp {{ number_format($g->lembur_baru) }}"
+                              data-tanggal="{{ $g->tanggal ? $carbon::parse($g->tanggal)->format('d M Y') : '-' }}"><i
                                 class="fa fa-eye"></i></a>
+                          @endif
                           @endif
                           <a class="btn btn-sm btn-secondary"
                             href="{{ url('/dashboard/gaji_mandor_edit/' . $g->id) }}"><i class="fa fa-pencil"></i></a>
+                          @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem"
                             data-whatever="{{ url('/dashboard/gaji_mandor_hapus/' . $g->id) }}"><i
                               class="fa fa-trash"></i></a>
+                          @endif
                         </td>
-                      @endif
                     </tr>
                   @endforeach
                 </tbody>

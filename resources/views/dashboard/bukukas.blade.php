@@ -61,20 +61,20 @@
               <div class="row mb-2">
                 <div class="ml-2" style="background: #c0c0c0; border-radius: 50px">
                   <button type="button"
-                    class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_date @if(!Session::get('bulan') && !Session::get('tahun')) bg-primary @endif"
+                    class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_date @if(Session::get('mulai') || Session::get('selesai')) bg-primary @endif"
                     style="border-radius: 50px">Tanggal</button>
                   <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_month @if(Session::get('bulan')) bg-primary @endif"
                     style="border-radius: 50px">Bulan</button>
-                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_year @if(Session::get('tahun')) bg-primary @endif"
+                  <button type="button" class="btn btn-sm px-3 py-2 text-white font-weight-bold mb-0 mr-0 trigger_year @if(!Session::get('mulai') && !Session::get('selesai') && !Session::get('bulan')) bg-primary @endif"
                     style="border-radius: 50px">Tahun</button>
                 </div>
               </div>
-              <div class="row mt-1 target_date @if(Session::get('bulan') || Session::get('tahun')) d-none @endif">
+              <div class="row mt-1 target_date @if(!Session::get('mulai') && !Session::get('selesai')) d-none @endif">
                 <div class="col-md-6 col-12">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Mulai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-datepicker" name="mulai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
+                      <input type="text" readonly class="form-control b-datepicker" name="mulai" @if(!Session::get('mulai') && !Session::get('selesai')) disabled @endif
                         value={{ old('mulai') ?? Session::get('mulai') ?? '-' }}>
                     </div>
                   </div>
@@ -83,7 +83,7 @@
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Selesai</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(Session::get('bulan') || Session::get('tahun')) disabled @endif
+                      <input type="text" readonly class="form-control b-datepicker" name="selesai" @if(!Session::get('mulai') && !Session::get('selesai')) disabled @endif
                         value={{ old('selesai') ?? Session::get('selesai') ?? '-' }}>
                         @error('selesai')<small>*{{$message}}</small>@enderror
                     </div>
@@ -101,12 +101,12 @@
                   </div>
                 </div>
               </div>
-              <div class="row mt-1 target_year @if(!Session::get('tahun')) d-none @endif">
+              <div class="row mt-1 target_year @if(Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) d-none @endif">
                 <div class="col-md-6 col-12">
                   <div class="form-group row">
                     <label class="col-form-label col-md-3 col-sm-3 ">Tahun</label>
                     <div class="col-md-9 col-sm-9 ">
-                      <input type="text" readonly class="form-control b-yearpicker" name="tahun" @if(!Session::get('tahun')) disabled @endif
+                      <input type="text" readonly class="form-control b-yearpicker" name="tahun" @if(Session::get('mulai') || Session::get('selesai') || Session::get('bulan')) disabled @endif
                         value={{ old('tahun') ?? Session::get('tahun') ?? '-' }}>
                     </div>
                   </div>
@@ -136,7 +136,7 @@
                     <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cetak Excel"
                       href="{{ url('/dashboard/export') }}"><i class="fa fa-file-excel-o"></i></a>
                   @endif
-                  @if (Session::get('role') !== 'operator')
+                  @if (Session::get('role') !== 'operator' && Session::get('tahun') == $carbon->parse(now())->year)
                     <a class="btn btn-success text-sm btn-sm fw-semibold" data-toggle="tooltip" data-placement="top"
                       title="Tambah Transaksi dari Stok" href="{{ url('/dashboard/ambil_stok') }}"><span
                         class="text-white mr-1"><i class="fa fa-plus"></i></span>Ambil Stok</a>
@@ -172,15 +172,16 @@
                     </th>
                     <th>Tanggal <a href="{{ url('/dashboard/bukukas_sort/tanggal') }}"><i class="fa @if(Session::get('sort_tanggal') === 'asc') fa-sort-asc @elseif(Session::get('sort_tanggal') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
+                    <th>Uraian</th>
                     <th>Keterangan</th>
                     <th>Kategori <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    <th>No Bukti <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
+                    <th>No Nota <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
                     <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa @if(Session::get('sort_masuk') === 'asc') fa-sort-asc @elseif(Session::get('sort_masuk') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    @if (Session::get('role') === 'owner')
+                    @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
                       <th>Opsi</th>
                     @endif
                   </tr>
@@ -192,12 +193,13 @@
                       <td width="5%">{{ $no++ }}</td>
                       <td>{{ $b->namaproyek }}</td>
                       <td>{{ $carbon::parse($b->tanggal)->format('d M Y') }}</td>
-                      <td style="white-space: pre-line" width="20%">{{ $b->keterangan }}</td>
+                      <td style="white-space: pre-line" width="20%">{{ $b->uraian }}</td>
+                      <td width="5%"> {{ $b->keterangan }}</td>
                       <td>{{ $b->namakategori }}</td>
-                      <td>{{ $b->no_bukti ?? '-' }}</td>
+                      <td>{{ $b->no_nota ? $b->no_nota : '-' }}</td>
                       <td>{{ $b->masuk ? 'Rp ' . number_format($b->masuk) : '-' }}</td>
                       <td>{{ $b->keluar ? 'Rp ' . number_format($b->keluar) : '-' }}</td>
-                      @if (Session::get('role') === 'owner')
+                      @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
                         <td width="10%">
                           @if ($b->ambil_stok == 0)
                             @if ($b->nota)

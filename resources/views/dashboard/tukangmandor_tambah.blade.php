@@ -72,6 +72,9 @@
                   </tbody>
                 </table>
                 <div class="form-group row">
+                  @error('nowork')
+                    <small>*{{ $message }}</small>
+                  @enderror
                   <div class="col d-flex justify-content-end">
                     <button type="submit" class="btn btn-success">Simpan</button>
                   </div>

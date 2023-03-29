@@ -27,5 +27,7 @@ class Invoice extends Model
         'keterangan',
         'proyek',
         'kreator',
+        'tahun',
+        'old_id',
     ];
 }

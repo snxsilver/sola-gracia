@@ -102,10 +102,6 @@
                 <div class="align-items-center">
                   <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
                   href="{{ url('/dashboard/bukukas_refresh/invoice') }}"><i class="fa fa-refresh"></i></a>
-                  @if (Session::get('role') === 'owner')
-                    <a class="btn btn-secondary" href="{{ url('/dashboard/pajak') }}" data-toggle="tooltip"
-                      data-placement="top" title="Atur Pajak"><i class="fa fa-gear"></i></a>
-                  @endif
                   @if (Session::get('role') !== 'operator')
                     <a class="btn btn-primary" href="{{ url('/dashboard/tukang_borongan_tambah') }}"><i
                         class="fa fa-plus"></i></a>
@@ -143,7 +139,7 @@
                       <td>{{ $carbon::parse($tanggal->tanggal)->format('d M Y') }}</td>
                       <td>{{ $b->namaproyek }}</td>
                       <td>{{ $b->nama }}</td>
-                      <td>{{ $nominal }}</td>
+                      <td>Rp {{ number_format($nominal) }}</td>
                       @if (Session::get('role') === 'owner')
                         <td>
                           <a class="btn btn-sm btn-success" href="{{ url('/dashboard/tukang_borongan_cetak/' . $b->id) }}"><i

@@ -47,14 +47,22 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
+                  <label class="col-form-label col-md-3 col-sm-3 ">Uraian</label>
                   <div class="col-md-9 col-sm-9 ">
-                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id="" cols="30"
-                      rows="3">{{ old('keterangan') ?? $bukukas->keterangan }}</textarea>
+                    <textarea name="uraian" class="form-control" placeholder="Masukkan Uraian" id="" cols="30"
+                      rows="3">{{ old('uraian') ?? $bukukas->uraian }}</textarea>
                     {{-- <input type="text" class="form-control" placeholder="Masukkan Keterangan" name="keterangan"> --}}
-                    @error('keterangan')
+                    @error('uraian')
                       <small>*{{ $message }}</small>
                     @enderror
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Keterangan</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <input type="text" class="form-control" placeholder="Masukkan Keterangan" name="keterangan"  value="{{old('keterangan') ?? $bukukas->keterangan}}">
+                    <small class="warning">(opsional)</small>
+                    @error('keterangan')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="form-group row">
@@ -104,17 +112,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">No Bukti</label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan No Bukti" name="bukti"
-                      value="{{ old('bukti') ?? $bukukas->no_bukti ?? '' }}">
-                    <small class="warning">(opsional)</small>
-                    @error('bukti')
-                      <small>*{{ $message }}</small>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
@@ -129,6 +126,17 @@
                     </div>
                     @endif
                     <img src="{{$bukukas->nota ? asset('/images/nota/'.$bukukas->nota) : ''}}" alt="" id="imgshowa">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Nomor Nota</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <input type="text" class="form-control" placeholder="Masukkan Nomor Nota" name="no_nota"
+                      value="{{ old('no_nota') ?? $bukukas->no_nota ?? '' }}">
+                    <small class="warning">(harus diisi apabila menggunakan nota)</small>
+                    @error('no_nota')
+                      <small>*{{ $message }}</small>
+                    @enderror
                   </div>
                 </div>
                 <div class="ln_solid"></div>

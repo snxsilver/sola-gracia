@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -53,7 +54,8 @@ class LoginController extends Controller
                 $data_session = [
                     'id' => $data->id,
                     'username' => $data->username,
-                    'role' => $data->role
+                    'role' => $data->role,
+                    'tahun' => Carbon::parse(now())->year
                 ];
                 $request->session()->put($data_session);
                 

@@ -197,4 +197,42 @@
       target.classList.remove('d-none')
     })
   }
+
+  let tambahMandor = select('.tambah-mandor')
+  if (tambahMandor){
+    // function fungsiTambah(){
+      //   alert('hello')
+      // }
+      function hapusMandor() {
+        let targetRow = this.parentElement.parentElement.parentElement.parentElement.parentElement
+  
+        let targetId = targetRow.firstElementChild
+        if (targetId.name == 'bayarid[]') {
+          if (targetId.value !== '' ){
+            let hapusField = select('.hapus-field')
+            let inputId = document.createElement('input')
+            inputId.type = 'hidden'
+            inputId.name = 'hapusid[]'
+            inputId.value = targetId.value
+  
+            hapusField.appendChild(inputId)
+          }
+        }
+        targetRow.remove()
+      }
+      
+      on('click','.tambah-mandor', function(){
+        // alert('hello')
+        let targetRow = tambahMandor.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.firstElementChild
+        let targetField = select('.target-mandor')
+        const clone = targetRow.cloneNode(true)
+        const button = clone.lastElementChild.lastElementChild.lastElementChild.lastElementChild.lastElementChild
+        button.onclick = hapusMandor
+        clone.classList.remove('d-none')
+        targetField.appendChild(clone)
+    })
+
+
+    on('click','.hapus-mandor', hapusMandor, true)
+  }
 })()

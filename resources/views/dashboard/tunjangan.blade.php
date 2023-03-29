@@ -47,26 +47,28 @@
                         @endif
                       </td>
                       <td>{{ $t->level }}</td>
-                      <td>{{ $t->nominal }}</td>
-                      @if (Session::get('role') === 'owner')
+                      <td>{{ $t->nominal ? 'Rp '.number_format($t->nominal) : '0' }}</td>
                         <td>
+                          @if(Session::get('role') === 'owner' || Session::get('role') === 'manager')
                           @if ($t->nominal_baru !== null && $t->approved === 0)
                             <a class="btn btn-sm btn-success text-white" data-toggle="modal" style="cursor: pointer"
                               data-target="#approval"
                               data-yes="{{ url('/dashboard/pengaturan_tunjangan_approve/' . $t->id . '/yes') }}"
                               data-no="{{ url('/dashboard/pengaturan_tunjangan_approve/' . $t->id . '/no') }}"
-                              data-nomlama="{{ $t->nominal }}" data-nombaru="{{ $t->nominal_baru }}"
-                              data-tanggal="{{ $carbon::parse($t->tanggal)->format('d M Y') }}"><i class="fa fa-eye"></i></a>
+                              data-nomlama="{{ $t->nominal ? 'Rp '.number_format($t->nominal) : '0' }}" data-nombaru="{{ $t->nominal_baru ? 'Rp '.number_format($t->nominal_baru) : '0' }}"
+                              data-tanggal="{{ $t->tanggal ? $carbon::parse($t->tanggal)->format('d M Y') : '-' }}"><i class="fa fa-eye"></i></a>
+                          @endif
                           @endif
                           <a class="btn btn-sm btn-secondary"
                             href="{{ url('/dashboard/pengaturan_tunjangan_edit/' . $t->id) }}"><i
                               class="fa fa-pencil"></i></a>
+                          @if(Session::get('role') === 'owner' || Session::get('role') === 'manager')
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem"
                             data-whatever="{{ url('/dashboard/pengaturan_tunjangan_hapus/' . $t->id) }}"><i
                               class="fa fa-trash"></i></a>
+                          @endif
                         </td>
-                      @endif
                     </tr>
                   @endforeach
                 </tbody>

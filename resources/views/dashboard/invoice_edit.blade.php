@@ -94,7 +94,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Total Invoice" name="total" value={{old('total') ?? $invoice->total}}>
+                      <input type="number" class="form-control" placeholder="Masukkan Total Invoice" name="total" value={{old('total') ?? $invoice->subtotal + $invoice->dp}}>
                     </div>
                     <small class="warning">Note: Wajib diisi dengan total pembayaran harus berupa angka bulat bukan desimal.</small>
                     @error('total')<small>*{{$message}}</small>@enderror

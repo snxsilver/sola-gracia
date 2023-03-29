@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('invoice', function (Blueprint $table) {
             $table->id();
+            $table->integer('tahun');
+            $table->integer('old_id')->nullable();
             $table->string('no_invoice');
             $table->string('faktur_pajak')->nullable();
             $table->date('tanggal');

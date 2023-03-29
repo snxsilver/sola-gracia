@@ -106,7 +106,7 @@
                     <a class="btn btn-secondary" href="{{ url('/dashboard/pajak') }}" data-toggle="tooltip"
                       data-placement="top" title="Atur Pajak"><i class="fa fa-gear"></i></a>
                   @endif
-                  @if (Session::get('role') !== 'operator')
+                  @if (Session::get('role') !== 'operator' && Session::get('tahun') == $carbon->parse(now())->year)
                     <a class="btn btn-primary" href="{{ url('/dashboard/invoice_tambah') }}"><i
                         class="fa fa-plus"></i></a>
                   @endif
@@ -148,11 +148,13 @@
                         <td>
                           <a class="btn btn-sm btn-success" href="{{ url('/dashboard/invoice_cetak/' . $i->id) }}"><i
                               class="fa fa-eye"></i></a>
+                          @if(Session::get('tahun') == $carbon->parse(now())->year)
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/invoice_edit/' . $i->id) }}"><i
                               class="fa fa-pencil"></i></a>
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem" data-whatever="{{ url('/dashboard/invoice_hapus/' . $i->id) }}"><i
                               class="fa fa-trash"></i></a>
+                          @endif
                         </td>
                       @endif
                     </tr>

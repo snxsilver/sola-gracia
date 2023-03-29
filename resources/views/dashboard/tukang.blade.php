@@ -121,7 +121,8 @@
                     <th>Nama <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>No HP <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Mandor <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
-                    @if (Session::get('role') === 'owner')
+                    <th>Supervisor <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
+                    @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                       <th>Opsi</th>
                     @endif
                   </tr>
@@ -133,24 +134,27 @@
                       <td>{{ $no++ }}</td>
                       <td>{{ $t->nama }}</td>
                       <td>{{ $t->hp }}</td>
-                      @php($mandor = DB::table('mandor')->where('id',$t->mandor)->first())
+                      @php($mandor = DB::table('mandor')->where('mandor.id',$t->mandor)->join('users','mandor.supervisor','=','users.id')->select('mandor.*','users.username')->first())
                       @if($t->mandor === 0)
                       <td>Harian</td>
+                      @php($spv = DB::table('users')->where('id',$t->kreator)->first())
+                      <td>{{ $spv->username }}</td>
                       @else
                       <td>{{ $mandor->nama }}</td>
+                      <td>{{ $mandor->username }}</td>
                       @endif
-                      @if (Session::get('role') === 'owner')
-                        <td>
-                          <a class="btn btn-sm btn-success" href="{{ url('/dashboard/daftar_tukang_cetak/' . $t->id) }}"><i
-                              class="fa fa-eye"></i></a>
+                      @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
+                      <td>
+                        {{-- <a class="btn btn-sm btn-success" href="{{ url('/dashboard/daftar_tukang_cetak/' . $t->id) }}"><i
+                          class="fa fa-eye"></i></a> --}}
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/daftar_tukang_edit/' . $t->id) }}"><i
-                              class="fa fa-pencil"></i></a>
+                            class="fa fa-pencil"></i></a>
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem" data-whatever="{{ url('/dashboard/daftar_tukang_hapus/' . $t->id) }}"><i
                               class="fa fa-trash"></i></a>
-                        </td>
-                      @endif
-                    </tr>
+                            </td>
+                            @endif
+                      </tr>
                   @endforeach
                 </tbody>
               </table>

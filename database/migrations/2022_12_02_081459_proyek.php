@@ -15,9 +15,13 @@ return new class extends Migration
     {
         Schema::create('proyek', function (Blueprint $table) {
             $table->id();
+            $table->integer('tahun');
+            $table->integer('old_id')->nullable();
             $table->string('kode')->nullable();
             $table->string('nama')->nullable();
-            $table->string('nilai');
+            $table->double('nilai')->nullable();
+            $table->double('pengeluaran')->nullable();
+            $table->double('pembayaran')->nullable();
             $table->integer('pajak')->nullable();
             $table->integer('kreator');
             $table->timestamps();

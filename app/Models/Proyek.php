@@ -17,5 +17,9 @@ class Proyek extends Model
         'nilai',
         'pajak',
         'kreator',
+        'tahun',
+        'old_id',
+        'pengeluaran',
+        'pembayaran',
     ];
 }

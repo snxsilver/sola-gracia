@@ -115,4 +115,42 @@ class Helper
    
     return $hari_ini . ', ' . (int)$pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ];
   }
+
+  public static function validasiDuaArray($array1, $array2){
+    if(is_array($array1) && is_array($array2)){
+      if(count($array1) === count($array2)){
+        $c = [];
+        for($x = 0; $x < count($array1); $x++){
+          $c[] = $array1[$x].'-'.$array2[$x];
+        }
+
+        if(count($c) === count(array_unique($c))){
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  public static function toHuruf($angka){
+    if (!is_int($angka)){
+      $angka = int($angka);
+    }
+    $array = range(0,25);
+    $array2 = range(26,51);
+    $huruf = range('A','Z');
+    $huruf2 = [];
+    foreach($huruf as $h){
+      $huruf2[] = 'A'.$h;
+    }
+    if (in_array($angka,$array)){
+      return $huruf[$angka];
+    } elseif(in_array($angka, $array2)){
+      $angka = $angka - 26;
+      return $huruf2[$angka];
+    }
+    return false;
+  }
 }

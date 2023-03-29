@@ -33,7 +33,7 @@
                 <div class="align-items-center">
                   <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
                     href="{{ url('/dashboard/bukukas_refresh/proyek') }}"><i class="fa fa-refresh"></i></a>
-                  @if (Session::get('role') !== 'operator')
+                  @if (Session::get('role') !== 'operator' && Session::get('tahun') == $carbon->parse(now())->year)
                     <a class="btn btn-primary" href="{{ url('/dashboard/proyek_tambah') }}"><i class="fa fa-plus"></i></a>
                   @endif
                 </div>
@@ -60,7 +60,7 @@
                       <th>Nilai <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i
                             class="fa @if (Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                       </th>
-                      @if (Session::get('role') === 'owner')
+                      @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
                         <th>Opsi</th>
                       @endif
                     </tr>
@@ -74,7 +74,7 @@
                         <td>{{ $p->kode }}</td>
                         <td>{{ $p->nama }}</td>
                         <td>{{ 'Rp ' . number_format($p->nilai) }}</td>
-                        @if (Session::get('role') === 'owner')
+                        @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
                           <td>
                             <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/proyek_edit/' . $p->id) }}"><i
                                 class="fa fa-pencil"></i></a>

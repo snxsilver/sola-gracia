@@ -21,5 +21,6 @@ class Harian extends Model
         'approved',
         'approver',
         'total',
+        'tahun',
     ];
 }

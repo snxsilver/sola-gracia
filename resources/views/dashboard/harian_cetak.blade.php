@@ -128,6 +128,7 @@
           </div>
         </div>
       </div>
+      @if($harian->approved === 1)
       <div class="col-12 no-print">
         <div class="x_panel">
           <div class="x_content">
@@ -140,6 +141,7 @@
           </div>
         </div>
       </div>
+      @endif
     </div>
   </div>
   <!-- /page content -->

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('harian', function (Blueprint $table) {
             $table->id();
+            $table->integer('tahun');
             $table->string('nama');
             $table->integer('tukang');
             $table->double('pokok');

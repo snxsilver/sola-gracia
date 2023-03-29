@@ -34,9 +34,7 @@
                     <th>Nama <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Hari Kerja <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Total Nominal <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
-                    @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
-                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -51,21 +49,25 @@
                       <td>{{ $carbon::parse($tanggal->tanggal)->format('d M Y') }}</td>
                       <td>{{ $h->nama }}</td>
                       <td>{{ $jumlah }}</td>
-                      <td>{{ $nominal }}</td>
-                      @if (Session::get('role') === 'owner')
-                        <td>
-                          <a class="btn btn-sm btn-success" href="{{ url('/dashboard/tukang_harian_cetak/' . $h->id) }}"><i
-                              class="fa fa-eye"></i></a>
+                      <td>Rp {{ number_format($nominal) }}</td>
+                      <td>
+                        <a class="btn btn-sm btn-success" href="{{ url('/dashboard/tukang_harian_cetak/' . $h->id) }}"><i
+                          class="fa fa-eye"></i></a>
+                          @if($h->approved !== 1)
+                          @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                           <a class="btn btn-sm btn-success text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem2" data-whatever="{{ url('/dashboard/tukang_harian_approve/' . $h->id) }}"><i
                               class="fa fa-check"></i></a>
+                          @endif
+                          @endif
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/tukang_harian_edit/' . $h->id) }}"><i
                               class="fa fa-pencil"></i></a>
+                          @if($h->approved !== 1)
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                             data-target="#hapusitem" data-whatever="{{ url('/dashboard/tukang_harian_hapus/' . $h->id) }}"><i
                               class="fa fa-trash"></i></a>
+                          @endif
                         </td>
-                      @endif
                     </tr>
                   @endforeach
                 </tbody>

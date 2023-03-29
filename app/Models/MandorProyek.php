@@ -18,5 +18,6 @@ class MandorProyek extends Model
         'kreator',
         'approved',
         'approver',
+        'tahun',
     ];
 }

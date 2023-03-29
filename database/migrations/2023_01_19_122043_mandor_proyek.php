@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('mandor_proyek', function (Blueprint $table) {
             $table->id();
+            $table->integer('tahun');
             $table->date('tanggal');
             $table->string('nama');
             $table->integer('mandor');

@@ -61,8 +61,7 @@
             <div class="menu_section">
               <h3>General</h3>
               <ul class="nav side-menu">
-                {{-- <li><a href="{{url('/dashboard')}}"><i class="fa fa-home"></i> Dashboard <span class="fa fa-chevron-right"></span></a></li> --}}
-                {{-- <li><a href="{{url('/dashboard/kategori')}}"><i class="fa fa-tag"></i> Kategori <span class="fa fa-chevron-right"></span></a></li> --}}
+                @if(Session::get('role') !== 'supervisor' && Session::get('role') !== 'manager')
                 <li><a href="{{url('/dashboard/proyek')}}"><i class="fa fa-institution"></i> Proyek <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/bukukas')}}"><i class="fa fa-book"></i> Buku Kas <span class="fa fa-chevron-right"></span></a>
                 <ul class="nav child_menu">
@@ -70,13 +69,20 @@
                   <li><a href="{{url('/dashboard/kategori')}}">Kategori</a></li>
                 </ul>
                 </li>
+                @endif
+                @if(Session::get('role') !== 'operator')
                 <li><a><i class="fa fa-list-alt"></i> Penggajian <span class="fa fa-chevron-right"></span></a>
                 <ul class="nav child_menu">
+                  @if(Session::get('role') !== 'admin')
                   <li><a href="{{url('/dashboard/tukang_mandor')}}">Tukang dengan Mandor</a></li>
                   <li><a href="{{url('/dashboard/tukang_harian')}}">Tukang Harian</a></li>
+                  @endif
+                  @if(Session::get('role') !== 'supervisor' && Session::get('role') !== 'manager')
                   <li><a href="{{url('/dashboard/tukang_borongan')}}">Tukang Borongan</a></li>
+                  @endif
                 </ul>
                 </li>
+                @if(Session::get('role') !== 'admin')
                 <li><a><i class="fa fa-gear"></i> Pengaturan Gaji <span class="fa fa-chevron-right"></span></a>
                 <ul class="nav child_menu">
                   <li><a href="{{url('/dashboard/pengaturan_tunjangan')}}">Tunjangan</a></li>
@@ -85,8 +91,12 @@
                   <li><a href="{{url('/dashboard/daftar_tukang')}}">Daftar Tukang</a></li>
                 </ul>
                 </li>
+                @endif
+                @endif
+                @if(Session::get('role') !== 'supervisor' && Session::get('role') !== 'manager')
                 <li><a href="{{url('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
                 <li><a href="{{url('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
+                @endif
                 @if(Session::get('role') === 'owner')
                 <li><a href="{{url('/dashboard/user')}}"><i class="fa fa-user"></i> User <span class="fa fa-chevron-right"></span></a></li>
                 @endif
@@ -131,95 +141,28 @@
           <div class="nav toggle py-3">
             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
           </div>
-          {{-- <nav class="nav navbar-nav">
-            <ul class=" navbar-right">
-              <li class="nav-item dropdown open" style="padding-left: 15px;">
-                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown"
-                  data-toggle="dropdown" aria-expanded="false">
-                  <img src="{{ asset('images/img.jpg') }}" alt="">John Doe
-                </a>
-                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="javascript:;"> Profile</a>
-                  <a class="dropdown-item" href="javascript:;">
-                    <span class="badge bg-red pull-right">50%</span>
-                    <span>Settings</span>
-                  </a>
-                  <a class="dropdown-item" href="javascript:;">Help</a>
-                  <a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                </div>
-              </li>
-
-              <li role="presentation" class="nav-item dropdown open">
-                <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1"
-                  data-toggle="dropdown" aria-expanded="false">
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="badge bg-green">6</span>
-                </a>
-                <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image"><img src="{{ asset('images/img.jpg') }}" alt="Profile Image" /></span>
-                      <span>
-                        <span>John Smith</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were
-                        where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image"><img src="{{ asset('images/img.jpg') }}" alt="Profile Image" /></span>
-                      <span>
-                        <span>John Smith</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were
-                        where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image"><img src="{{ asset('images/img.jpg') }}" alt="Profile Image" /></span>
-                      <span>
-                        <span>John Smith</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were
-                        where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="dropdown-item">
-                      <span class="image"><img src="{{ asset('images/img.jpg') }}" alt="Profile Image" /></span>
-                      <span>
-                        <span>John Smith</span>
-                        <span class="time">3 mins ago</span>
-                      </span>
-                      <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were
-                        where...
-                      </span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <div class="text-center">
-                      <a class="dropdown-item">
-                        <strong>See All Alerts</strong>
-                        <i class="fa fa-angle-right"></i>
-                      </a>
+          <nav class="nav navbar-nav">
+            <div class="navbar-right">
+              <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                  <form action="{{ url('/dashboard/filter') }}" method="post">
+                    @csrf
+                    <div class="form-group row align-items-center" style="margin-bottom: 0">
+                      <label class="col-form-label col-md-3 col-sm-3 col-3">Tahun</label>
+                      <div class="col-md-6 col-sm-6 col-6">
+                        <input type="text" readonly class="form-control b-yearpicker" name="tahun"
+                        value={{ old('tahun') ?? Session::get('tahun') ?? '-' }}>
+                      </div>
+                      <div class="col-3" style="padding: 0">
+                        <input type="submit" name="submit" value="Go" class="btn btn-success btn-sm text-sm" style="margin-bottom: 0; margin-right: 0">
+                      </div>
                     </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav> --}}
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nav>
         </div>
       </div>
       <!-- /top navigation -->

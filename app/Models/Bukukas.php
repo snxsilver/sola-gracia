@@ -13,14 +13,17 @@ class Bukukas extends Model
 
     protected $fillable = [
         'tanggal',
+        'uraian',
         'keterangan',
         'keluar',
         'masuk',
-        'no_bukti',
+        'no_nota',
         'nota',
         'kategori',
         'proyek',
         'kreator',
         'ambil_stok',
+        'tahun',
+        'old_id',
     ];
 }

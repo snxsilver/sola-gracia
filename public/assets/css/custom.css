@@ -6,6 +6,11 @@
   src: url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff") format("woff"), url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular") format("svg");
 }
 
+@font-face {
+  font-family: "ArialNarrow";
+  src: url("../fonts/ARIALN.TTF");
+}
+
 .glyphicon {
   position: relative;
   top: 1px;
@@ -6322,6 +6327,7 @@ form .error {
 
 .invoice-cetak {
   color: black;
+    font-family: "ArialNarrow";
 }
 
 .invoice-cetak h3 {
@@ -6389,6 +6395,10 @@ form .error {
   border-bottom: 1px solid black;
 }
 
+.invoice-cetak .kwitansi-cetak p {
+  font-size: 20px;
+}
+
 @media print {
   @page {
     size: A5;
@@ -6418,6 +6428,10 @@ form .error {
     left: 0;
     bottom: 0;
     padding: 25px 25px;
+  }
+
+  .invoice-footer.kwitansi-cetak {
+    padding: 25px 50px 75px;
   }
 
   html,
@@ -6573,51 +6587,139 @@ form .error {
   padding: 0.5rem;
 }
 
-.harian-cetak {
+@media print {
+  @page {
+    size: A5;
+    /* DIN A4 standard, Europe */
+    margin: 0;
+    size: auto;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .harian-body {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFF;
+    margin: 0;
+    padding: 25px 25px;
+  }
+
+  /* .invoice-footer {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 25px 25px;
+  } */
+
+  html,
+  body {
+    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+
+.mandor-cetak {
   color: black;
 }
 
-.harian-cetak h3 {
+.mandor-cetak h3 {
   margin: 0;
   font-size: 24px;
   font-weight: 600;
 }
 
-.harian-cetak h4 {
+.mandor-cetak h4 {
   margin: 0;
   font-size: 20px;
 }
 
-.harian-cetak h5 {
+.mandor-cetak h5 {
   margin: 0;
   font-size: 18px;
   font-weight: bold;
 }
 
-.harian-cetak p {
+.mandor-cetak p {
   margin: 0;
   font-size: 14px;
 }
 
-.harian-cetak small {
+.mandor-footer p {
+  font-size: 12px;
+}
+
+.mandor-cetak small {
   margin: 0;
   font-size: 12px;
 }
 
-.harian-cetak .row {
+.mandor-cetak .row {
   margin: 0 -15px;
 }
 
-.harian-cetak table {
-  font-size: 14px;
+.mandor-cetak table {
+  font-size: 12px;
   margin-bottom: 0;
 }
 
-.harian-cetak .table tbody td {
+.mandor-cetak .table tbody td {
   border: 1px solid black;
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.2rem;
 }
+
+@media print {
+  @page {
+    size: A5;
+    /* DIN A4 standard, Europe */
+    margin: 0;
+    size: auto;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .mandor-body {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFF;
+    margin: 0;
+    padding: 15px 15px;
+  }
+
+  /* .invoice-footer {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 25px 25px;
+  } */
+
+  html,
+  body {
+    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
 
 .dropzone-wrapper {
   position: relative;

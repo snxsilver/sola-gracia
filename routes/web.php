@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -22,8 +23,12 @@ Route::post('/login_aksi', [LoginController::class, 'login_aksi']);
 Route::post('/register_aksi', [LoginController::class, 'register_aksi']);
 Route::get('/logout', [LoginController::class, 'logout']);
 
-Route::group(['middleware' => 'auth'], function () {
+// Route::get('/cron-0', [DatabaseController::class, 'cron_0']);
+// Route::get('/cron-1', [DatabaseController::class, 'cron_1']);
+// Route::get('/cron-2', [DatabaseController::class, 'cron_2']);
+// Route::get('/cron-3', [DatabaseController::class, 'cron_3']);
 
+Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
   Route::get('/dashboard/user', [DashboardController::class, 'user']);

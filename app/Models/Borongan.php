@@ -15,5 +15,6 @@ class Borongan extends Model
         'proyek',
         'nama',
         'kreator',
+        'tahun',
     ];
 }

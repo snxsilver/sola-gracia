@@ -121,7 +121,7 @@
                     <th>Nama <a href="{{ url('/dashboard/bukukas_sort/kategori') }}"><i class="fa @if(Session::get('sort_kategori') === 'asc') fa-sort-asc @elseif(Session::get('sort_kategori') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>No HP <a href="{{ url('/dashboard/bukukas_sort/bukti') }}"><i class="fa @if(Session::get('sort_bukti') === 'asc') fa-sort-asc @elseif(Session::get('sort_bukti') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Supervisor <a href="{{ url('/dashboard/bukukas_sort/proyek') }}"><i class="fa @if(Session::get('sort_proyek') === 'asc') fa-sort-asc @elseif(Session::get('sort_proyek') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
-                    @if (Session::get('role') === 'owner')
+                    @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                       <th>Opsi</th>
                     @endif
                   </tr>
@@ -134,10 +134,8 @@
                       <td>{{ $m->nama }}</td>
                       <td>{{ $m->hp }}</td>
                       <td>{{ $m->username }}</td>
-                      @if (Session::get('role') === 'owner')
+                      @if (Session::get('role') === 'owner' || Session::get('role') === 'manager')
                         <td>
-                          <a class="btn btn-sm btn-success" href="{{ url('/dashboard/daftar_mandor_cetak/' . $m->id) }}"><i
-                              class="fa fa-eye"></i></a>
                           <a class="btn btn-sm btn-secondary" href="{{ url('/dashboard/daftar_mandor_edit/' . $m->id) }}"><i
                               class="fa fa-pencil"></i></a>
                           <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"

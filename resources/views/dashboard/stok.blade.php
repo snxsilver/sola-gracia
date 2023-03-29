@@ -28,7 +28,7 @@
                     <th>Kuantitas</th>
                     <th>Satuan</th>
                     <th>Harga</th>
-                    <th>No Bukti</th>
+                    <th>No Nota</th>
                     @if (Session::get('role') === 'owner')
                       <th>Opsi</th>
                     @endif

@@ -11,8 +11,8 @@
           <div class="x_content">
             <div class="col-12 invoice-cetak">
               <div class="invoice-body">
-                <div class="align-items-center d-flex">
-                  <img src="{{ asset('/images/solagracia.png') }}" style="height: 70px" alt="">
+                <div class="d-flex align-items-end">
+                  <img src="{{ asset('/images/solagracia.png') }}" style="height: 70px; margin-bottom: 0.4rem" alt="">
                   <div class="align-items-center ml-3">
                     <h4 class="font-weight-bold">CV. Sola Gracia</h4>
                     <p>Jl. Kimar III No. 10, Semarang</p>
@@ -57,7 +57,12 @@
                           <tr>
                             <td>1</td>
                             <td style="white-space: pre-line">{{ $invoice->keterangan }}</td>
-                            <td style="text-align: right">{{ 'Rp ' . number_format($invoice->subtotal) }}</td>
+                            <td class="d-flex justify-content-end">
+                              <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                                <p>Rp</p>
+                                <p>{{number_format($invoice->subtotal)}}</p>
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -66,21 +71,35 @@
                   <div class="row">
                     <div class="col-8"></div>
                     <div class="col-4">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <p>DP :</p>
-                        <p>{{ 'Rp ' . number_format($invoice->dp ?? 0) }}</p>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <p>Dasar Pengenaan Pajak :</p>
-                        <p>{{ 'Rp ' . number_format($invoice->subtotal) }}</p>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <p>PPN :</p>
-                        <p>{{ 'Rp ' . number_format($invoice->total - $invoice->subtotal) }}</p>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center">
-                        <p>Total :</p>
-                        <p>{{ 'Rp ' . number_format($invoice->total) }}</p>
+                      <div class="" style="margin-right: 0.3rem">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p>DP :</p>
+                          <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                            <p>Rp</p>
+                            <p>{{number_format($invoice->dp ?? 0)}}</p>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p>Dasar Pengenaan Pajak :</p>
+                          <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                            <p>Rp</p>
+                            <p>{{number_format($invoice->subtotal)}}</p>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p>PPN :</p>
+                          <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                            <p>Rp</p>
+                            <p>{{number_format($invoice->total - $invoice->subtotal)}}</p>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p>Total :</p>
+                          <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                            <p>Rp</p>
+                            <p>{{number_format($invoice->total)}}</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -88,7 +107,7 @@
                     <div class="col">
                       <div class="d-flex">
                         <p class="mr-2">Terbilang</p>
-                        <p>#{{ ucwords($terbilang->terbilang($invoice->total)) }} Rupiah.#</p>
+                        <p>#{{ ucwords($terbilang->terbilang($invoice->total)) }} Rupiah#</p>
                       </div>
                     </div>
                   </div>
@@ -142,8 +161,8 @@
           <div class="x_content">
             <div class="col-12 invoice-cetak">
               <div class="invoice-body">
-                <div class="align-items-center d-flex">
-                  <img src="{{ asset('/images/solagracia.png') }}" style="height: 70px" alt="">
+                <div class="d-flex align-items-end">
+                  <img src="{{ asset('/images/solagracia.png') }}" style="height: 70px; margin-bottom: 0.45rem" alt="">
                   <div class="align-items-center ml-3">
                     <h4 class="font-weight-bold">CV. Sola Gracia</h4>
                     <p>Jl. Kimar III No. 10, Semarang</p>
@@ -153,9 +172,9 @@
                 <div class="mt-3 d-flex justify-content-center">
                   <h3>KWITANSI</h3>
                 </div>
-                <div class="mb-1">
+                <div class="mb-1 kwitansi-cetak px-5" style="margin-right: 100px">
                   <div class="d-flex justify-content-left">
-                    <p>No: {{ $invoice->no_invoice }}</p>
+                    <p>No: <span style="text-decoration:underline">{{ $invoice->no_invoice }}</span></p>
                   </div>
                   <div class="row my-2">
                     <div class="col-3">
@@ -171,7 +190,7 @@
                     </div>
                     <div class="col-9">
                       <div class="kotak-terbilang">
-                        <p>#{{ ucwords($terbilang->terbilang($invoice->total)) }} Rupiah.#</p>
+                        <p>#{{ ucwords($terbilang->terbilang($invoice->total)) }} Rupiah#</p>
                       </div>
                     </div>
                   </div>
@@ -185,7 +204,7 @@
                   </div>
                 </div>
               </div>
-              <div class="invoice-footer">
+              <div class="invoice-footer kwitansi-cetak">
                 <div class="d-flex justify-content-between align-items-end mt-8 signature-box">
                   <div class="d-flex align-items-center">
                     <p class="mr-2">Rp</p>
@@ -194,7 +213,7 @@
                     </div>
                   </div>
                   <div class="align-items-center">
-                    <div class="align-items-center signature">
+                    <div class="align-items-center signature" style="margin-bottom: 120px">
                       @php($tanggal = $carbon->parse($invoice->tanggal)->locale('id'))
                       @php($tanggal->settings(['formatFunction' => 'translatedFormat']))
                       <p>Semarang, {{ $tanggal->format('j F Y') }}</p>
