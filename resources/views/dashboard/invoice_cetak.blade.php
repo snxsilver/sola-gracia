@@ -57,10 +57,12 @@
                           <tr>
                             <td>1</td>
                             <td style="white-space: pre-line">{{ $invoice->keterangan }}</td>
-                            <td class="d-flex justify-content-end">
-                              <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
-                                <p>Rp</p>
-                                <p>{{number_format($invoice->subtotal)}}</p>
+                            <td style="text-align: right">
+                              <div class="d-flex justify-content-end">
+                                <div class="d-flex justify-content-between" @if($invoice->subtotal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                                  <p>Rp</p>
+                                  <p>{{number_format($invoice->subtotal)}}</p>
+                                </div>
                               </div>
                             </td>
                           </tr>
