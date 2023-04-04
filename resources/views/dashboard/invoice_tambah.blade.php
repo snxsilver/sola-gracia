@@ -111,29 +111,69 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Total<span class="x-alert">*</span></label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
+                  <label class="col-form-label col-md-3 col-sm-3 ">Detail Pembayaran</label>
+                  <div class="col-md-9 col-sm-9">
+                    <div class="invoice-field">
+                      <div class="row">
+                        <div class="col-8">
+                          <label class="col-form-label">Keterangan<span class="x-alert">*</span></label>
+                        </div>
+                        <div class="col-4">
+                          <label class="col-form-label">Nominal</label>
+                        </div>
                       </div>
-                      <input type="number" class="form-control" placeholder="Masukkan Total Invoice" name="total"
-                        value="{{ old('total') }}">
+                      @php($x = 0)
+                      @if(old('keterangan'))
+                      @for($x; $x < count(old('keterangan')); $x++)
+                      <div class="row @if($x !== 0) mt-3 @endif">
+                        <div class="col-8">
+                          <textarea name="keterangan[]" class="form-control" placeholder="Masukkan Keterangan" id=""
+                          cols="30" rows="3">{{old('keterangan.'.$x)}}</textarea>
+                          @error('keterangan.'.$x)
+                          <small>*{{$message}}</small>
+                          @enderror
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex align-items-center">
+                            <div class="input-group" style="margin-bottom: 0">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                              </div>
+                              <input type="number" class="form-control" placeholder="Masukkan Nominal Pembayaran" name="nominal[]" value="{{old('nominal.'.$x)}}">
+                            </div>
+                            @if($x == count(old('keterangan')) - 1)
+                            <button type="button" class="btn btn-primary ml-2 tambah-invoice" style="margin: 0"><i class="fa fa-plus"></i></button>
+                            @else
+                            <button type="button" class="btn btn-danger ml-2 hapus-invoice" style="margin: 0"><i class="fa fa-minus"></i></button>
+                            @endif
+                          </div>
+                          @error('nominal.'.$x)
+                          <small>*{{$message}}</small>
+                          @enderror
+                        </div>
+                      </div>
+                      @endfor
+                      @else
+                      <div class="row">
+                        <div class="col-8">
+                          <textarea name="keterangan[]" class="form-control" placeholder="Masukkan Keterangan" id=""
+                          cols="30" rows="3"></textarea>
+                        </div>
+                        <div class="col-4">
+                          <div class="d-flex align-items-center">
+                            <div class="input-group" style="margin-bottom: 0">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                              </div>
+                              <input type="number" class="form-control" placeholder="Masukkan Nominal Pembayaran" name="nominal[]">
+                            </div>
+                            <button type="button" class="btn btn-primary ml-2 tambah-invoice" style="margin: 0"><i class="fa fa-plus"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                      @endif
                     </div>
-                    <small class="warning">Note: Total pembayaran harus berupa angka bulat bukan desimal.</small>
-                    @error('total')
-                      <small>*{{ $message }}</small>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Keterangan<span class="x-alert">*</span></label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <textarea name="keterangan" class="form-control" placeholder="Masukkan Keterangan" id=""
-                      cols="30" rows="3">{{ old('keterangan') }}</textarea>
-                    @error('keterangan')
-                      <small>*{{ $message }}</small>
-                    @enderror
+                    <small class="warning ml-2">Note: Nominal pembayaran harus berupa angka bulat bukan desimal.</small>
                   </div>
                 </div>
                 <div class="form-group row">

@@ -201,7 +201,7 @@
                       <td>{{ $b->keluar ? 'Rp ' . number_format($b->keluar) : '-' }}</td>
                       @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
                         <td width="10%">
-                          @if ($b->ambil_stok == 0)
+                          @if ($b->ambil_stok == 0 || $b->ambil_stok == null)
                             @if ($b->nota)
                               <span data-toggle="tooltip" data-placement="bottom" title="Lihat Nota"><a class="btn btn-sm btn-success text-white" style="cursor: pointer" data-toggle="modal"
                                 data-target="#shownota" data-name="{{ $b->no_bukti ?? 'Nota' }}"
@@ -214,13 +214,18 @@
                               data-target="#hapusitem"
                               data-whatever="{{ url('/dashboard/bukukas_hapus/' . $b->id) }}"><i
                                 class="fa fa-trash"></i></a>
-                          @else
+                          @elseif($b->ambil_stok == 1)
                             <a class="btn btn-sm btn-secondary"
                               href="{{ url('/dashboard/ambil_stok_edit/' . $b->id) }}"><i class="fa fa-pencil"></i></a>
                             <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                               data-target="#hapusitem"
                               data-whatever="{{ url('/dashboard/ambil_stok_hapus/' . $b->id) }}"><i
                                 class="fa fa-trash"></i></a>
+                          @elseif($b->ambil_stok == 2)
+                            @php($invoice = DB::table('invoice')->where('bukukas',$b->id)->first())
+                            @if($invoice)
+                            <span data-toggle="tooltip" data-placement="bottom" title="Lihat Invoice"><a class="btn btn-sm btn-success text-white" style="cursor: pointer" href="{{ url('/dashboard/invoice_cetak/' . $invoice->id) }}"><i class="fa fa-eye"></i></a></span>
+                            @endif
                           @endif
                         </td>
                       @endif

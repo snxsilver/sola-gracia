@@ -235,4 +235,88 @@
 
     on('click','.hapus-mandor', hapusMandor, true)
   }
+
+  let invoiceField = select('.invoice-field')
+  if (invoiceField){
+    function hapusInvoice() {
+      let targetRow = this.parentElement.parentElement.parentElement
+      if (!targetRow.classList.contains('mt-3')) {
+        targetRow.nextElementSibling.classList.remove('mt-3')
+      }
+      targetRow.remove()
+    }
+    function fungsiTambahInvoice(){
+      let field = select('.invoice-field')
+
+      let inputKet = document.createElement('textarea')
+      inputKet.name = 'keterangan[]'
+      inputKet.className = 'form-control'
+      inputKet.placeholder = 'Masukkan Keterangan'
+      inputKet.cols = '30'
+      inputKet.rows = '3'
+
+      const colKet = document.createElement('div')
+      colKet.className = 'col-8'
+
+      let inputNominal = document.createElement('input')
+      inputNominal.type = 'number'
+      inputNominal.className = 'form-control'
+      inputNominal.placeholder = 'Masukkan Nominal Pembayaran'
+      inputNominal.name = 'nominal[]'
+
+      let spanRp = document.createElement('span')
+      spanRp.className = 'input-group-text'
+      spanRp.textContent = 'Rp'
+
+      let divPrepend = document.createElement('div')
+      divPrepend.className = 'input-group-prepend'
+
+      let divInputGroup = document.createElement('div')
+      divInputGroup.className = 'input-group'
+      divInputGroup.style = 'margin-bottom: 0'
+
+      let divFlex = document.createElement('div')
+      divFlex.className = 'd-flex align-items-center'
+
+      const colNominal = document.createElement('div')
+      colNominal.className = 'col-4'
+
+      const row = document.createElement('div')
+      row.className = 'row mt-3'
+
+      colKet.appendChild(inputKet)
+
+      divPrepend.appendChild(spanRp)
+      divInputGroup.appendChild(divPrepend)
+      divInputGroup.appendChild(inputNominal)
+      divFlex.appendChild(divInputGroup)
+      divFlex.appendChild(this)
+
+      colNominal.appendChild(divFlex)
+
+      row.appendChild(colKet)
+      row.appendChild(colNominal)
+
+      field.appendChild(row)
+
+      let thisRow = this.parentElement.parentElement.parentElement
+      let prevRow = thisRow.previousElementSibling
+      let targetDiv = prevRow.lastElementChild.lastElementChild
+
+      let iminus = document.createElement('i')
+      iminus.className = 'fa fa-minus'
+
+      let buttonAdd = document.createElement('button')
+      buttonAdd.type = 'button'
+      buttonAdd.className = 'btn btn-danger ml-2'
+      buttonAdd.style = "margin: 0"
+      buttonAdd.onclick = hapusInvoice
+
+      buttonAdd.appendChild(iminus)
+
+      targetDiv.appendChild(buttonAdd)
+    }
+    on('click','.tambah-invoice', fungsiTambahInvoice)
+    on('click','.hapus-invoice', hapusInvoice, true)
+  }
 })()

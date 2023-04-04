@@ -27,6 +27,10 @@ Route::get('/logout', [LoginController::class, 'logout']);
 // Route::get('/cron-1', [DatabaseController::class, 'cron_1']);
 // Route::get('/cron-2', [DatabaseController::class, 'cron_2']);
 // Route::get('/cron-3', [DatabaseController::class, 'cron_3']);
+// Route::get('/cron-4', [DatabaseController::class, 'cron_4']);
+// Route::get('/cron-5', [DatabaseController::class, 'cron_5']);
+// Route::get('/cron-6', [DatabaseController::class, 'cron_6']);
+// Route::get('/cron-7', [DatabaseController::class, 'cron_7']);
 
 Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard', [DashboardController::class, 'dashboard']);

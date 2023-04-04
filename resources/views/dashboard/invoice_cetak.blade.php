@@ -6,6 +6,17 @@
   <!-- page content -->
   <div class="right_col" role="main">
     <div class="row">
+      <div class="col-12 no-print">
+        <div class="x_panel">
+          <div class="x_content">
+            <div class="col-12">
+              <div class="d-flex justify-content-end">
+                <a href="javascript:history.go(-1)" class="btn btn-primary"><i class="fa fa-arrow-left"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col-12 target-invoice">
         <div class="x_panel">
           <div class="x_content">
@@ -54,6 +65,24 @@
                           </tr>
                         </thead>
                         <tbody>
+                          @php($cek = DB::table('invoice_detail')->where('invoice',$invoice->id)->get())
+                          @if(count($cek) > 1)
+                          @php($no = 1)
+                          @foreach($cek as $c)
+                          <tr>
+                            <td>{{$no++}}</td>
+                            <td style="white-space: pre-line">{{ $c->keterangan }}</td>
+                            <td style="text-align: right">
+                              <div class="d-flex justify-content-end">
+                                <div class="d-flex justify-content-between" @if($c->nominal > 999999999) style="width: 120px" @else style="width: 100px" @endif>
+                                  <p>Rp</p>
+                                  <p>{{number_format($c->nominal)}}</p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          @endforeach
+                          @else
                           <tr>
                             <td>1</td>
                             <td style="white-space: pre-line">{{ $invoice->keterangan }}</td>
@@ -66,6 +95,7 @@
                               </div>
                             </td>
                           </tr>
+                          @endif
                         </tbody>
                       </table>
                     </div>

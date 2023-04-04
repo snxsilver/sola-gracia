@@ -49,41 +49,6 @@ class DatabaseController extends Controller
         $html = "<p>Konversi Invoice</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
         echo $html;
     }
-    // public function cron_3()
-    // {
-    //     $query = DB::connection('mysql2')->table('invoice_master')->where('proses', null)->orderBy('id_invoice')->limit(300);
-    //     $jumlah = $query->count();
-    //     $invoice = $query->get();
-    //     foreach($invoice as $i){
-    //         $proyek = Proyek::where('old_id',$i->id_project)->where('tahun', 2022)->first();
-    //         Invoice::create([
-    //             'tahun' => 2022,
-    //             'old_id' => $i->id_invoice,
-    //             'no_invoice' => $i->no_invoice,
-    //             'faktur_pajak' => $i->faktur_pajak,
-    //             'tanggal' => $i->tgl,
-    //             'tanggal_jatuh_tempo' => $i->tgl_jatuh_tempo,
-    //             'nama_perusahaan' => $i->nama_perusahaan,
-    //             'alamat' => $i->alamat,
-    //             'telp' => $i->telp,
-    //             'npwp' => $i->npwp,
-    //             'dp' => $i->dp,
-    //             'subtotal' => $i->subtotal,
-    //             'total' => $i->total,
-    //             'keterangan' => $i->keterangan,
-    //             'proyek' => $proyek->id,
-    //             'kreator' => 1,
-    //         ]);
-
-    //         DB::connection('mysql2')->table('invoice_master')->where('id_invoice',$i->id_invoice)->update([
-    //             'proses' => 1
-    //         ]);
-    //     }
-    //     $sisa = DB::connection('mysql2')->table('invoice_master')->where('proses', null)->count();
-
-    //     $html = "<p>Konversi Invoice</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
-    //     echo $html;
-    // }
 
     // Bukukas
     public function cron_2()
@@ -153,5 +118,119 @@ class DatabaseController extends Controller
         DB::connection('mysql2')->table('trycon')->insert([
             'name' => 'check'
         ]);
+    }
+
+    public function cron_4(){
+        $query = Proyek::where('proses', null)->orderBy('id','asc')->limit(300);
+        $jumlah = $query->count();
+        $proyek = $query->get();
+        foreach($proyek as $p){
+            Proyek::where('id',$p->id)->update([
+                'proses' => 1,
+                'pajak' => 0,
+            ]);
+        }
+
+        $sisa = Proyek::where('proses', null)->count();
+
+        $html = "<p>Konversi Proyek</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
+        echo $html;
+    }
+
+    public function cron_5(){
+        $query = Invoice::where('proses', null)->orderBy('id','asc')->limit(300);
+        $jumlah = $query->count();
+        $invoice = $query->get();
+        foreach($invoice as $i){
+            if ($i->total != $i->subtotal){
+                $proyek = Proyek::where('id',$i->proyek)->first();
+                if ($proyek){
+                    if ($proyek->pajak == 0){
+                        Proyek::where('id',$i->proyek)->update([
+                            'pajak' => 1,
+                        ]);
+                    }
+                }
+            }
+
+            Invoice::where('id',$i->id)->update([
+                'proses' => 1,
+            ]);
+        }
+
+        $sisa = Invoice::where('proses', null)->count();
+
+        $html = "<p>Konversi Invoice</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
+        echo $html;
+    }
+
+    public function cron_6(){
+        $query = Invoice::where('tahun',2023)->where('proses', 1)->orderBy('id','asc')->limit(5);
+        $jumlah = $query->count();
+        $invoice = $query->get();
+        foreach($invoice as $i){
+            $bukukas = Bukukas::create([
+                'tahun' => Carbon::parse(now())->year,
+                'proyek' => $i->proyek,
+                'tanggal' => $i->tanggal,
+                'uraian' => $i->keterangan,
+                'kategori' => 2,
+                'masuk' => $i->subtotal + $i->dp,
+                'kreator' => 1,
+                'ambil_stok' => 2,
+            ]);
+
+            $dbproyek = Proyek::where('id', $i->proyek)->first();
+            // if($dbproyek){   
+                Proyek::where('id', $i->proyek)->update([
+                    'nilai' => $dbproyek->nilai + $i->subtotal + $i->dp
+                ]);
+            // }
+
+            Invoice::where('id',$i->id)->update([
+                'bukukas' => $bukukas->id,
+                'proses' => 2,
+            ]);
+        }
+
+        $sisa = Invoice::where('tahun',2023)->where('proses', 1)->count();
+
+        $html = "<p>Konversi Invoice</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
+        echo $html;
+    }
+
+    public function cron_7(){
+        $query = Invoice::where('proses', 2)->orderBy('id','asc')->limit(2);
+        $jumlah = $query->count();
+        $invoice = $query->get();
+        foreach($invoice as $i){
+            // $bukukas = Bukukas::create([
+            //     'tahun' => Carbon::parse(now())->year,
+            //     'proyek' => $i->proyek,
+            //     'tanggal' => $i->tanggal,
+            //     'uraian' => $i->keterangan,
+            //     'kategori' => 2,
+            //     'masuk' => $i->subtotal + $i->dp,
+            //     'kreator' => 1,
+            //     'ambil_stok' => 2,
+            // ]);
+            Bukukas::where('id',$i->bukukas)->delete();
+
+            $dbproyek = Proyek::where('id', $i->proyek)->first();
+
+            Proyek::where('id', $i->proyek)->update([
+                'nilai' => $dbproyek->nilai - $i->subtotal - $i->dp
+            ]);
+
+            Invoice::where('id',$i->id)->update([
+                'bukukas' => null,
+                'proses' => 1,
+            ]);
+        }
+
+        $sisa = Invoice::where('proses', 2)->count();
+
+        $html = "<p>Konversi Invoice</p><p>konversi: ".$jumlah."</p><p>sisa: ".$sisa."</p>";
+        echo $html;
     }
 }

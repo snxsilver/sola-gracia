@@ -46,7 +46,7 @@ class GajiController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        $data['borongan'] = Borongan::where('tahun', Session::get('tahun'))->join('proyek', 'borongan.proyek', '=', 'proyek.id')
+        $data['borongan'] = Borongan::where('borongan.tahun', Session::get('tahun'))->join('proyek', 'borongan.proyek', '=', 'proyek.id')
             ->select('borongan.*', 'proyek.nama as namaproyek')->get();
         return view('dashboard.borongan', $data);
     }
@@ -126,9 +126,10 @@ class GajiController extends Controller
                 'tanggal' => date('Y-m-d', strtotime($convtgl)),
                 'uraian' => 'Pembayaran ke ' . $borongan->nama . ' untuk mengerjakan Proyek ' . $namaproyek . '.',
                 'keluar' => $nominal[$i],
-                'kategori' => 1,
+                'kategori' => 3,
                 'proyek' => $proyek,
                 'kreator' => Session::get('id'),
+                'ambil_stok' => 3,
             ]);
 
             BoronganBayar::create([
@@ -205,9 +206,10 @@ class GajiController extends Controller
                     'tanggal' => date('Y-m-d', strtotime($tanggal[$i])),
                     'keterangan' => 'Pembayaran ke ' . $nama . ' untuk mengerjakan Proyek ' . $namaproyek . '.',
                     'keluar' => $nominal[$i],
-                    'kategori' => 1,
+                    'kategori' => 3,
                     'proyek' => $proyek,
                     'kreator' => Session::get('id'),
+                    'ambil_stok' => 3,
                 ]);
 
                 BoronganBayar::create([
@@ -234,8 +236,9 @@ class GajiController extends Controller
                     Bukukas::where('id', $idbukukas)->update([
                         'tanggal' => date('Y-m-d', strtotime($bayartanggal[$i])),
                         'keluar' => $bayarnominal[$i],
-                        'kategori' => 1,
+                        'kategori' => 3,
                         'kreator' => Session::get('id'),
+                        'ambil_stok' => 3,
                     ]);
                 }
 
@@ -1006,9 +1009,10 @@ class GajiController extends Controller
                 'tanggal' => $b->tanggal,
                 'keterangan' => 'Pembayaran ke ' . $harian->nama . ' untuk mengerjakan Proyek ' . $b->namaproyek . '.',
                 'keluar' => $b->total,
-                'kategori' => 1,
+                'kategori' => 3,
                 'proyek' => $b->proyek,
                 'kreator' => Session::get('id'),
+                'ambil_stok' => 3,
             ]);
 
             $idbukukas = $bukukas->id;
@@ -1626,9 +1630,10 @@ class GajiController extends Controller
                     'tanggal' => $g->tanggal,
                     'keterangan' => 'Pembayaran ke ' . $g->nama . ' untuk mengerjakan Proyek ' . $g->namaproyek . '.',
                     'keluar' => $g->total,
-                    'kategori' => 1,
+                    'kategori' => 3,
                     'proyek' => $g->proyek,
                     'kreator' => Session::get('id'),
+                    'ambil_stok' => 3,
                 ]);
 
                 $idbukukas = $bukukas->id;

@@ -21,6 +21,9 @@ use Image;
 
 use App\Exports\UsersExport;
 use App\Helpers\Helper;
+use App\Models\GajiMandorTukang;
+use App\Models\HarianBayar;
+use App\Models\InvoiceDetail;
 use App\Models\Pajak;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -293,6 +296,11 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        $protected = [1, 2, 3];
+        if (in_array($id, $protected)){
+            notify()->error('Kategori tidak dapat dihapus.');
+            return back();
+        }
         Kategori::where('id', $id)->delete();
 
         notify()->success('Kategori berhasil dihapus.');
@@ -513,6 +521,32 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        $invoice = Invoice::where('proyek',$id)->first();
+        if ($invoice){
+            notify()->error('Terdapat data invoice yang menggunakan proyek ini.');
+            return back();
+        }
+        $borongan = Borongan::where('proyek',$id)->first();
+        if ($borongan){
+            notify()->error('Terdapat data gaji tukang borongan yang menggunakan proyek ini.');
+            return back();
+        }
+        $harian = HarianBayar::where('proyek',$id)->first();
+        if ($harian){
+            notify()->error('Terdapat data gaji tukang harian yang menggunakan proyek ini.');
+            return back();
+        }
+        $mandor = GajiMandorTukang::where('proyek',$id)->first();
+        if ($mandor){
+            notify()->error('Terdapat data gaji tukang mandor yang menggunakan proyek ini.');
+            return back();
+        }
+        $bukukas = Bukukas::where('proyek',$id)->first();
+        if ($bukukas){
+            notify()->error('Terdapat data bukukas yang menggunakan proyek ini.');
+            return back();
+        }
+        
         Proyek::where('id', $id)->delete();
 
         notify()->success('Proyek berhasil dihapus.');
@@ -1685,12 +1719,12 @@ class DashboardController extends Controller
 
         if (Session::get('sort_tanggal')) {
             if (Session::get('sort_tanggal') === 'asc') {
-                $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc');
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'asc')->orderBy('id','asc');
             } else {
-                $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
+                $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc')->orderBy('id','desc');
             }
         } else {
-            $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc');
+            $data_query2 = $data_query->orderBy('invoice.tanggal', 'desc')->orderBy('id','desc');
         }
 
         $data['invoice'] = $data_query2->paginate(50);
@@ -1729,14 +1763,14 @@ class DashboardController extends Controller
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
             'nama_perusahaan' => 'Nama Perusahaan',
-            'keterangan' => 'Keterangan',
-            'total' => 'Total Invoice',
+            'keterangan.*' => 'Keterangan',
+            'nominal.*' => 'Nominal Pembayaran',
         ];
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'nama_perusahaan' => 'required',
-            'keterangan' => 'required',
-            'total' => 'required|numeric|gte:0',
+            'keterangan.*' => 'required',
+            'nominal.*' => 'required|numeric|gte:0',
             'dp' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
@@ -1753,47 +1787,149 @@ class DashboardController extends Controller
         $telp = $request->input('telp');
         $npwp = $request->input('npwp');
         $dp = $request->input('dp');
-        $total = $request->input('total');
-        $keterangan = $request->input('keterangan');
+        $nominal = $request->input('nominal');
+        $ket = $request->input('keterangan');
         $proyek = $request->input('proyek');
 
-        $cek_pajak = Proyek::where('id', $proyek)->first();
-        $pajak = Pajak::first();
+        $dbproyek = Proyek::where('id', $proyek)->first();
 
-        if ($faktur_pajak && $cek_pajak->pajak === 1) {
-            $total2 = $total * (100 + $pajak->pajak) / 100;
-        } else {
-            $total2 = $total;
+        if($ket){
+            if(count($ket) > 1){
+                $keterangan = '';
+                $w = '';
+                $total = 0;
+                for ($i = 0; $i < count($ket); $i++){
+                    $total += $nominal[$i];
+                    if ($i == 0){
+                        $w = $ket[$i];
+                    } elseif($i == count($ket) - 1){
+                        $w = ' dan '.$ket[$i];
+                    } else {
+                        $w = ', '.$ket[$i];
+                    }
+                    $keterangan = $keterangan.$w;
+                }
+                $cek_pajak = Proyek::where('id', $proyek)->first();
+                $pajak = Pajak::first();
+        
+                if ($faktur_pajak && $cek_pajak->pajak === 1) {
+                    $total2 = $total * (100 + $pajak->pajak) / 100;
+                } else {
+                    $total2 = $total;
+                }
+        
+                $start = Carbon::parse($tanggal)->startOfMonth();
+                $end = Carbon::parse($tanggal)->endOfMonth();
+        
+                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+                if (strlen($no) == 1) {
+                    $no = "0" . $no;
+                }
+                $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
+                $year = Carbon::parse($tanggal)->year;
+        
+                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+
+                $bukukas = Bukukas::create([
+                    'tahun' => Carbon::parse(now())->year,
+                    'proyek' => $proyek,
+                    'tanggal' => $tanggal,
+                    'uraian' => $keterangan,
+                    'kategori' => 2,
+                    'masuk' => $total,
+                    'kreator' => Session::get('id'),
+                    'ambil_stok' => 2,
+                ]);
+
+                Proyek::where('id', $proyek)->update([
+                    'nilai' => $dbproyek->nilai + $total
+                ]);
+        
+                $invoice = Invoice::create([
+                    'no_invoice' => $no_invoice,
+                    'tahun' => Carbon::parse(now())->year,
+                    'faktur_pajak' => $faktur_pajak,
+                    'tanggal' => $tanggal,
+                    'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+                    'nama_perusahaan' => $nama_perusahaan,
+                    'alamat' => $alamat,
+                    'telp' => $telp,
+                    'npwp' => $npwp,
+                    'dp' => $dp,
+                    'subtotal' => $total - $dp,
+                    'total' => $total2,
+                    'keterangan' => $keterangan,
+                    'proyek' => $proyek,
+                    'kreator' => Session::get('id'),
+                    'bukukas' => $bukukas->id,
+                ]);
+                $idinvoice = $invoice->id;
+                for ($i = 0; $i < count($ket); $i++){
+                    InvoiceDetail::create([
+                        'invoice' => $idinvoice,
+                        'keterangan' => $ket[$i],
+                        'nominal' => $nominal[$i],
+                    ]);
+                }
+            } else {
+                $total = $nominal[0];
+                $keterangan = $ket[0];
+                $cek_pajak = Proyek::where('id', $proyek)->first();
+                $pajak = Pajak::first();
+        
+                if ($faktur_pajak && $cek_pajak->pajak === 1) {
+                    $total2 = $total * (100 + $pajak->pajak) / 100;
+                } else {
+                    $total2 = $total;
+                }
+        
+                $start = Carbon::parse($tanggal)->startOfMonth();
+                $end = Carbon::parse($tanggal)->endOfMonth();
+        
+                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+                if (strlen($no) == 1) {
+                    $no = "0" . $no;
+                }
+                $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
+                $year = Carbon::parse($tanggal)->year;
+        
+                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+
+                $bukukas = Bukukas::create([
+                    'tahun' => Carbon::parse(now())->year,
+                    'proyek' => $proyek,
+                    'tanggal' => $tanggal,
+                    'uraian' => $keterangan,
+                    'kategori' => 2,
+                    'masuk' => $total,
+                    'kreator' => Session::get('id'),
+                    'ambil_stok' => 2,
+                ]);
+
+                Proyek::where('id', $proyek)->update([
+                    'nilai' => $dbproyek->nilai + $total
+                ]);
+        
+                Invoice::create([
+                    'tahun' => Carbon::parse(now())->year,
+                    'no_invoice' => $no_invoice,
+                    'faktur_pajak' => $faktur_pajak,
+                    'tanggal' => $tanggal,
+                    'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+                    'nama_perusahaan' => $nama_perusahaan,
+                    'alamat' => $alamat,
+                    'telp' => $telp,
+                    'npwp' => $npwp,
+                    'dp' => $dp,
+                    'subtotal' => $total - $dp,
+                    'total' => $total2,
+                    'keterangan' => $keterangan,
+                    'proyek' => $proyek,
+                    'kreator' => Session::get('id'),
+                    'bukukas' => $bukukas->id,
+                ]);
+            }
         }
-
-        $start = Carbon::parse($tanggal)->startOfMonth();
-        $end = Carbon::parse($tanggal)->endOfMonth();
-
-        $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
-        if (strlen($no) == 1) {
-            $no = "0" . $no;
-        }
-        $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
-        $year = Carbon::parse($tanggal)->year;
-
-        $no_invoice = $no . "/" . $month . "/SG/" . $year;
-
-        Invoice::create([
-            'no_invoice' => $no_invoice,
-            'faktur_pajak' => $faktur_pajak,
-            'tanggal' => $tanggal,
-            'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
-            'nama_perusahaan' => $nama_perusahaan,
-            'alamat' => $alamat,
-            'telp' => $telp,
-            'npwp' => $npwp,
-            'dp' => $dp,
-            'subtotal' => $total - $dp,
-            'total' => $total2,
-            'keterangan' => $keterangan,
-            'proyek' => $proyek,
-            'kreator' => Session::get('id'),
-        ]);
 
         notify()->success('Invoice berhasil ditambahkan.');
         return redirect('/dashboard/invoice');
@@ -1834,15 +1970,16 @@ class DashboardController extends Controller
         $attribute = [
             'tanggal' => 'Tanggal Invoice',
             'nama_perusahaan' => 'Nama Perusahaan',
-            'keterangan' => 'Keterangan',
-            'total' => 'Total Invoice',
+            'keterangan.*' => 'Keterangan',
+            'nominal.*' => 'Nominal Pembayaran',
+            'dp' => 'DP',
         ];
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'nama_perusahaan' => 'required',
-            'keterangan' => 'required',
-            'total' => 'required|numeric|gte:0',
-            'total' => 'numeric|gte:0',
+            'keterangan.*' => 'required',
+            'nominal.*' => 'required|numeric|gte:0',
+            'dp' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -1858,35 +1995,159 @@ class DashboardController extends Controller
         $telp = $request->input('telp');
         $npwp = $request->input('npwp');
         $dp = $request->input('dp');
-        $total = $request->input('total');
-        $keterangan = $request->input('keterangan');
+        $nominal = $request->input('nominal');
+        $ket = $request->input('keterangan');
 
         $proyek = $request->input('proyek');
+        $iddetail = $request->input('id_detail');
 
-        $cek_pajak = Proyek::where('id', $proyek)->first();
-        $pajak = Pajak::first();
+        $dbproyek = Proyek::where('id',$cek->proyek)->first();
 
-        if ($faktur_pajak && $cek_pajak->pajak === 1) {
-            $total2 = $total * (100 + $pajak->pajak) / 100;
-        } else {
-            $total2 = $total;
+        if($ket){
+            if(count($ket) > 1){
+                $keterangan = '';
+                $w = '';
+                $total = 0;
+                for ($i = 0; $i < count($ket); $i++){
+                    $total += $nominal[$i];
+                    if ($i == 0){
+                        $w = $ket[$i];
+                    } elseif($i == count($ket) - 1){
+                        $w = ' dan '.$ket[$i];
+                    } else {
+                        $w = ', '.$ket[$i];
+                    }
+                    $keterangan = $keterangan.$w;
+                }
+                $cek_pajak = Proyek::where('id', $proyek)->first();
+                $pajak = Pajak::first();
+        
+                if ($faktur_pajak && $cek_pajak->pajak === 1) {
+                    $total2 = $total * (100 + $pajak->pajak) / 100;
+                } else {
+                    $total2 = $total;
+                }
+        
+                $start = Carbon::parse($tanggal)->startOfMonth();
+                $end = Carbon::parse($tanggal)->endOfMonth();
+        
+                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+                if (strlen($no) == 1) {
+                    $no = "0" . $no;
+                }
+                $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
+                $year = Carbon::parse($tanggal)->year;
+        
+                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+
+                Bukukas::where('id',$cek->bukukas)->update([
+                    'proyek' => $proyek,
+                    'tanggal' => $tanggal,
+                    'uraian' => $keterangan,
+                    'masuk' => $total,
+                    'kreator' => Session::get('id'),
+                ]);
+
+                Proyek::where('id', $cek->proyek)->update([
+                    'nilai' => $dbproyek->nilai - $cek->subtotal - $cek->dp
+                ]);
+
+                $newproyek = Proyek::where('id',$proyek)->first();
+
+                Proyek::where('id', $proyek)->update([
+                    'nilai' => $newproyek->nilai + $total
+                ]);
+        
+                Invoice::where('id',$id)->update([
+                    'no_invoice' => $no_invoice,
+                    'faktur_pajak' => $faktur_pajak,
+                    'tanggal' => $tanggal,
+                    'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+                    'nama_perusahaan' => $nama_perusahaan,
+                    'alamat' => $alamat,
+                    'telp' => $telp,
+                    'npwp' => $npwp,
+                    'dp' => $dp,
+                    'subtotal' => $total - $dp,
+                    'total' => $total2,
+                    'keterangan' => $keterangan,
+                    'proyek' => $proyek,
+                    'kreator' => Session::get('id'),
+                ]);
+                for ($i = 0; $i < count($ket); $i++){
+                    if($iddetail[$i]){
+                        InvoiceDetail::where('id',$iddetail[$i])->update([
+                            'keterangan' => $ket[$i],
+                            'nominal' => $nominal[$i],
+                        ]);
+                    } else {
+                        InvoiceDetail::create([
+                            'invoice' => $id,
+                            'keterangan' => $ket[$i],
+                            'nominal' => $nominal[$i],
+                        ]);
+                    }
+                }
+            } else {
+                $total = $nominal[0];
+                $keterangan = $ket[0];
+                $cek_pajak = Proyek::where('id', $proyek)->first();
+                $pajak = Pajak::first();
+        
+                if ($faktur_pajak && $cek_pajak->pajak === 1) {
+                    $total2 = $total * (100 + $pajak->pajak) / 100;
+                } else {
+                    $total2 = $total;
+                }
+        
+                $start = Carbon::parse($tanggal)->startOfMonth();
+                $end = Carbon::parse($tanggal)->endOfMonth();
+        
+                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+                if (strlen($no) == 1) {
+                    $no = "0" . $no;
+                }
+                $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
+                $year = Carbon::parse($tanggal)->year;
+        
+                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+
+                Bukukas::where('id',$cek->bukukas)->update([
+                    'proyek' => $proyek,
+                    'tanggal' => $tanggal,
+                    'uraian' => $keterangan,
+                    'masuk' => $total,
+                    'kreator' => Session::get('id'),
+                ]);
+
+                Proyek::where('id', $cek->proyek)->update([
+                    'nilai' => $dbproyek->nilai - $cek->subtotal - $cek->dp
+                ]);
+
+                $newproyek = Proyek::where('id',$proyek)->first();
+
+                Proyek::where('id', $proyek)->update([
+                    'nilai' => $newproyek->nilai + $total
+                ]);
+        
+                Invoice::where('id',$id)->update([
+                    'no_invoice' => $no_invoice,
+                    'faktur_pajak' => $faktur_pajak,
+                    'tanggal' => $tanggal,
+                    'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
+                    'nama_perusahaan' => $nama_perusahaan,
+                    'alamat' => $alamat,
+                    'telp' => $telp,
+                    'npwp' => $npwp,
+                    'dp' => $dp,
+                    'subtotal' => $total - $dp,
+                    'total' => $total2,
+                    'keterangan' => $keterangan,
+                    'proyek' => $proyek,
+                    'kreator' => Session::get('id'),
+                ]);
+            }
         }
-
-        Invoice::where('id', $id)->update([
-            'faktur_pajak' => $faktur_pajak,
-            'tanggal' => $tanggal,
-            'tanggal_jatuh_tempo' => $tanggal_jatuh_tempo,
-            'nama_perusahaan' => $nama_perusahaan,
-            'alamat' => $alamat,
-            'telp' => $telp,
-            'npwp' => $npwp,
-            'dp' => $dp,
-            'subtotal' => $total - $dp,
-            'total' => $total2,
-            'keterangan' => $keterangan,
-            'proyek' => $proyek,
-            'kreator' => Session::get('id'),
-        ]);
 
         notify()->success('Invoice berhasil diupdate.');
         return redirect('/dashboard/invoice');
@@ -1903,7 +2164,8 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        invoice::where('id', $id)->delete();
+        Invoice::where('id', $id)->delete();
+        InvoiceDetail::where('invoice',$id)->delete();
         notify()->success('Invoice berhasil dihapus.');
         return redirect('/dashboard/invoice');
     }
