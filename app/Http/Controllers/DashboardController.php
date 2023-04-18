@@ -1148,14 +1148,12 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'uraian' => 'required',
             'kategori' => 'required',
+            'no_nota' => 'required',
             'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'masuk' => 'nullable|numeric|gte:0',
             'keluar' => 'nullable|numeric|gte:0'
         ];
 
-        if ($request->hasFile('nota')) {
-            $rules['no_nota'] = 'required';
-        }
         $validator = Validator::make($request->all(), $rules, $message, $attribute);
 
 
@@ -1183,6 +1181,7 @@ class DashboardController extends Controller
             'masuk' => $masuk,
             'keluar' => $keluar,
             'kreator' => Session::get('id'),
+            'no_nota' => $bukti,
         ]);
 
         $idbukukas = $bukukas->id;
@@ -1210,7 +1209,6 @@ class DashboardController extends Controller
 
             Bukukas::where('id', $idbukukas)->update([
                 'nota' => $gbrnama,
-                'no_nota' => $bukti,
             ]);
         }
 
@@ -1270,14 +1268,11 @@ class DashboardController extends Controller
             'tanggal' => 'required',
             'uraian' => 'required',
             'kategori' => 'required',
+            'no_nota' => 'required',
             'nota' => 'mimes:jpg,jpeg,png|max:10240',
             'masuk' => 'nullable|numeric|gte:0',
             'keluar' => 'nullable|numeric|gte:0',
         ];
-
-        if ($request->hasFile('nota')) {
-            $rules['no_nota'] = 'required';
-        }
 
         $validator = Validator::make($request->all(), $rules, $message, $attribute);
 
@@ -1306,6 +1301,7 @@ class DashboardController extends Controller
             'masuk' => $masuk,
             'keluar' => $keluar,
             'kreator' => Session::get('id'),
+            'no_nota' => $bukti,
         ]);
 
         $nota = Bukukas::where('id', $id)->first();
@@ -1345,7 +1341,6 @@ class DashboardController extends Controller
 
             Bukukas::where('id', $id)->update([
                 'nota' => $gbrnama,
-                'no_nota' => $bukti,
             ]);
         }
 

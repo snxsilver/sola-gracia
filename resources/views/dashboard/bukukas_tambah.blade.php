@@ -91,20 +91,19 @@
                   </div>
                 </div>
                 <div class="form-group row">
+                  <label class="col-form-label col-md-3 col-sm-3 ">Nomor Nota</label>
+                  <div class="col-md-9 col-sm-9 ">
+                    <input type="text" class="form-control" placeholder="Masukkan Nomor Nota" name="no_nota"  value="{{old('no_nota')}}">
+                    @error('no_nota')<small>*{{$message}}</small>@enderror
+                  </div>
+                </div>
+                <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nota</label>
                   <div class="col-md-9">
                     <input type="file" class="form-control-file" name="nota" id="imgload">
                     <small class="warning">(opsional)</small>
                     @error('nota')<small>{{$message}}</small>@enderror
                     <img src="" alt="" id="imgshowa">
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-form-label col-md-3 col-sm-3 ">Nomor Nota</label>
-                  <div class="col-md-9 col-sm-9 ">
-                    <input type="text" class="form-control" placeholder="Masukkan Nomor Nota" name="no_nota"  value="{{old('no_nota')}}">
-                    <small class="warning">(harus diisi apabila ada nota)</small>
-                    @error('no_nota')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
                 <div class="ln_solid"></div>
