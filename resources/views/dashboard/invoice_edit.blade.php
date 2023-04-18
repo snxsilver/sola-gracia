@@ -170,7 +170,7 @@
                               <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                               </div>
-                              <input type="number" class="form-control" placeholder="Masukkan Nominal Pembayaran" name="nominal[]" value="{{$invoice->total}}">
+                              <input type="number" class="form-control" placeholder="Masukkan Nominal Pembayaran" name="nominal[]" value="{{$invoice->subtotal}}">
                             </div>
                             <button type="button" class="btn btn-primary ml-2 tambah-invoice" style="margin: 0"><i class="fa fa-plus"></i></button>
                           </div>

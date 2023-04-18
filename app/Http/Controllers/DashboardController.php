@@ -2031,14 +2031,23 @@ class DashboardController extends Controller
                 $start = Carbon::parse($tanggal)->startOfMonth();
                 $end = Carbon::parse($tanggal)->endOfMonth();
         
-                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
-                if (strlen($no) == 1) {
-                    $no = "0" . $no;
-                }
+                $oldno = explode("/", $cek->no_invoice);
+
                 $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
                 $year = Carbon::parse($tanggal)->year;
-        
-                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+
+                if ($oldno[1] == $month && $oldno[3] == $year){
+                    $no_invoice = $cek->no_invoice;
+                } else {
+                    $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+
+                    if (strlen($no) == 1) {
+                        $no = "0" . $no;
+                    }
+            
+                    $no_invoice = $no . "/" . $month . "/SG/" . $year;
+                }
+
 
                 Bukukas::where('id',$cek->bukukas)->update([
                     'proyek' => $proyek,
@@ -2103,14 +2112,22 @@ class DashboardController extends Controller
                 $start = Carbon::parse($tanggal)->startOfMonth();
                 $end = Carbon::parse($tanggal)->endOfMonth();
         
-                $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
-                if (strlen($no) == 1) {
-                    $no = "0" . $no;
-                }
+                $oldno = explode("/", $cek->no_invoice);
+
                 $month = Helper::numberToRoman(Carbon::parse($tanggal)->month);
                 $year = Carbon::parse($tanggal)->year;
-        
-                $no_invoice = $no . "/" . $month . "/SG/" . $year;
+                
+                if ($oldno[1] == $month && $oldno[3] == $year){
+                    $no_invoice = $cek->no_invoice;
+                } else {
+                    $no = Invoice::where('tanggal', '>=', $start)->where('tanggal', '<=', $end)->count() + 1;
+
+                    if (strlen($no) == 1) {
+                        $no = "0" . $no;
+                    }
+            
+                    $no_invoice = $no . "/" . $month . "/SG/" . $year;
+                }
 
                 Bukukas::where('id',$cek->bukukas)->update([
                     'proyek' => $proyek,
