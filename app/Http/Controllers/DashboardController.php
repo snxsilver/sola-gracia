@@ -944,7 +944,9 @@ class DashboardController extends Controller
             }
         })->where('tahun', Session::get('tahun'))
             ->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
         $data_query = Bukukas::where(function ($query) {
             if (Session::get('kategori')) :
                 $query->where('kategori', Session::get('kategori'));
@@ -990,6 +992,8 @@ class DashboardController extends Controller
             ->where(function ($query) {
                 if (Session::get('role') === 'operator') {
                     $query->where('proyek.pajak', 1);
+                } else if (Session::get('role') === 'admin'){
+                    $query->where('kategori.id', '!=', 2);
                 }
             })
             ->select('bukukas.*', 'proyek.nama as namaproyek', 'kategori.nama as namakategori');
@@ -1110,7 +1114,9 @@ class DashboardController extends Controller
             return back();
         }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
         return view('dashboard.bukukas_tambah', $data);
     }
 
@@ -1227,7 +1233,9 @@ class DashboardController extends Controller
             return back();
         }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
         $data['bukukas'] = bukukas::where('tahun', Session::get('tahun'))->where('id', $id)->first();
         return view('dashboard.bukukas_edit', $data);
     }
@@ -1383,7 +1391,9 @@ class DashboardController extends Controller
             return back();
         }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
         $data['stok'] = Stok::where('kuantitas', '>', 0)->get();
         return view('dashboard.ambil_stok', $data);
     }
@@ -1571,7 +1581,9 @@ class DashboardController extends Controller
             ->where('bukukas.tahun', Session::get('tahun'))
             ->first();
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
         $data['stok'] = Stok::where('id', $data['ambil']->stok)->first();
         return view('dashboard.ambil_stok_edit', $data);
     }
@@ -1654,7 +1666,7 @@ class DashboardController extends Controller
 
     public function invoice()
     {
-        if (Session::get('role') === 'supervisor' || Session::get('role') === 'manager') {
+        if (Session::get('role') === 'supervisor' || Session::get('role') === 'manager' || Session::get('role') === 'admin') {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1728,7 +1740,7 @@ class DashboardController extends Controller
 
     public function invoice_tambah()
     {
-        if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
+        if (Session::get('role') !== 'owner') {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1742,7 +1754,7 @@ class DashboardController extends Controller
 
     public function invoice_aksi(Request $request)
     {
-        if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
+        if (Session::get('role') !== 'owner') {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -2448,7 +2460,9 @@ class DashboardController extends Controller
             }
         })->where('tahun', Session::get('tahun'))
             ->orderBy('nama', 'asc')->get();
-        $data['kategori'] = Kategori::orderBy('nama', 'asc')->get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            $query->where('id', '!=', 2);
+        })->orderBy('nama', 'asc')->get();
 
         $data_query = Bukukas::where('bukukas.tahun', Session::get('tahun'))
         ->where(function ($query) use ($search) {

@@ -95,7 +95,9 @@
                 @endif
                 @if(Session::get('role') !== 'supervisor' && Session::get('role') !== 'manager')
                 <li><a href="{{url('/dashboard/stok')}}"><i class="fa fa-dropbox"></i> Stok <span class="fa fa-chevron-right"></span></a></li>
+                @if(Session::get('role') !== 'admin')
                 <li><a href="{{url('/dashboard/invoice')}}"><i class="fa fa-sticky-note"></i> Invoice <span class="fa fa-chevron-right"></span></a></li>
+                @endif
                 @endif
                 @if(Session::get('role') === 'owner')
                 <li><a href="{{url('/dashboard/user')}}"><i class="fa fa-user"></i> User <span class="fa fa-chevron-right"></span></a></li>
