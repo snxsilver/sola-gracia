@@ -310,6 +310,13 @@ class DashboardController extends Controller
             notify()->error('Kategori tidak dapat dihapus.');
             return back();
         }
+
+        $bukukas = Bukukas::where('kategori',$id)->first();
+        if ($bukukas){
+            notify()->error('Terdapat data bukukas yang menggunakan kategori ini.');
+            return back();
+        }
+
         Kategori::where('id', $id)->delete();
 
         notify()->success('Kategori berhasil dihapus.');
@@ -399,12 +406,12 @@ class DashboardController extends Controller
         $attribute = [
             'kode' => 'Kode Proyek',
             'nama' => 'Nama Proyek',
-            'nilai' => 'Nilai Proyek',
+            // 'nilai' => 'Nilai Proyek',
         ];
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'nama' => 'required',
-            'nilai' => 'nullable|numeric|gte:0',
+            // 'nilai' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {
@@ -477,12 +484,12 @@ class DashboardController extends Controller
         $attribute = [
             'kode' => 'Kode Proyek',
             'nama' => 'Nama Proyek',
-            'nilai' => 'Nilai Proyek',
+            // 'nilai' => 'Nilai Proyek',
         ];
         $validator = Validator::make($request->all(), [
             'kode' => 'required',
             'nama' => 'required',
-            'nilai' => 'nullable|numeric|gte:0',
+            // 'nilai' => 'nullable|numeric|gte:0',
         ], $message, $attribute);
 
         if ($validator->fails()) {

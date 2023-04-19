@@ -35,7 +35,7 @@
                     @error('nama')<small>*{{$message}}</small>@enderror
                   </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Nilai</label>
                   <div class="col-md-9 col-sm-9 ">
                     <div class="input-group">
@@ -47,7 +47,7 @@
                     <small class="warning">Note: Nilai harus berisi angka bulat bukan desimal.</small>
                     @error('nilai')<small>*{{$message}}</small>@enderror
                   </div>
-                </div>
+                </div> --}}
                 @if(Session::get('role') == "owner")
                 <div class="form-group row">
                   <label class="col-form-label col-md-3 col-sm-3 ">Pajak</label>
