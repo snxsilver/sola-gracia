@@ -186,13 +186,22 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        $data['kategori'] = Kategori::get();
+        $data['kategori'] = Kategori::where(function ($query) {
+            if (Session::get('role') === 'admin'){
+                $query->where('id', '!=', 2);
+            }
+        })->get();
         return view('dashboard.kategori', $data);
     }
 
     public function kategori_view(Request $request, $id)
     {
         if (Session::get('role') === 'supervisor' || Session::get('role') === 'manager') {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+
+        if (Session::get('role') === 'admin' && $id == 2) {
             notify()->error('Akses dilarang.');
             return back();
         }
