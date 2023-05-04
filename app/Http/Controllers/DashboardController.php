@@ -654,6 +654,12 @@ class DashboardController extends Controller
                         $end = Carbon::parse($selesai)->endOfDay();
                         $query->where('tanggal', '<=', $end);
                     endif;
+                elseif (Session::get('tahun')) :
+                    $sesi = Carbon::create(Session::get('tahun'), 1, 31, 12, 0, 0);
+                    $start = Carbon::parse($sesi)->startOfYear();
+                    $end = Carbon::parse($sesi)->endOfYear();
+                    $query->where('tanggal', '>=', $start)
+                        ->where('tanggal', '<=', $end);
                 endif;
             })
             ->join('kategori', 'bukukas.kategori', '=', 'kategori.id')
