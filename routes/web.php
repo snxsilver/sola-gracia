@@ -35,6 +35,8 @@ Route::get('/logout', [LoginController::class, 'logout']);
 Route::group(['middleware' => 'auth'], function () {
   Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
+  Route::get('/dashboard/tutup_buku', [DashboardController::class, 'tutup_buku']);
+  
   Route::get('/dashboard/user', [DashboardController::class, 'user']);
   Route::get('/dashboard/user_tambah', [DashboardController::class, 'user_tambah']);
   Route::post('/dashboard/user_aksi', [DashboardController::class, 'user_aksi']);

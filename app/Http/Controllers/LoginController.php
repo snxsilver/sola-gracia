@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Index;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,12 +52,28 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $data = User::whereRaw('BINARY `username` = ?',$request->username)->first();
             if ($data){
+                $cek = Index::where('tahun', Carbon::parse(now())->year)->first();
                 $data_session = [
                     'id' => $data->id,
                     'username' => $data->username,
                     'role' => $data->role,
-                    'tahun' => Carbon::parse(now())->year
+                    'tahun' => Carbon::parse(now())->year,
+
                 ];
+                if ($cek) {
+                    $data_session['approved'] = $cek->approved;
+                } else {
+                    // for($x = 2014; $x<2023;$x++){
+                    //     Index::create([
+                    //         'tahun' => $x
+                    //     ]);
+                    // }
+
+                    Index::create([
+                        'tahun' => Carbon::parse(now())->year
+                    ]);
+                    $data_session['approved'] = null;
+                }
                 $request->session()->put($data_session);
                 
                 return redirect()->intended('dashboard');

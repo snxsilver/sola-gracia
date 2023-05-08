@@ -23,6 +23,7 @@ use App\Exports\UsersExport;
 use App\Helpers\Helper;
 use App\Models\GajiMandorTukang;
 use App\Models\HarianBayar;
+use App\Models\Index;
 use App\Models\InvoiceDetail;
 use App\Models\Pajak;
 use Maatwebsite\Excel\Facades\Excel;
@@ -384,6 +385,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         return view('dashboard.proyek_tambah');
     }
 
@@ -394,6 +399,10 @@ class DashboardController extends Controller
             return back();
         }
         if (Session::get('tahun') != Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -455,6 +464,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->where('id', $id)->first();
         return view('dashboard.proyek_edit', $data);
     }
@@ -468,6 +481,10 @@ class DashboardController extends Controller
         $id = $request->input('id');
         $cek = Proyek::where('id',$id)->first();
         if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -537,6 +554,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $invoice = Invoice::where('proyek',$id)->first();
         if ($invoice){
             notify()->error('Terdapat data invoice yang menggunakan proyek ini.');
@@ -596,6 +617,8 @@ class DashboardController extends Controller
                 $tahun = Carbon::parse($bulan)->year;
             }
 
+            $index = Index::where('tahun', $tahun)->first();
+
             $request->session()->put([
                 'kategori' => $kategori,
                 'proyek' => $proyek,
@@ -603,6 +626,7 @@ class DashboardController extends Controller
                 'selesai' => $selesai,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
+                'approved' => $index->approved,
             ]);
 
             return back();
@@ -1135,6 +1159,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
         $data['kategori'] = Kategori::where(function ($query) {
             $query->where('id', '!=', 2);
@@ -1149,6 +1177,10 @@ class DashboardController extends Controller
             return back();
         }
         if (Session::get('tahun') != Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1254,6 +1286,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
         $data['kategori'] = Kategori::where(function ($query) {
             $query->where('id', '!=', 2);
@@ -1265,6 +1301,10 @@ class DashboardController extends Controller
     public function bukukas_update(Request $request)
     {
         if (Session::get('role') !== 'owner') {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1389,6 +1429,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $nota = Bukukas::where('id', $id)->first();
         if ($nota->nota) {
             if (file_exists(public_path('/images/nota/' . $nota->nota))) {
@@ -1412,6 +1456,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
         $data['kategori'] = Kategori::where(function ($query) {
             $query->where('id', '!=', 2);
@@ -1427,6 +1475,10 @@ class DashboardController extends Controller
             return back();
         }
         if (Session::get('tahun') != Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1506,6 +1558,10 @@ class DashboardController extends Controller
     public function ambil_stok_update(Request $request)
     {
         if (Session::get('role') !== 'owner') {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1598,6 +1654,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['ambil'] = Ambil::where('bukukas', $id)
             ->join('bukukas', 'ambil_stok.bukukas', '=', 'bukukas.id')
             ->where('bukukas.tahun', Session::get('tahun'))
@@ -1613,6 +1673,10 @@ class DashboardController extends Controller
     public function ambil_stok_hapus($id)
     {
         if (Session::get('role') !== 'owner') {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1770,6 +1834,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
         return view('dashboard.invoice_tambah', $data);
     }
@@ -1781,6 +1849,10 @@ class DashboardController extends Controller
             return back();
         }
         if (Session::get('tahun') != Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1974,6 +2046,10 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
+        if (Session::get('approved')) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
         $data['proyek'] = Proyek::where('tahun', Session::get('tahun'))->orderBy('nama', 'asc')->get();
         $data['invoice'] = Invoice::where('tahun', Session::get('tahun'))->where('id', $id)->first();
         return view('dashboard.invoice_edit', $data);
@@ -1988,6 +2064,10 @@ class DashboardController extends Controller
         $id = $request->input('id');
         $cek = Invoice::where('id',$id)->first();
         if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -2207,6 +2287,10 @@ class DashboardController extends Controller
         }
         $cek = Invoice::where('id',$id)->first();
         if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+        if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -2784,5 +2868,23 @@ class DashboardController extends Controller
             default:
                 return redirect('/dashboard/bukukas');
         endswitch;
+    }
+
+    public function tutup_buku(){
+        if (Session::get('role') !== 'owner') {
+            notify()->error('Akses dilarang.');
+            return back();
+        }
+
+        $cek = Index::where('tahun', Session::get('tahun'))->first();
+
+        if($cek){   
+            Index::where('tahun',Session::get('tahun'))->update([
+                'approved' => 1,
+                'approver' => Session::get('id'),
+            ]);
+        }
+
+        return back();
     }
 }

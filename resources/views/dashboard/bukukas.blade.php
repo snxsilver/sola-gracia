@@ -130,13 +130,18 @@
               <div class="d-flex justify-content-between align-items-center">
                 <h3>Buku Kas</h3>
                 <div class="align-items-center">
-                  <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
-                      href="{{ url('/dashboard/bukukas_refresh/bukukas') }}"><i class="fa fa-refresh"></i></a>
                   @if (Session::get('role') === 'owner')
+                    @if (!Session::get('approved'))
+                    <a class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                    title="Tutup Buku" href="{{ url('/dashboard/bukukas_tambah') }}"><i
+                      class="fa fa-check"></i></a>
+                    @endif
                     <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cetak Excel"
                       href="{{ url('/dashboard/export') }}"><i class="fa fa-file-excel-o"></i></a>
                   @endif
-                  @if (Session::get('role') !== 'operator' && Session::get('tahun') == $carbon->parse(now())->year)
+                  <a class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Hapus Filter"
+                      href="{{ url('/dashboard/bukukas_refresh/bukukas') }}"><i class="fa fa-refresh"></i></a>
+                  @if (Session::get('role') !== 'operator' && !Session::get('approved'))
                     <a class="btn btn-success text-sm btn-sm fw-semibold" data-toggle="tooltip" data-placement="top"
                       title="Tambah Transaksi dari Stok" href="{{ url('/dashboard/ambil_stok') }}"><span
                         class="text-white mr-1"><i class="fa fa-plus"></i></span>Ambil Stok</a>
@@ -199,7 +204,7 @@
                       <td>{{ $b->no_nota ? $b->no_nota : '-' }}</td>
                       <td>{{ $b->masuk ? 'Rp ' . number_format($b->masuk) : '-' }}</td>
                       <td>{{ $b->keluar ? 'Rp ' . number_format($b->keluar) : '-' }}</td>
-                      @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
+                      @if (Session::get('role') === 'owner' && !Session::get('approved'))
                         <td width="10%">
                           @if ($b->ambil_stok == 0 || $b->ambil_stok == null)
                             @if ($b->nota)
