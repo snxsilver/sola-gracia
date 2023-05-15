@@ -133,7 +133,7 @@
                   @if (Session::get('role') === 'owner')
                     @if (!Session::get('approved'))
                     <a class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-                    title="Tutup Buku" href="{{ url('/dashboard/bukukas_tambah') }}"><i
+                    title="Tutup Buku" href="{{ url('/dashboard/tutup_buku') }}"><i
                       class="fa fa-check"></i></a>
                     @endif
                     <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cetak Excel"
@@ -186,7 +186,7 @@
                     <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa @if(Session::get('sort_masuk') === 'asc') fa-sort-asc @elseif(Session::get('sort_masuk') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    @if (Session::get('role') === 'owner' && Session::get('tahun') == $carbon->parse(now())->year)
+                    @if (Session::get('role') === 'owner' && !Session::get('approved'))
                       <th>Opsi</th>
                     @endif
                   </tr>

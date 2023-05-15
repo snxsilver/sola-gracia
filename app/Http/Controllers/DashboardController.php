@@ -381,10 +381,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -395,10 +391,6 @@ class DashboardController extends Controller
     public function proyek_aksi(Request $request)
     {
         if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -460,10 +452,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -479,11 +467,6 @@ class DashboardController extends Controller
             return back();
         }
         $id = $request->input('id');
-        $cek = Proyek::where('id',$id)->first();
-        if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -1046,9 +1029,9 @@ class DashboardController extends Controller
 
         if (Session::get('sort_bukti')) {
             if (Session::get('sort_bukti') === 'asc') {
-                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'asc');
+                $data_query2 = $data_query->orderBy('bukukas.no_nota', 'asc');
             } else {
-                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'desc');
+                $data_query2 = $data_query->orderBy('bukukas.no_nota', 'desc');
             }
         }
 
@@ -1155,10 +1138,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -1173,10 +1152,6 @@ class DashboardController extends Controller
     public function bukukas_aksi(Request $request)
     {
         if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1216,10 +1191,19 @@ class DashboardController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $message, $attribute);
 
-
         if ($validator->fails()) {
             notify()->error('Gagal menambahkan transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        $bukti = $request->input('no_nota');
+
+        $cek = Bukukas::where('tahun', Session::get('tahun'))->where('no_nota', $bukti)->first();
+        if ($cek){
+            notify()->error('Gagal menambahkan transaksi.');
+            return Redirect::back()->withErrors([
+                'no_nota' => 'Nomor Nota telah digunakan.'
+            ])->withInput();
         }
 
         $proyek = $request->input('proyek');
@@ -1227,7 +1211,6 @@ class DashboardController extends Controller
         $uraian = $request->input('uraian');
         $keterangan = $request->input('keterangan');
         $kategori = $request->input('kategori');
-        $bukti = $request->input('no_nota') ?? null;
         $masuk = $request->input('masuk');
         $keluar = $request->input('keluar');
 
@@ -1282,10 +1265,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -1309,11 +1288,12 @@ class DashboardController extends Controller
             return back();
         }
         $id = $request->input('id');
-        $cek = Bukukas::where('id',$id)->first();
-        if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
+
+        $olddata = Bukukas::where('id', $id)->first();
+        Bukukas::where('id', $id)->update([
+            'no_nota' => 'xFaP12'
+        ]);
+
         $message = [
             'required' => ':attribute tidak boleh kosong.',
             'mimes' => ':attribute harus jpg, jpeg atau png.',
@@ -1348,8 +1328,21 @@ class DashboardController extends Controller
 
 
         if ($validator->fails()) {
+            Bukukas::where('id',$id)->update([
+                'no_nota' => $olddata->no_nota,
+            ]);
             notify()->error('Gagal mengupdate transaksi.');
             return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        $bukti = $request->input('no_nota');
+
+        $cek = Bukukas::where('tahun', Session::get('tahun'))->where('no_nota', $bukti)->first();
+        if ($cek){
+            notify()->error('Gagal menambahkan transaksi.');
+            return Redirect::back()->withErrors([
+                'no_nota' => 'Nomor Nota telah digunakan.'
+            ])->withInput();
         }
 
         $id = $request->input('id');
@@ -1358,7 +1351,6 @@ class DashboardController extends Controller
         $uraian = $request->input('uraian');
         $keterangan = $request->input('keterangan');
         $kategori = $request->input('kategori');
-        $bukti = $request->input('no_nota');
         $masuk = $request->input('masuk');
         $keluar = $request->input('keluar');
 
@@ -1452,10 +1444,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -1471,10 +1459,6 @@ class DashboardController extends Controller
     public function ambil_stok_aksi(Request $request)
     {
         if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1647,10 +1631,6 @@ class DashboardController extends Controller
     public function ambil_stok_edit($id)
     {
         if (Session::get('role') !== 'owner') {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1830,10 +1810,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -1845,10 +1821,6 @@ class DashboardController extends Controller
     public function invoice_aksi(Request $request)
     {
         if (Session::get('role') !== 'owner') {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -2042,10 +2014,6 @@ class DashboardController extends Controller
             notify()->error('Akses dilarang.');
             return back();
         }
-        if (Session::get('tahun') != Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -2063,10 +2031,7 @@ class DashboardController extends Controller
         }
         $id = $request->input('id');
         $cek = Invoice::where('id',$id)->first();
-        if (Session::get('tahun') != Carbon::parse(now())->year || $cek->tahun !== Carbon::parse(now())->year) {
-            notify()->error('Akses dilarang.');
-            return back();
-        }
+
         if (Session::get('approved')) {
             notify()->error('Akses dilarang.');
             return back();
@@ -2625,9 +2590,9 @@ class DashboardController extends Controller
 
         if (Session::get('sort_bukti')) {
             if (Session::get('sort_bukti') === 'asc') {
-                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'asc');
+                $data_query2 = $data_query->orderBy('bukukas.no_nota', 'asc');
             } else {
-                $data_query2 = $data_query->orderBy('bukukas.no_bukti', 'desc');
+                $data_query2 = $data_query->orderBy('bukukas.no_nota', 'desc');
             }
         }
 
@@ -2872,7 +2837,7 @@ class DashboardController extends Controller
 
     public function tutup_buku(){
         if (Session::get('role') !== 'owner') {
-            notify()->error('Akses dilarang.');
+            notify()->error('Akses dilarang keras.');
             return back();
         }
 
@@ -2884,6 +2849,8 @@ class DashboardController extends Controller
                 'approver' => Session::get('id'),
             ]);
         }
+
+        Session::put('approved', 1);
 
         return back();
     }
