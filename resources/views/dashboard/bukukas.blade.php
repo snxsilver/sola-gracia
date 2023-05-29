@@ -186,7 +186,7 @@
                     <th>Masuk <a href="{{ url('/dashboard/bukukas_sort/masuk') }}"><i class="fa @if(Session::get('sort_masuk') === 'asc') fa-sort-asc @elseif(Session::get('sort_masuk') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a></th>
                     <th>Keluar <a href="{{ url('/dashboard/bukukas_sort/keluar') }}"><i class="fa @if(Session::get('sort_keluar') === 'asc') fa-sort-asc @elseif(Session::get('sort_keluar') === 'desc') fa-sort-desc @else fa-sort @endif"></i></a>
                     </th>
-                    @if (Session::get('role') === 'owner' && !Session::get('approved'))
+                    @if (Session::get('role') !== 'operator' && !Session::get('approved'))
                       <th>Opsi</th>
                     @endif
                   </tr>
@@ -204,7 +204,7 @@
                       <td>{{ $b->no_nota ? $b->no_nota : '-' }}</td>
                       <td>{{ $b->masuk ? 'Rp ' . number_format($b->masuk) : '-' }}</td>
                       <td>{{ $b->keluar ? 'Rp ' . number_format($b->keluar) : '-' }}</td>
-                      @if (Session::get('role') === 'owner' && !Session::get('approved'))
+                      @if (Session::get('role') !== 'operator' && !Session::get('approved'))
                         <td width="10%">
                           @if ($b->ambil_stok == 0 || $b->ambil_stok == null)
                             @if ($b->nota)
@@ -215,21 +215,26 @@
                             @endif
                             <a class="btn btn-sm btn-secondary"
                               href="{{ url('/dashboard/bukukas_edit/' . $b->id) }}"><i class="fa fa-pencil"></i></a>
-                            <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
-                              data-target="#hapusitem"
-                              data-whatever="{{ url('/dashboard/bukukas_hapus/' . $b->id) }}"><i
-                                class="fa fa-trash"></i></a>
+                              @if (Session::get('role') === 'owner')
+                              <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
+                                data-target="#hapusitem"
+                                data-whatever="{{ url('/dashboard/bukukas_hapus/' . $b->id) }}"><i class="fa fa-trash"></i></a>
+                              @endif
                           @elseif($b->ambil_stok == 1)
                             <a class="btn btn-sm btn-secondary"
                               href="{{ url('/dashboard/ambil_stok_edit/' . $b->id) }}"><i class="fa fa-pencil"></i></a>
+                            @if (Session::get('role') === 'owner')
                             <a class="btn btn-sm btn-danger text-white" style="cursor: pointer" data-toggle="modal"
                               data-target="#hapusitem"
                               data-whatever="{{ url('/dashboard/ambil_stok_hapus/' . $b->id) }}"><i
                                 class="fa fa-trash"></i></a>
+                            @endif
                           @elseif($b->ambil_stok == 2)
-                            @php($invoice = DB::table('invoice')->where('bukukas',$b->id)->first())
-                            @if($invoice)
-                            <span data-toggle="tooltip" data-placement="bottom" title="Lihat Invoice"><a class="btn btn-sm btn-success text-white" style="cursor: pointer" href="{{ url('/dashboard/invoice_cetak/' . $invoice->id) }}"><i class="fa fa-eye"></i></a></span>
+                            @if (Session::get('role') === 'owner')
+                              @php($invoice = DB::table('invoice')->where('bukukas',$b->id)->first())
+                              @if($invoice)
+                              <span data-toggle="tooltip" data-placement="bottom" title="Lihat Invoice"><a class="btn btn-sm btn-success text-white" style="cursor: pointer" href="{{ url('/dashboard/invoice_cetak/' . $invoice->id) }}"><i class="fa fa-eye"></i></a></span>
+                              @endif
                             @endif
                           @endif
                         </td>

@@ -138,8 +138,8 @@
                   <div class="row mt-3">
                     <div class="col">
                       <div class="d-flex">
-                        <p class="mr-2">Terbilang</p>
-                        <p>#{{ ucwords($terbilang->terbilang($invoice->total)) }} Rupiah#</p>
+                        <p class="mr-2">Terbilang {{round($invoice->total)}}</p>
+                        <p>#{{ ucwords($terbilang->terbilang(round($invoice->total))) }} Rupiah#</p>
                       </div>
                     </div>
                   </div>

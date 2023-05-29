@@ -1261,7 +1261,7 @@ class DashboardController extends Controller
 
     public function bukukas_edit($id)
     {
-        if (Session::get('role') !== 'owner') {
+        if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
             notify()->error('Akses dilarang.');
             return back();
         }
@@ -1279,7 +1279,7 @@ class DashboardController extends Controller
 
     public function bukukas_update(Request $request)
     {
-        if (Session::get('role') !== 'owner') {
+        if (Session::get('role') !== 'owner' && Session::get('role') !== 'admin') {
             notify()->error('Akses dilarang.');
             return back();
         }
